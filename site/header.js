@@ -11,6 +11,7 @@
   var NARROW_HEADER_QUERY = '(max-width: 820px)';
   var NARRATION_VERSION = '20260829a';
   var UI_I18N_VERSION = '20261010a';
+  var STAR_NUDGE_VERSION = '20261013a';
   var navId = 0;
 
   function isStaticPreview(locationValue) {
@@ -174,6 +175,15 @@
     script.src = 'ui-i18n.js?v=' + UI_I18N_VERSION;
     script.async = true;
     script.setAttribute('data-aifs-ui-i18n', UI_I18N_VERSION);
+    document.head.appendChild(script);
+  }
+
+  function ensureStarNudge() {
+    if (window.AIFSStarNudge || document.querySelector('script[data-aifs-star-nudge]')) return;
+    var script = document.createElement('script');
+    script.src = 'star-nudge.js?v=' + STAR_NUDGE_VERSION;
+    script.async = true;
+    script.setAttribute('data-aifs-star-nudge', STAR_NUDGE_VERSION);
     document.head.appendChild(script);
   }
 
@@ -431,6 +441,7 @@
     ensureNarration();
     ensureUiI18n();
     ensureNewsletter();
+    ensureStarNudge();
   }
 
   setupRouteLinks();
