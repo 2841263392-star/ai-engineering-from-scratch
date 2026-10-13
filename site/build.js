@@ -2337,6 +2337,7 @@ function writeSitemap(lessonManifest, glossaryCount, certifications, projects, h
     { loc: '/learning-paths.html', priority: '0.8', freq: 'monthly' },
     { loc: '/blogs', priority: '0.7', freq: 'daily' },
     { loc: '/about.html', priority: '0.5', freq: 'yearly' },
+    { loc: '/inside-an-ai-agent.html', priority: '0.7', freq: 'monthly' },
     { loc: '/developer.html', priority: '0.6', freq: 'monthly' },
     { loc: '/contact.html', priority: '0.3', freq: 'yearly' },
     { loc: '/privacy.html', priority: '0.3', freq: 'yearly' },

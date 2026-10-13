@@ -791,6 +791,21 @@
       border-bottom: 1px solid var(--rule-soft);
     }
 
+    .agent-machine-feature { padding: 44px 0; border-bottom: 1px solid var(--rule-soft); }
+    .agent-machine-link { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 32px; align-items: center; color: inherit; text-decoration: none; }
+    .agent-machine-copy .preface-eyebrow { margin-bottom: 12px; }
+    .agent-machine-copy h2 { font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 0.95; text-transform: uppercase; margin: 0 0 14px; color: var(--ink); }
+    .agent-machine-copy p { margin: 0 0 18px; max-width: 34ch; }
+    .agent-machine-cta { font-family: var(--font-mono); font-size: 0.82rem; color: var(--blueprint); letter-spacing: 0.04em; text-transform: uppercase; }
+    .agent-machine-link img { display: block; width: 100%; height: auto; transition: transform var(--motion-enter) var(--ease-out); }
+    .agent-machine-light { mix-blend-mode: multiply; }
+    .agent-machine-dark { display: none !important; mix-blend-mode: screen; }
+    [data-theme="dark"] .agent-machine-dark { display: block !important; }
+    [data-theme="dark"] .agent-machine-light { display: none !important; }
+    .agent-machine-link:hover img, .agent-machine-link:focus-visible img { transform: translateY(-2px); }
+    @media (max-width: 760px) { .agent-machine-link { grid-template-columns: 1fr; gap: 18px; } }
+    @media (prefers-reduced-motion: reduce) { .agent-machine-link img { transition: none; } }
+
     .course-paths {
       padding: 40px 32px 46px;
       border-bottom: 1px solid var(--rule-soft);
@@ -2380,6 +2395,19 @@
         </div>
       </div>
     </section>
+    <section class="agent-machine-feature container" aria-labelledby="agentMachineTitle">
+      <a class="agent-machine-link" href="inside-an-ai-agent.html">
+        <div class="agent-machine-copy">
+          <div class="preface-eyebrow">FIG_AGT · Interactive simulation</div>
+          <h2 id="agentMachineTitle">Inside an AI Agent</h2>
+          <p>An AI agent is more than an LLM call. Run one request through a working machine, switch off retrieval, tools or the verifier, and watch what fails.</p>
+          <span class="agent-machine-cta">Break the machine →</span>
+        </div>
+        <img class="agent-machine-light" src="anatomy/inside-an-ai-agent-machine.png" width="2400" height="1260" loading="lazy" decoding="async" alt="An isometric card-processing machine with a nameplate on each station: request, memory, retrieval, model, tools, verifier, output, trace and the runtime loop.">
+        <img class="agent-machine-dark" src="anatomy/inside-an-ai-agent-machine-dark.png" width="2400" height="1260" loading="lazy" decoding="async" alt="">
+      </a>
+    </section>
+
     <section class="course-paths container" id="choose-path" aria-labelledby="coursePathsTitle">
       <header class="course-paths-header">
         <h2 id="coursePathsTitle">Choose the work you want to do</h2>

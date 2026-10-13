@@ -107,6 +107,10 @@
       "destination": "/about.html"
     },
     {
+      "source": "/inside-an-ai-agent",
+      "destination": "/inside-an-ai-agent.html"
+    },
+    {
       "source": "/catalog",
       "has": [
         {
@@ -524,7 +528,7 @@
     },
     "api/og.js": {
       "maxDuration": 10,
-      "includeFiles": "{site/lesson-seo.json,site/certification-seo.json,site/og-cards.json,lib/og-render.js,lib/og-fonts/*.json}"
+      "includeFiles": "{site/lesson-seo.json,site/certification-seo.json,site/og-cards.json,site/anatomy/*.png,lib/og-render.js,lib/og-fonts/*.json}"
     },
     "api/markdown.js": {
       "maxDuration": 10,
@@ -570,7 +574,7 @@
       "permanent": true
     },
     {
-      "source": "/:page(about|catalog|glossary|prereqs|developer|contact|privacy|sponsors|projects|project|learning-paths|certifications|assessment).html",
+      "source": "/:page(about|catalog|glossary|prereqs|developer|contact|privacy|sponsors|projects|project|learning-paths|certifications|assessment|inside-an-ai-agent).html",
       "destination": "/:page",
       "permanent": true
     },

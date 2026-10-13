@@ -90,7 +90,7 @@ function createHandler({ manifest = readSite, render = renderCard } = {}) {
     try {
       if (!rendered.has(location)) {
         if (rendered.size >= RENDERED_LIMIT) rendered.delete(rendered.keys().next().value);
-        rendered.set(location, render(spec));
+        rendered.set(location, spec.image ? fs.readFileSync(path.join(SITE, spec.image)) : render(spec));
       }
     } catch (_) {
       return send(res, method, 500, 'no-store', 'Card could not be rendered');

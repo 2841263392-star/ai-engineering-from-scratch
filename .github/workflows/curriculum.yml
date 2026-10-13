@@ -46,6 +46,7 @@ on:
       - "glossary/**"
       - "site/build.js"
       - "site/**"
+      - "scripts/agent-machine/**"
       - "api/**"
       - "lib/**"
       - "scripts/test_agent_api.js"
@@ -99,6 +100,7 @@ on:
       - "glossary/**"
       - "site/build.js"
       - "site/**"
+      - "scripts/agent-machine/**"
       - "api/**"
       - "lib/**"
       - "scripts/test_agent_api.js"
@@ -146,6 +148,8 @@ jobs:
         run: node --test site/test_project_copy.js
       - name: homepage curiosity supports pointer and keyboard input
         run: node --test site/test_intelligence_check.js
+      - name: agent machine simulation and page stay in sync
+        run: node --test site/test_agent_machine.js
       - name: build the static site
         run: node site/build.js && node site/build-projects.js --strict && node site/build-agents.js
       - name: public API and MCP contracts
