@@ -111,6 +111,10 @@
       "destination": "/inside-an-ai-agent.html"
     },
     {
+      "source": "/skills",
+      "destination": "/skills.html"
+    },
+    {
       "source": "/catalog",
       "has": [
         {
@@ -574,7 +578,7 @@
       "permanent": true
     },
     {
-      "source": "/:page(about|catalog|glossary|prereqs|developer|contact|privacy|sponsors|projects|project|learning-paths|certifications|assessment|inside-an-ai-agent).html",
+      "source": "/:page(about|catalog|glossary|prereqs|developer|contact|privacy|sponsors|projects|project|learning-paths|certifications|assessment|inside-an-ai-agent|skills).html",
       "destination": "/:page",
       "permanent": true
     },

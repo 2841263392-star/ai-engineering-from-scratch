@@ -37,7 +37,7 @@
     var boundary = href.search(/[?#]/);
     var pathname = boundary < 0 ? href : href.slice(0, boundary);
     var suffix = boundary < 0 ? '' : href.slice(boundary);
-    var pages = '(index|about|catalog|glossary|prereqs|developer|contact|privacy|sponsors|projects|project|learning-paths|certifications|certification|assessment|lesson|blogs|manuals|manual-[a-z0-9-]+|inside-an-ai-agent)';
+    var pages = '(index|about|catalog|glossary|prereqs|developer|contact|privacy|sponsors|projects|project|learning-paths|certifications|certification|assessment|lesson|blogs|manuals|manual-[a-z0-9-]+|inside-an-ai-agent|skills)';
     if (isStaticPreview(locationValue)) {
       return pathname.replace(new RegExp('(^|/)' + pages + '$'), '$1$2.html') + suffix;
     }
@@ -271,6 +271,7 @@
     ensureNavigationLink(nav, 'learning-paths.html', 'Learning Paths', '');
     ensureNavigationLink(nav, 'projects.html', 'Projects', '');
     ensureNavigationLink(nav, 'manuals.html', 'Manuals', '');
+    ensureNavigationLink(nav, 'skills.html', 'Skills', '');
     ensureNavigationLink(nav, '/blogs', 'Blogs & Guides', '');
     ensureNavigationLink(nav, 'certifications.html', 'Certifications', 'header-mobile-only');
     ensureNavigationLink(nav, 'sponsors.html', 'Sponsor us', 'header-mobile-only');
@@ -436,6 +437,7 @@
     var footers = document.querySelectorAll('.footer-links');
     for (var j = 0; j < footers.length; j++) {
       ensureNavigationLink(footers[j], '/blogs', 'Blogs & Guides', '');
+      ensureNavigationLink(footers[j], 'skills.html', 'Skills', '');
     }
     loadStars();
     ensureNarration();
