@@ -137,6 +137,8 @@ test('lesson math stays portable to GitHub, the book and the translation pipelin
       }
       if (!item.display && /^[\d.,]+[kKmMbB]?$/.test(item.tex.trim())) problems.push(`${where}: a money amount reads as math; escape it as \\$`);
       if (/\$/.test(item.tex.replace(/\\\$/g, ''))) problems.push(`${where}: nested dollar inside math`);
+      if (/\\operatorname(?![A-Za-z])/.test(item.tex)) problems.push(`${where}: GitHub does not allow \\operatorname; write \\mathop{\\mathrm{name}}`);
+      if (/\\phantom(?![A-Za-z])/.test(item.tex)) problems.push(`${where}: GitHub does not allow \\phantom; repeat the text or align with &`);
       const fencedDisplay = item.display && !/^\s*\$\$/.test(lines[item.line - 1]);
       if (!fencedDisplay && /\\[!-\/:-@\[-`{-~]/.test(item.tex)) {
         problems.push(`${where}: GitHub drops a backslash before punctuation inside $ math; use a math fence or a named command such as \\lbrace`);

@@ -42,20 +42,20 @@ At training, for a prefix through position `i`, the per-depth hidden state is:
 ```math
 \begin{aligned}
 h_i^{(0)} &= \text{main model backbone at position } i \\
-h_i^{(k)} &= T_k\Big( M_k \cdot \operatorname{concat}\big(\operatorname{RMSNorm}(h_i^{(k-1)}), \operatorname{RMSNorm}(E(t_{i+k}))\big) \Big) \quad \text{for } k \ge 1
+h_i^{(k)} &= T_k\Big( M_k \cdot \mathop{\mathrm{concat}}\big(\mathop{\mathrm{RMSNorm}}(h_i^{(k-1)}), \mathop{\mathrm{RMSNorm}}(E(t_{i+k}))\big) \Big) \quad \text{for } k \ge 1
 \end{aligned}
 ```
 
 The per-depth prediction is:
 
 ```math
-\text{logits}_{i+k} = \operatorname{Out}(h_i^{(k-1)}) \quad \text{for } k = 1, \ldots, D
+\text{logits}_{i+k} = \mathop{\mathrm{Out}}(h_i^{(k-1)}) \quad \text{for } k = 1, \ldots, D
 ```
 
 The per-depth loss is cross-entropy against the ground-truth `t_{i+k}`:
 
 ```math
-L_k = \operatorname{CE}(\text{logits}_{i+k}, t_{i+k})
+L_k = \mathop{\mathrm{CE}}(\text{logits}_{i+k}, t_{i+k})
 ```
 
 The joint loss across depths:

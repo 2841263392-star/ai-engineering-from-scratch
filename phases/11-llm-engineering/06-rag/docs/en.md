@@ -95,19 +95,19 @@ Given two vectors, how do you measure similarity? Three options:
 **Cosine similarity**: the cosine of the angle between two vectors. Ranges from -1 (opposite) to 1 (identical). Ignores magnitude, only cares about direction. This is the default for RAG.
 
 ```math
-\operatorname{cosine\_sim}(a, b) = \frac{\operatorname{dot}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**: the raw inner product. Larger vectors get higher scores. Useful when magnitude carries information (longer documents might be more relevant).
 
 ```math
-\operatorname{dot}(a, b) = \sum_i a_i b_i
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **L2 (Euclidean) distance**: straight-line distance in the vector space. Smaller distance = more similar. Sensitive to magnitude differences.
 
 ```math
-\operatorname{L2}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 Cosine similarity is the standard. It handles documents of different lengths gracefully because it normalizes by magnitude. When someone says "vector search," they almost always mean cosine similarity.

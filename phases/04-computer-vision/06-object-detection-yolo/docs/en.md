@@ -90,7 +90,7 @@ The raw `tx, ty, tw, th` are not box coordinates; they are regression targets to
 Detection's universal similarity metric between two boxes:
 
 ```math
-\mathrm{IoU}(A, B) = \frac{\operatorname{area}(A \cap B)}{\operatorname{area}(A \cup B)}
+\mathrm{IoU}(A, B) = \frac{\mathop{\mathrm{area}}(A \cap B)}{\mathop{\mathrm{area}}(A \cup B)}
 ```
 
 $\mathrm{IoU} = 1$ means identical; $\mathrm{IoU} = 0$ means no overlap. IoU between the prediction and the ground-truth box is what decides whether a prediction counts as a true positive (typically $\mathrm{IoU} \ge 0.5$). IoU between two predictions is what NMS uses to deduplicate.

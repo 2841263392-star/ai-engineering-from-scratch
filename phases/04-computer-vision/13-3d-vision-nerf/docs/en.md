@@ -45,7 +45,7 @@ No grid, no connectivity. Two properties make this hard for neural networks:
 PointNet (Qi et al., 2017) solved both with one idea: apply a shared MLP to every point, then aggregate with a symmetric function (max pool). The result is a fixed-size vector that does not depend on order.
 
 ```math
-f(P) = \max_{p \in P} \operatorname{MLP}(p)
+f(P) = \max_{p \in P} \mathop{\mathrm{MLP}}(p)
 ```
 
 This is the entire core of PointNet. Deeper variants (PointNet++, Point Transformer) add hierarchical sampling and local aggregation but the symmetric-function trick is unchanged.

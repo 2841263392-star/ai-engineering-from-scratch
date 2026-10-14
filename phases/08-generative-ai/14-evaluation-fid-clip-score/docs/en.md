@@ -27,7 +27,7 @@ Heusel et al. (2017). Steps:
 
 1. Extract Inception-v3 features (2048-D) for N real images and N generated.
 2. Fit a Gaussian to each pool: compute mean $\mu_r, \mu_g$ and covariance $\Sigma_r, \Sigma_g$.
-3. $\text{FID} = \lVert \mu_r - \mu_g \rVert^2 + \operatorname{Tr}\left(\Sigma_r + \Sigma_g - 2 \cdot (\Sigma_r \cdot \Sigma_g)^{0.5}\right)$.
+3. $\text{FID} = \lVert \mu_r - \mu_g \rVert^2 + \mathop{\mathrm{Tr}}\left(\Sigma_r + \Sigma_g - 2 \cdot (\Sigma_r \cdot \Sigma_g)^{0.5}\right)$.
 
 Interpretation: Fréchet distance between two multivariate Gaussians in feature space. Lower = more similar distributions.
 

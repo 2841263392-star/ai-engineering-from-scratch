@@ -160,7 +160,7 @@ flowchart LR
 Formula in one line:
 
 ```math
-\text{Attention}(Q, K, V) = \operatorname{softmax}\left( \frac{Q K^T}{\sqrt{d_k}} \right) V
+\text{Attention}(Q, K, V) = \mathop{\mathrm{softmax}}\left( \frac{Q K^T}{\sqrt{d_k}} \right) V
 ```
 
 ```figure
@@ -322,7 +322,7 @@ This lesson produces:
 | Query (Q) | "The question vector" | A learned projection of the input that represents what information this token is looking for |
 | Key (K) | "The label vector" | A learned projection that represents what information this token contains, matched against queries |
 | Value (V) | "The content vector" | A learned projection carrying the actual information that gets aggregated based on attention scores |
-| Scaled dot-product attention | "The attention formula" | $\operatorname{softmax}(QK^T / \sqrt{d_k}) V$ - scaling prevents softmax saturation in high dimensions |
+| Scaled dot-product attention | "The attention formula" | $\mathop{\mathrm{softmax}}(QK^T / \sqrt{d_k}) V$ - scaling prevents softmax saturation in high dimensions |
 | Self-attention | "The token looks at itself and others" | Attention where Q, K, V all come from the same sequence, letting every position attend to every other position |
 | Attention weights | "How much focus" | A probability distribution over positions, produced by softmax over scaled dot products |
 | Multi-head attention | "Parallel attention" | Running multiple attention functions with different projections, then concatenating results for richer representations |

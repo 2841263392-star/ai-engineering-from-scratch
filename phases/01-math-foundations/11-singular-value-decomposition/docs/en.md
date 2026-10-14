@@ -55,7 +55,7 @@ For a matrix $A$ with shape $m \times n$:
 & \quad \Sigma \text{ is } m \times n, \text{ diagonal (singular values on the diagonal)} \\
 & \quad V \text{ is } n \times n, \text{ orthogonal } (V^T V = I) \\[6pt]
 & \text{The singular values } \sigma_1 \ge \sigma_2 \ge \cdots \ge \sigma_r > 0 \\
-& \text{where } r = \operatorname{rank}(A)
+& \text{where } r = \mathop{\mathrm{rank}}(A)
 \end{aligned}
 ```
 
@@ -147,7 +147,7 @@ The Eckart-Young-Mirsky theorem states that the best $\text{rank-}k$ approximati
 & \quad \Sigma_k \text{ is } k \times k \quad \text{(top-left } k \times k \text{ block of } \Sigma\text{)} \\
 & \quad V_k \text{ is } n \times k \quad \text{(first } k \text{ columns of } V\text{)} \\[6pt]
 & \text{Approximation error} = \sigma_{k+1} \quad \text{(in spectral norm)} \\
-& \phantom{\text{Approximation error}} = \sqrt{\sigma_{k+1}^2 + \cdots + \sigma_r^2} \quad \text{(in Frobenius norm)}
+& \text{Approximation error} = \sqrt{\sigma_{k+1}^2 + \cdots + \sigma_r^2} \quad \text{(in Frobenius norm)}
 \end{aligned}
 ```
 

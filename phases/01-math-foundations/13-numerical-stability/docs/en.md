@@ -173,7 +173,7 @@ This trick appears everywhere in ML:
 Softmax converts logits to probabilities:
 
 ```math
-\operatorname{softmax}(x_i) = \frac{\exp(x_i)}{\sum_j \exp(x_j)}
+\mathop{\mathrm{softmax}}(x_i) = \frac{\exp(x_i)}{\sum_j \exp(x_j)}
 ```
 
 Without the trick, logits of [100, 101, 102] cause overflow:
@@ -353,7 +353,7 @@ Layer 50: values in [0, inf]
 Normalization recenters and rescales activations at every layer:
 
 ```math
-\operatorname{LayerNorm}(x) = \frac{x - \operatorname{mean}(x)}{\operatorname{std}(x) + \epsilon} \cdot \gamma + \beta
+\mathop{\mathrm{LayerNorm}}(x) = \frac{x - \mathop{\mathrm{mean}}(x)}{\mathop{\mathrm{std}}(x) + \epsilon} \cdot \gamma + \beta
 ```
 
 The `epsilon` (typically 1e-5) prevents division by zero when all activations are identical. The learned parameters `gamma` and `beta` let the network restore any scale it needs.

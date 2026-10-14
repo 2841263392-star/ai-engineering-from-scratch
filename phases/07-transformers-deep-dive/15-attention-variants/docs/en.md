@@ -63,8 +63,8 @@ Differential attention fixes this by computing **two** attention maps and subtra
 
 ```math
 \begin{aligned}
-A_1 &= \operatorname{softmax}(Q_1 K_1^T / \sqrt{d}) \\
-A_2 &= \operatorname{softmax}(Q_2 K_2^T / \sqrt{d}) \\
+A_1 &= \mathop{\mathrm{softmax}}(Q_1 K_1^T / \sqrt{d}) \\
+A_2 &= \mathop{\mathrm{softmax}}(Q_2 K_2^T / \sqrt{d}) \\
 \text{DiffAttn} &= (A_1 - \lambda \cdot A_2) V
 \end{aligned}
 ```

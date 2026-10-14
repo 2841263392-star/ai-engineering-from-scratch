@@ -53,7 +53,7 @@ Step 10000: Expected distance from origin ~ 100 (sqrt(10000))
 
 **In 2D**, the walk moves up, down, left, or right with equal probability. The same $\sqrt{n}$ scaling applies to the distance from the origin. The path traces a fractal-like pattern.
 
-**Why $\sqrt{n}$?** Each step is +1 or -1 with equal probability. After $n$ steps, the position $S_n = X_1 + X_2 + \cdots + X_n$ where each $X_i$ is $\pm 1$. The variance of each step is 1, and the steps are independent, so $\operatorname{Var}(S_n) = n$. Standard deviation = $\sqrt{n}$. By the central limit theorem, $S_n / \sqrt{n}$ converges to a standard normal distribution.
+**Why $\sqrt{n}$?** Each step is +1 or -1 with equal probability. After $n$ steps, the position $S_n = X_1 + X_2 + \cdots + X_n$ where each $X_i$ is $\pm 1$. The variance of each step is 1, and the steps are independent, so $\mathop{\mathrm{Var}}(S_n) = n$. Standard deviation = $\sqrt{n}$. By the central limit theorem, $S_n / \sqrt{n}$ converges to a standard normal distribution.
 
 This $\sqrt{n}$ scaling shows up everywhere in ML. SGD noise scales as 1/sqrt(batch_size). Embedding dimensions scale as $\sqrt{d}$. The square root is the signature of independent random additions.
 

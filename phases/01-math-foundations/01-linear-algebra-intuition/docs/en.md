@@ -123,10 +123,10 @@ Rank of a matrix = number of linearly independent columns = number of linearly i
 Projecting vector **a** onto vector **b** gives the component of **a** in the direction of **b**:
 
 ```math
-\operatorname{proj}_b(a) = \frac{a \cdot b}{b \cdot b} \, b
+\mathop{\mathrm{proj}}_b(a) = \frac{a \cdot b}{b \cdot b} \, b
 ```
 
-The residual $(a - \operatorname{proj}_b(a))$ is perpendicular to $b$. This orthogonal decomposition is the foundation of least-squares fitting.
+The residual $(a - \mathop{\mathrm{proj}}_b(a))$ is perpendicular to $b$. This orthogonal decomposition is the foundation of least-squares fitting.
 
 Projection is everywhere in ML:
 - Linear regression minimizes the distance from observations to the column space -- the solution IS a projection
@@ -146,7 +146,7 @@ graph LR
 
 **Example:** $a = [3, 4]$, $b = [1, 0]$
 
-$\operatorname{proj}_b(a) = (3 \cdot 1 + 4 \cdot 0) / (1 \cdot 1 + 0 \cdot 0) \cdot [1, 0] = 3 \cdot [1, 0] = [3, 0]$
+$\mathop{\mathrm{proj}}_b(a) = (3 \cdot 1 + 4 \cdot 0) / (1 \cdot 1 + 0 \cdot 0) \cdot [1, 0] = 3 \cdot [1, 0] = [3, 0]$
 
 The projection drops the y-component. This is dimensionality reduction in its simplest form -- throw away the directions you don't care about.
 

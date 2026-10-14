@@ -101,19 +101,19 @@ Given two embedding vectors, three ways to measure how similar they are:
 **Cosine similarity**: the cosine of the angle between two vectors. Ranges from -1 (opposite) to 1 (identical direction). Ignores magnitude -- a 10-word sentence and a 500-word document can score 1.0 if they point the same direction. This is the default for 90% of use cases.
 
 ```math
-\operatorname{cosine\_sim}(a, b) = \frac{\operatorname{dot}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
+\mathop{\mathrm{cosine\_sim}}(a, b) = \frac{\mathop{\mathrm{dot}}(a, b)}{\lVert a \rVert \cdot \lVert b \rVert}
 ```
 
 **Dot product**: the raw inner product of two vectors. Identical to cosine similarity when vectors are normalized (unit length). Faster to compute. OpenAI's embeddings are normalized, so dot product and cosine give the same ranking.
 
 ```math
-\operatorname{dot}(a, b) = \sum_i a_i b_i
+\mathop{\mathrm{dot}}(a, b) = \sum_i a_i b_i
 ```
 
 **Euclidean (L2) distance**: straight-line distance in the vector space. Smaller = more similar. Sensitive to magnitude differences. Use when the absolute position in space matters, not just the direction.
 
 ```math
-\operatorname{L2}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
+\mathop{\mathrm{L2}}(a, b) = \sqrt{\sum_i (a_i - b_i)^2}
 ```
 
 When to use which:

@@ -64,7 +64,7 @@ The diffusion loss is standard: add noise to an image patch, ask the model to pr
 During training:
 1. For each image patch $x_0$, sample a random timestep $t$.
 2. Sample noise $\epsilon$, compute $x_t = (1-t) \cdot x_0 + t \cdot \epsilon$ (linear interpolation for flow matching).
-3. The transformer predicts $v_\theta(x_t, t)$; $\text{loss} = \operatorname{MSE}(v_\theta(x_t, t), \epsilon - x_0)$.
+3. The transformer predicts $v_\theta(x_t, t)$; $\text{loss} = \mathop{\mathrm{MSE}}(v_\theta(x_t, t), \epsilon - x_0)$.
 4. Backprop alongside text NTP losses from the same sequence.
 
 At inference, generation is:

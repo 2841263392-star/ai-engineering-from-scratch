@@ -219,7 +219,7 @@ Cholesky is twice as fast as LU and requires half the storage. It only works for
 - The Hessian of a convex function at a minimum is symmetric positive definite.
 - $A^T A$ is always symmetric positive semi-definite.
 
-In Gaussian processes, you factor the kernel matrix $K$ with Cholesky, then solve $K \alpha = y$ to get the predictive mean. The Cholesky factor also gives you the log-determinant for the marginal likelihood: $\log \det(K) = 2 \sum \log(\operatorname{diag}(L))$.
+In Gaussian processes, you factor the kernel matrix $K$ with Cholesky, then solve $K \alpha = y$ to get the predictive mean. The Cholesky factor also gives you the log-determinant for the marginal likelihood: $\log \det(K) = 2 \sum \log(\mathop{\mathrm{diag}}(L))$.
 
 ### Least squares: when Ax = b has no exact solution
 
@@ -385,7 +385,7 @@ Every method in this lesson appears in production ML:
 
 **Ridge regression.** Adds $\lambda I$ to $X^T X$. The regularized system $(X^T X + \lambda I) w = X^T y$ is always solvable via Cholesky because $X^T X + \lambda I$ is symmetric positive definite for $\lambda > 0$.
 
-**Gaussian processes.** The predictive mean requires solving $K \alpha = y$ where $K$ is the kernel matrix. Cholesky factorization of $K$ is the standard approach. The log marginal likelihood uses $\log \det(K) = 2 \sum \log(\operatorname{diag}(L))$.
+**Gaussian processes.** The predictive mean requires solving $K \alpha = y$ where $K$ is the kernel matrix. Cholesky factorization of $K$ is the standard approach. The log marginal likelihood uses $\log \det(K) = 2 \sum \log(\mathop{\mathrm{diag}}(L))$.
 
 **Neural network initialization.** Orthogonal initialization uses QR decomposition to create weight matrices whose columns are orthonormal. This prevents signal collapse in deep networks.
 

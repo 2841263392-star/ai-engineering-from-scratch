@@ -83,7 +83,7 @@ D[i][j] &= 0 \quad \text{for } i \ne j
 \end{aligned}
 ```
 
-For the triangle example: $D = \operatorname{diag}(2, 2, 2)$ because every node connects to two others.
+For the triangle example: $D = \mathop{\mathrm{diag}}(2, 2, 2)$ because every node connects to two others.
 
 Degree tells you about node importance. High degree = hub node. The degree distribution of a network reveals its structure. Social networks follow power laws (few hubs, many leaf nodes). Random graphs have Poisson-distributed degrees.
 

@@ -90,7 +90,7 @@ Both appear in the wild. For a first U-Net, bilinear is safer.
 For semantic segmentation with $C$ classes, the model output is `(N, C, H, W)`. The target is `(N, H, W)` with integer class IDs. Cross-entropy is identical to the classification case, just applied at every spatial position:
 
 ```math
-\text{Loss} = \operatorname*{mean}_{(n, h, w)} \left[ -\log\left( \operatorname{softmax}(\text{logits}[n, :, h, w])[\text{target}[n, h, w]] \right) \right]
+\text{Loss} = \mathop{\mathrm{mean}}\limits_{(n, h, w)} \left[ -\log\left( \mathop{\mathrm{softmax}}(\text{logits}[n, :, h, w])[\text{target}[n, h, w]] \right) \right]
 ```
 
 `F.cross_entropy` in PyTorch handles this shape natively. No reshape needed.
@@ -103,7 +103,7 @@ Dice loss solves this by directly optimising the overlap between predicted and t
 
 ```math
 \begin{aligned}
-\operatorname{Dice}(p, y) &= \frac{2 \sum (p \cdot y)}{\sum p + \sum y + \epsilon} \\
+\mathop{\mathrm{Dice}}(p, y) &= \frac{2 \sum (p \cdot y)}{\sum p + \sum y + \epsilon} \\
 \text{Dice}_{\text{loss}} &= 1 - \text{Dice}
 \end{aligned}
 ```

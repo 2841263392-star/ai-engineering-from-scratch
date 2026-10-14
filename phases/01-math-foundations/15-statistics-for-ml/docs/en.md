@@ -141,7 +141,7 @@ Cov(X, Y) < 0:  when X increases, Y tends to decrease
 Cov(X, Y) = 0:  no linear co-movement
 ```
 
-For $d$ features, the covariance matrix $C$ is a $d \times d$ matrix where $C[i][j] = \operatorname{Cov}(\text{feature}_i, \text{feature}_j)$. The diagonal entries $C[i][i]$ are the variances of each feature.
+For $d$ features, the covariance matrix $C$ is a $d \times d$ matrix where $C[i][j] = \mathop{\mathrm{Cov}}(\text{feature}_i, \text{feature}_j)$. The diagonal entries $C[i][i]$ are the variances of each feature.
 
 ```
 C = | Var(x1)      Cov(x1,x2)  Cov(x1,x3) |

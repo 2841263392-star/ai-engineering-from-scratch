@@ -34,7 +34,7 @@ f -> tokenize at (H/p)x(W/p): token grid z_K of shape (H/p, W/p)
 Each $z_k$ uses the same codebook (typical size 4096-16384). The tokenization at each scale is not independent — it is trained so that summing the residuals at each scale reconstructs $f$:
 
 ```math
-f \approx \operatorname{upsample}(\operatorname{embed}(z_1), \text{target\_size}) + \cdots + \operatorname{upsample}(\operatorname{embed}(z_K), \text{target\_size})
+f \approx \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_1), \text{target\_size}) + \cdots + \mathop{\mathrm{upsample}}(\mathop{\mathrm{embed}}(z_K), \text{target\_size})
 ```
 
 This is a **residual VQ** variant. Scale $k$ captures what scales $1 \ldots k-1$ missed. Decoder takes the sum of all scale embeddings and produces the image.

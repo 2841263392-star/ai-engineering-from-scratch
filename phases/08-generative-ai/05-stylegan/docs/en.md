@@ -26,7 +26,7 @@ The result: $W$ has roughly orthogonal axes for "high-level style" (pose, identi
 **AdaIN.**
 
 ```math
-\operatorname{AdaIN}(x, y) = y_{\text{scale}} \cdot \frac{x - \operatorname{mean}(x)}{\operatorname{std}(x)} + y_{\text{bias}}
+\mathop{\mathrm{AdaIN}}(x, y) = y_{\text{scale}} \cdot \frac{x - \mathop{\mathrm{mean}}(x)}{\mathop{\mathrm{std}}(x)} + y_{\text{bias}}
 ```
 
 where $y_{\text{scale}}$ and $y_{\text{bias}}$ come from affine projections of $w$. Normalize per feature map, then restyle. "Style" here is the first- and second-order statistics of the feature map.

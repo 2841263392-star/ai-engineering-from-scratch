@@ -53,7 +53,7 @@ Everything else (learning rate schedule, data mix, batch size, context length) l
 LayerNorm subtracts mean, divides by std, scales, and shifts. RMSNorm keeps only the scale:
 
 ```math
-\operatorname{RMSNorm}(x) = \frac{x}{\sqrt{\operatorname{mean}(x^2) + \epsilon}} \cdot \gamma
+\mathop{\mathrm{RMSNorm}}(x) = \frac{x}{\sqrt{\mathop{\mathrm{mean}}(x^2) + \epsilon}} \cdot \gamma
 ```
 
 No mean subtraction. No bias. One matmul fewer per token. Zhang and Sennrich (2019) argued it matched LayerNorm on machine translation while being 10% faster. Every modern open model runs it.
@@ -79,7 +79,7 @@ Every Llama, Mistral, Qwen, DeepSeek, and Gemma uses RoPE. Gemma 2 uses a hybrid
 GPT-2's MLP is `x -> gelu(xW1 + b1) -> (...)W2 + b2`. SwiGLU (Shazeer 2020) replaces the activation with a gated product:
 
 ```math
-\operatorname{SwiGLU}(x) = (xW_1) \cdot \operatorname{sigmoid}(xW_1) \cdot xV
+\mathop{\mathrm{SwiGLU}}(x) = (xW_1) \cdot \mathop{\mathrm{sigmoid}}(xW_1) \cdot xV
 ```
 
 Two projections in parallel instead of one, gated by the Swish activation. Empirically stronger on perplexity per parameter. Llama 2 adopted it, everyone followed. The MLP's hidden size is usually set so that total parameter count matches the original dense MLP: if GPT-2 used `ff_dim = 4 * hidden`, SwiGLU uses `ff_dim = (2/3) * 4 * hidden = 8/3 * hidden`.

@@ -113,8 +113,8 @@ The **phase spectrum** is $\angle X[k]$ -- the phase offset of each frequency. F
 
 ```math
 \begin{aligned}
-\text{Power at frequency } k: \quad P[k] &= |X[k]|^2 = \operatorname{Re}(X[k])^2 + \operatorname{Im}(X[k])^2 \\
-\text{Phase at frequency } k: \quad \phi[k] &= \operatorname{atan2}(\operatorname{Im}(X[k]), \operatorname{Re}(X[k]))
+\text{Power at frequency } k: \quad P[k] &= |X[k]|^2 = \mathop{\mathrm{Re}}(X[k])^2 + \mathop{\mathrm{Im}}(X[k])^2 \\
+\text{Phase at frequency } k: \quad \phi[k] &= \mathop{\mathrm{atan2}}(\mathop{\mathrm{Im}}(X[k]), \mathop{\mathrm{Re}}(X[k]))
 \end{aligned}
 ```
 

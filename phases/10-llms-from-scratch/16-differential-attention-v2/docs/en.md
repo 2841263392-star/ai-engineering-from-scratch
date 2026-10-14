@@ -42,15 +42,15 @@ Split each head's Q and K projections into two: $Q = (Q_1, Q_2)$ and $K = (K_1, 
 
 ```math
 \begin{aligned}
-A_1 &= \operatorname{softmax}(Q_1 K_1^T / \sqrt{d}) \\
-A_2 &= \operatorname{softmax}(Q_2 K_2^T / \sqrt{d})
+A_1 &= \mathop{\mathrm{softmax}}(Q_1 K_1^T / \sqrt{d}) \\
+A_2 &= \mathop{\mathrm{softmax}}(Q_2 K_2^T / \sqrt{d})
 \end{aligned}
 ```
 
 Output:
 
 ```math
-\operatorname{DiffAttn} = (A_1 - \lambda \cdot A_2) V
+\mathop{\mathrm{DiffAttn}} = (A_1 - \lambda \cdot A_2) V
 ```
 
 The subtraction cancels whatever noise distribution the two maps share. If both maps have roughly uniform weight on the 127k unrelated tokens (which they will, at random initialization), those cancel. The signal — peaked weight on the few actually relevant tokens — only cancels if it appears in both maps at the same magnitude, which it will not once the model trains.

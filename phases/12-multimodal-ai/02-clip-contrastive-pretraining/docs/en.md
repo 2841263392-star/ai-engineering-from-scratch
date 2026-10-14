@@ -66,7 +66,7 @@ Softmax needs the whole similarity matrix in sync. In distributed training you m
 SigLIP replaces softmax with element-wise sigmoid: for each pair `(i, j)`, the loss is a binary classification of "are these the matching pair?" positive class labels are the diagonal, everything else is negative. The loss is:
 
 ```math
-L = -\frac{1}{N} \sum_{(i, j)} \Big[ y_{ij} \log \operatorname{sigmoid}(S[i,j]) + (1-y_{ij}) \log \operatorname{sigmoid}(-S[i,j]) \Big]
+L = -\frac{1}{N} \sum_{(i, j)} \Big[ y_{ij} \log \mathop{\mathrm{sigmoid}}(S[i,j]) + (1-y_{ij}) \log \mathop{\mathrm{sigmoid}}(-S[i,j]) \Big]
 ```
 
 `y_ij = 1` if `i == j`, else 0. Each pair's loss is independent. No all-gather needed. Each GPU computes its local block and sums. SigLIP 2 scales to batch 32k-512k cheaply where CLIP would need proportionally more communication.

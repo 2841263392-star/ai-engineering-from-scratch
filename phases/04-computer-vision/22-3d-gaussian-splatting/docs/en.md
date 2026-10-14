@@ -63,7 +63,7 @@ The 3D Gaussian at world position `mu` with 3D covariance `Sigma` projects to a 
 
 ```math
 \begin{aligned}
-\mu' &= \operatorname{project}(\mu) \\
+\mu' &= \mathop{\mathrm{project}}(\mu) \\
 \Sigma' &= J W \Sigma W^T J^T \qquad (2 \times 2) \\[6pt]
 W &= \text{viewing transform (rotation + translation of camera)} \\
 J &= \text{Jacobian of the perspective projection at } \mu'
@@ -81,7 +81,7 @@ For one pixel, the Gaussians that cover it are sorted back-to-front (or equivale
 C_{\text{pixel}} &= \sum_i \alpha_i T_i c_i \\[6pt]
 T_i &= \prod_{j < i} (1 - \alpha_j) && \text{transmittance up to } i \\
 \alpha_i &= \text{opacity}_i \cdot \exp\left(-0.5 \, d^T \Sigma'^{-1} d\right) && \text{local contribution} \\
-c_i &= \operatorname{eval\_SH}(\text{SH}_i, \text{view\_direction}) && \text{view-dependent colour}
+c_i &= \mathop{\mathrm{eval\_SH}}(\text{SH}_i, \text{view\_direction}) && \text{view-dependent colour}
 \end{aligned}
 ```
 

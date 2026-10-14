@@ -105,7 +105,7 @@ Any point in the plane can be described by its distance from the origin and its 
 \begin{aligned}
 z &= r (\cos\theta + i \sin\theta) \\[4pt]
 \text{where: } r &= |z| = \sqrt{a^2 + b^2} \quad \text{(magnitude, or modulus)} \\
-\theta &= \operatorname{atan2}(b, a) \quad \text{(phase, or argument)}
+\theta &= \mathop{\mathrm{atan2}}(b, a) \quad \text{(phase, or argument)}
 \end{aligned}
 ```
 
@@ -250,7 +250,7 @@ The sin and cos pairs are the real and imaginary parts of complex exponentials a
 | Multiplication | $(ac-bd) + (ad+bc)i$ | Rotate and scale |
 | Conjugate | $a - bi$ | Reflect over real axis |
 | Magnitude | $\sqrt{a^2 + b^2}$ | Distance from origin |
-| Phase | $\operatorname{atan2}(b, a)$ | Angle from positive real axis |
+| Phase | $\mathop{\mathrm{atan2}}(b, a)$ | Angle from positive real axis |
 | Division | multiply by conjugate | Reverse rotation and rescale |
 | Power | $r^n e^{in\theta}$ | Rotate $n$ times, scale by $r^n$ |
 
@@ -448,7 +448,7 @@ Run `code/complex_numbers.py` to generate `outputs/skill-complex-arithmetic.md`.
 | Imaginary unit | The number $i$, defined by $i^2 = -1$. Not imaginary in the philosophical sense -- it is a rotation operator |
 | Complex plane | The 2D plane where the x-axis is real and the y-axis is imaginary. Also called the Argand plane |
 | Magnitude (modulus) | The distance from the origin: $\sqrt{a^2 + b^2}$. Written as $\lvert z \rvert$ |
-| Phase (argument) | The angle from the positive real axis: $\operatorname{atan2}(b, a)$. Written as $\arg(z)$ |
+| Phase (argument) | The angle from the positive real axis: $\mathop{\mathrm{atan2}}(b, a)$. Written as $\arg(z)$ |
 | Conjugate | The mirror image across the real axis: conjugate of $a + bi$ is $a - bi$ |
 | Polar form | Expressing $z$ as $r e^{i\theta}$ instead of $a + bi$. Makes multiplication easy |
 | Euler's formula | $e^{i\theta} = \cos\theta + i \sin\theta$. Connects exponentials to trigonometry |

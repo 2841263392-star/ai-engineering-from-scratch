@@ -258,7 +258,7 @@ def attention(Q, K, V, mask=None):
     return weights @ V
 ```
 
-The softmax implementation subtracts the maximum before exponentiating. Without this, exp(large_number) overflows to infinity. This is a numerical stability trick that does not change the output because $\operatorname{softmax}(x - c) = \operatorname{softmax}(x)$ for any constant $c$.
+The softmax implementation subtracts the maximum before exponentiating. Without this, exp(large_number) overflows to infinity. This is a numerical stability trick that does not change the output because $\mathop{\mathrm{softmax}}(x - c) = \mathop{\mathrm{softmax}}(x)$ for any constant $c$.
 
 ### Step 3: Multi-Head Attention
 
@@ -504,7 +504,7 @@ This lesson produces `outputs/prompt-gpt-architecture-analyzer.md` -- a prompt t
 
 1. Modify the model to use 24 layers and 16 heads instead of 12/12. Count the parameters. How does doubling the depth compare to doubling the width (embedding dimension)?
 
-2. Implement the GELU activation function $(\operatorname{GELU}(x) = x \cdot 0.5 \cdot (1 + \operatorname{erf}(x / \sqrt{2})))$ and replace the ReLU in the feedforward network. Run training for 500 steps with each activation and compare the final loss.
+2. Implement the GELU activation function $(\mathop{\mathrm{GELU}}(x) = x \cdot 0.5 \cdot (1 + \mathop{\mathrm{erf}}(x / \sqrt{2})))$ and replace the ReLU in the feedforward network. Run training for 500 steps with each activation and compare the final loss.
 
 3. Add a KV cache to the generation function. Store K and V tensors for each layer after the first forward pass, and reuse them for subsequent tokens. Measure the speedup: generate 200 tokens with and without the cache and compare wall-clock time.
 

@@ -26,7 +26,7 @@ This lesson builds bag of words, then TF-IDF, from scratch. Then shows scikit-le
 ```math
 \begin{aligned}
 \text{TF-IDF}(w, d) &= \text{TF}(w, d) \cdot \text{IDF}(w) \\
-&= \frac{\operatorname{count}(w \text{ in } d)}{|d|} \cdot \log\frac{N}{\operatorname{df}(w)}
+&= \frac{\mathop{\mathrm{count}}(w \text{ in } d)}{|d|} \cdot \log\frac{N}{\mathop{\mathrm{df}}(w)}
 \end{aligned}
 ```
 

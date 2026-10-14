@@ -23,7 +23,7 @@ In 2026 VAEs rarely ship standalone — they have been outclassed by diffusion f
 
 **Autoencoder.** $z = \text{encoder}(x)$, $\hat{x} = \text{decoder}(z)$, loss = $\lVert x - \hat{x} \rVert^2$. Code space unstructured.
 
-**VAE encoder.** Outputs two vectors: $\mu(x)$ and $\log \sigma^2(x)$. These define $q(z \mid x) = \mathcal{N}(\mu, \operatorname{diag}(\sigma^2))$.
+**VAE encoder.** Outputs two vectors: $\mu(x)$ and $\log \sigma^2(x)$. These define $q(z \mid x) = \mathcal{N}(\mu, \mathop{\mathrm{diag}}(\sigma^2))$.
 
 **Reparameterization trick.** Sampling from $q(z \mid x)$ is not differentiable. Rewrite the sample as $z = \mu + \sigma \cdot \epsilon$ where $\epsilon \sim \mathcal{N}(0, I)$. Now $z$ is a deterministic function of $(\mu, \sigma)$ plus a non-parameter noise — gradients flow through `μ` and $\sigma$.
 

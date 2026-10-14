@@ -53,19 +53,19 @@ Every line in this loop is where a bug can live. Cross-entropy takes raw logits,
 A classifier produces `C` numbers per image called logits. Applying softmax converts them into a probability distribution:
 
 ```math
-\operatorname{softmax}(z)_i = \frac{\exp(z_i)}{\sum_j \exp(z_j)}
+\mathop{\mathrm{softmax}}(z)_i = \frac{\exp(z_i)}{\sum_j \exp(z_j)}
 ```
 
 Cross-entropy measures the negative log probability of the correct class:
 
 ```math
 \begin{aligned}
-\mathrm{CE}(z, y) &= -\log\left( \operatorname{softmax}(z)_y \right) \\
+\mathrm{CE}(z, y) &= -\log\left( \mathop{\mathrm{softmax}}(z)_y \right) \\
 &= -z_y + \log\left( \sum_j \exp(z_j) \right)
 \end{aligned}
 ```
 
-The right-hand form is the numerically stable one (log-sum-exp). PyTorch's `nn.CrossEntropyLoss` fuses softmax + NLL in one op and takes raw logits directly. Applying softmax yourself first is almost always a bug — you compute $\log(\operatorname{softmax}(\operatorname{softmax}(z)))$, a meaningless quantity.
+The right-hand form is the numerically stable one (log-sum-exp). PyTorch's `nn.CrossEntropyLoss` fuses softmax + NLL in one op and takes raw logits directly. Applying softmax yourself first is almost always a bug — you compute $\log(\mathop{\mathrm{softmax}}(\mathop{\mathrm{softmax}}(z)))$, a meaningless quantity.
 
 ### Why augmentation works
 
