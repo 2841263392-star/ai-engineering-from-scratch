@@ -33,6 +33,8 @@
     var blockquoteLines = [];
     var mermaidBlocks = 0;
     var inLabChallenge = false;
+    var inMathBlock = false;
+    var mathLines = [];
 
     function flushLabChallenge() {
       if (!inLabChallenge) return '';
@@ -106,7 +108,9 @@
         if (line.match(/^```\s*$/)) {
           inCodeBlock = false;
           var raw = codeLines.join('\n');
-          if (codeLang === 'figure') {
+          if (codeLang === 'math') {
+            out += mathBlock(raw);
+          } else if (codeLang === 'figure') {
             out += '<div class="lesson-figure" data-figure="' + escapeHtml(raw.trim()) + '"></div>';
           } else if (codeLang === 'mermaid') {
             mermaidBlocks++;
@@ -126,6 +130,31 @@
           codeLang = '';
         } else {
           codeLines.push(line);
+        }
+        continue;
+      }
+
+      if (inMathBlock) {
+        if (line.trim() === '$$') {
+          inMathBlock = false;
+          out += mathBlock(mathLines.join('\n'));
+          mathLines = [];
+        } else {
+          mathLines.push(line);
+        }
+        continue;
+      }
+
+      var displayMath = line.match(/^\s*\$\$(.*?)(\$\$)?\s*$/);
+      if (displayMath && (displayMath[2] ? displayMath[1].trim() : !displayMath[1].trim())) {
+        out += flushList();
+        out += flushTable();
+        out += flushBlockquote();
+        if (displayMath[2]) {
+          out += mathBlock(displayMath[1]);
+        } else {
+          inMathBlock = true;
+          mathLines = [];
         }
         continue;
       }
@@ -277,12 +306,122 @@
       out += '<p' + paraClass + '>' + inlineFormat(line) + '</p>';
     }
 
+    if (inMathBlock) out += mathBlock(mathLines.join('\n'));
     out += flushList();
     out += flushTable();
     out += flushBlockquote();
     out += flushLabChallenge();
 
     return out;
+  }
+
+  function mathBlock(tex) {
+    return '<div class="math-display" data-math="display">' + escapeHtml(tex.trim()) + '</div>';
+  }
+
+  function isSpace(ch) {
+    return ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r' || ch === '\u00a0';
+  }
+
+  function isWordChar(ch) {
+    return /[A-Za-z0-9_]/.test(ch);
+  }
+
+  function closingDollar(text, start) {
+    for (var j = start; j < text.length; j++) {
+      var ch = text.charAt(j);
+      if (ch === '\\') {
+        j++;
+        continue;
+      }
+      if (ch !== '$') continue;
+      if (j > start && !isSpace(text.charAt(j - 1)) && !isWordChar(text.charAt(j + 1))) return j;
+      return -1;
+    }
+    return -1;
+  }
+
+  function splitInlineMath(text) {
+    var parts = [];
+    var plain = '';
+    for (var i = 0; i < text.length; i++) {
+      var ch = text.charAt(i);
+      if (ch === '\\' && text.charAt(i + 1) === '$') {
+        plain += '$';
+        i++;
+        continue;
+      }
+      if (ch === '$' && text.charAt(i + 1) === '$') {
+        plain += '$$';
+        i++;
+        continue;
+      }
+      if (ch === '$' && i + 1 < text.length && !isSpace(text.charAt(i + 1)) && !isWordChar(text.charAt(i - 1))) {
+        var end = closingDollar(text, i + 1);
+        if (end > 0) {
+          if (plain) parts.push({ text: plain });
+          plain = '';
+          parts.push({ math: text.slice(i + 1, end) });
+          i = end;
+          continue;
+        }
+      }
+      plain += ch;
+    }
+    if (plain) parts.push({ text: plain });
+    return parts;
+  }
+
+  function extractMath(md) {
+    var found = [];
+    var lines = md.split(/\r?\n/);
+    var inCode = false;
+    var mathFence = [];
+    var mathStart = 0;
+    var block = null;
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      if (block) {
+        if (line.trim() === '$$') {
+          found.push({ display: true, tex: block.join('\n').trim(), line: i + 1 });
+          block = null;
+        } else {
+          block.push(line);
+        }
+        continue;
+      }
+      var fence = line.match(/^```(\w*)/);
+      if (fence) {
+        if (inCode === 'math') found.push({ display: true, tex: mathFence.join('\n').trim(), line: mathStart });
+        if (inCode) {
+          inCode = false;
+        } else {
+          inCode = fence[1] || 'code';
+          mathFence = [];
+          mathStart = i + 1;
+        }
+        continue;
+      }
+      if (inCode === 'math') {
+        mathFence.push(line);
+        continue;
+      }
+      if (inCode) continue;
+      if (line.trim() === '$$') {
+        block = [];
+        continue;
+      }
+      var single = line.match(/^\s*\$\$(.+?)\$\$\s*$/);
+      if (single) {
+        found.push({ display: true, tex: single[1].trim(), line: i + 1 });
+        continue;
+      }
+      var masked = line.replace(/`[^`]+`/g, function (m) { return new Array(m.length + 1).join(' '); });
+      splitInlineMath(masked).forEach(function (part) {
+        if (part.math != null) found.push({ display: false, tex: part.math, line: i + 1 });
+      });
+    }
+    return found;
   }
 
   function splitTableRow(line) {
@@ -314,19 +453,34 @@
     return cells.map(function (c) { return c.trim(); });
   }
 
+  function escapeInline(text) {
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
   function inlineFormat(text) {
-    text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    var kept = [];
+    function keep(html) {
+      kept.push(html);
+      return '\u0000' + (kept.length - 1) + '\u0000';
+    }
+    text = text.replace(/`([^`]+)`/g, function (m, code) {
+      return keep('<code>' + escapeInline(code) + '</code>');
+    });
+    text = splitInlineMath(text).map(function (part) {
+      if (part.math == null) return part.text;
+      return keep('<span class="math-inline" data-math="inline">' + escapeHtml(part.math) + '</span>');
+    }).join('');
+    text = escapeInline(text);
     text = text.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
     text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
-    text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
     text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function (m, label, href) {
       if (/^https?:\/\/|^mailto:/i.test(href)) {
         return '<a href="' + href + '" target="_blank" rel="noopener">' + label + '</a>';
       }
       return label;
     });
-    return text;
+    return text.replace(/\u0000(\d+)\u0000/g, function (m, index) { return kept[Number(index)]; });
   }
 
   function slugify(text) {
@@ -381,6 +535,8 @@
 
   return {
     parseMd: parseMd,
+    extractMath: extractMath,
+    splitInlineMath: splitInlineMath,
     slugify: slugify,
     escapeAttr: escapeAttr
   };

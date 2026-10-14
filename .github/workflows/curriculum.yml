@@ -144,6 +144,8 @@ jobs:
         run: node --test site/test_build_artifacts.js
       - name: returning visitors receive updated site assets
         run: node --test site/test_asset_cache.js
+      - name: lesson math renders outside code and money stays text
+        run: node --test site/test_lesson_math.js
       - name: command copying preserves keyboard focus
         run: node --test site/test_project_copy.js
       - name: homepage curiosity supports pointer and keyboard input
