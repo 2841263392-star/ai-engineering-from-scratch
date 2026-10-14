@@ -465,7 +465,7 @@ test('shared site asset families use the expected cache keys on every page', () 
   const styleRelease = '20260824a';
   const navigationRelease = '20260927a';
   const narrationRelease = '20260829a';
-  const homepageRelease = '20260927a';
+  const homepageRelease = '20261014a';
   const pages = [
     'about.html',
     'assessment.html',

@@ -144,21 +144,19 @@
       var total = p.lessons.length;
       var done = 0;
       for (var j = 0; j < p.lessons.length; j++) {
-        var staticDone = p.lessons[j].status === 'complete';
-        var userDone = false;
         if (hasProgress && p.lessons[j].url) {
           var lp = window.AIFSProgress.extractPath(p.lessons[j].url);
-          if (lp) userDone = window.AIFSProgress.isLessonComplete(lp);
+          if (lp && window.AIFSProgress.isLessonComplete(lp)) done++;
         }
-        if (staticDone || userDone) done++;
       }
+      var count = done > 0 ? done + ' / ' + total : total + (total === 1 ? ' lesson' : ' lessons');
       var statusClass = escapeHtml(String(p.status || 'planned').replace(/ /g, '-'));
       var roman = toRoman(p.id);
       var num = String(p.id).padStart(2, '0');
       html += '<div class="toc-row" data-phase="' + i + '" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Open Phase ' + num + ': ' + escapeHtml(p.name) + '">';
       html += '<span class="toc-num" dir="ltr">' + roman + '.</span>';
       html += '<div><span class="toc-status ' + statusClass + '"></span><span class="toc-name">' + escapeHtml(p.name) + '</span></div>';
-      html += '<span class="toc-meta">' + done + ' / ' + total + '</span>';
+      html += '<span class="toc-meta">' + count + '</span>';
       html += '<span class="toc-meta">' + num + '</span>';
       html += '</div>';
     }
