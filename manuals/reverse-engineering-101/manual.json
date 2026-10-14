@@ -5,7 +5,7 @@
   "summary": "How to read a compiled program without its source and prove what you found. Every listing comes from a recorded run of rea 6.5.0 and Ghidra 12.1.4 on programs written for this manual.",
   "audience": "You are an engineer who writes C, Python, or JavaScript and uses a coding agent. You have never read machine code with a decompiler. You want to understand what a compiled program does and to check what an agent tells you about it.",
   "edition": "2026.10",
-  "status": "draft",
+  "status": "ready",
   "pin": {
     "subject": "rea (rea-agents) with the Ghidra provider",
     "version": "rea-agents 6.5.0, Ghidra 12.1.4",
