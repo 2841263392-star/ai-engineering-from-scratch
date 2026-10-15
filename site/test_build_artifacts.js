@@ -462,10 +462,10 @@ function writeMarkdown(file, { name, description, version }) {
 
 test('shared site asset families use the expected cache keys on every page', () => {
   const release = '20260822a';
-  const styleRelease = '20260824a';
+  const styleRelease = '20261015a';
   const navigationRelease = '20260927a';
   const narrationRelease = '20260829a';
-  const homepageRelease = '20261014a';
+  const homepageRelease = '20261015a';
   const pages = [
     'about.html',
     'assessment.html',
