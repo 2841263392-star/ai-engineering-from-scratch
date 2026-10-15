@@ -535,6 +535,18 @@ print(f"Support vectors: {svm.n_support_}")
 
 5. **Hessian eigenvalue analysis.** Compute the Hessian of the Rosenbrock function at (1,1) and at (-1,1). Compute eigenvalues at both points. What do the eigenvalues tell you about the curvature at the minimum versus far from it?
 
+### Hints
+
+**Exercise 1.** Predict each result before you run `check_convexity`: in one dimension, look at the sign of $f''(x)$; in two dimensions, look at the eigenvalues of the Hessian. For $f(x,y) = xy$, the Hessian has eigenvalues 1 and -1, so the checker must report that it is not convex.
+
+**Exercise 2.** Call `optimize_gd` and `newtons_method` with the gradient and the Hessian of $f$. Newton's method solves a quadratic in one step. For gradient descent, the learning rate must be less than $2/100$ because of the $50x^2$ term, so the $y$ direction moves slowly. Repeat with $100x^2$ and count the steps again.
+
+**Exercise 3.** Use `lagrange_solve` with $g(x,y) = x + 2y - 4$. At the answer, check that $x + 2y = 4$ and that $\nabla f = (2(x-3), 2(y-3))$ is a multiple of $\nabla g = (1, 2)$.
+
+**Exercise 4.** The unconstrained minimum (3, 2) is outside the diamond, so the answer is on its boundary. Use projected gradient descent: take a gradient step, then project back onto $\lvert x \rvert + \lvert y \rvert \le 1$. Check that the result satisfies the constraint with equality and compare it with `demo_regularization_geometry`.
+
+**Exercise 5.** Call `rosenbrock_hessian` at each point and pass the result to `hessian_eigenvalues_2d`. At (1, 1), both eigenvalues are positive and their ratio is very large, so the valley is narrow in one direction and flat in the other. Compare that ratio with the ratio at (-1, 1).
+
 ## Key Terms
 
 | Term | What it means |

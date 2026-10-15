@@ -484,6 +484,18 @@ When you call `model.encode(text)` and then search a vector database, this is wh
 
 5. Implement MinHash for approximate Jaccard similarity. Generate 100 random sets, compute exact Jaccard for all pairs, and compare with MinHash approximation using 50, 100, and 200 hash functions. Plot the approximation error.
 
+### Hints
+
+**Exercise 1.** The difference vector is (-3, 2, -3), so compute the three norms of that vector with `l1_norm`, `l2_norm`, and `linf_norm`. For the proof, compare the largest $\lvert d_i \rvert$ with the sum of squares, and compare the sum of squares with the square of the sum of absolute values.
+
+**Exercise 2.** Cosine similarity ignores length, so start with two vectors that point in almost the same direction and make one of them much longer. For the second case, use two short vectors near the origin that point in different directions, then check both conditions with `cosine_similarity` and `l2_distance`.
+
+**Exercise 3.** Call `find_nearest_neighbor(query, dataset, distance_fn)` once for each of `l1_distance`, `l2_distance`, `cosine_distance`, and `mahalanobis_distance`. `demo_different_neighbors` shows a dataset where the metrics disagree, so read it first and then change the points until all four answers differ.
+
+**Exercise 4.** Write the cumulative sum of each distribution, then add the absolute differences of the two cumulative sums. Check both hand results with `wasserstein_1d(p, q)`, then explain the larger value by how far the probability mass must move.
+
+**Exercise 5.** For each hash function, the MinHash signature of a set is the minimum hash value over its elements, and the fraction of hash functions where two sets get the same minimum estimates their Jaccard similarity. Compare each estimate with `jaccard_similarity`; the error should fall roughly as $1/\sqrt{k}$ for $k$ hash functions.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

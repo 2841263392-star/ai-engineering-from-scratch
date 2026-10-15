@@ -652,6 +652,18 @@ You built these from scratch. Now you know what the library calls are doing.
 
 5. Build a complete text generation demo: given a vocabulary of 10 words with logits, generate sequences of 20 tokens using (a) greedy, (b) temperature=0.7, (c) top-k=3, (d) top-p=0.9. Compare the diversity of outputs across 5 runs.
 
+### Hints
+
+**Exercise 1.** Solve $u = F(x)$ for $x$, which gives $x = \tan(\pi(u - 0.5))$. Check that the sample median is close to 0 and that about 6% of the samples have $\lvert x \rvert > 10$, which is $1 - (2/\pi)\arctan(10)$.
+
+**Exercise 2.** The Beta(2, 5) density is $30x(1-x)^4$. Find its largest value at the mode $x = 1/5$ and use that value as $M$ in `rejection_sample`. The theoretical acceptance rate is $1/M$, so compare it with the fraction of proposals that you accept.
+
+**Exercise 3.** The exact value is 2. Call `monte_carlo_integral(math.sin, 0, math.pi, n)` for each $n$ and repeat each run with several seeds. When $n$ grows by a factor of 10, the average error should fall by about $\sqrt{10} \approx 3.2$.
+
+**Exercise 4.** Write the log of the target, which is $-(x^2 y^2 + x^2 + y^2 - 8x - 8y)/2$, and pass it to `metropolis_hastings_2d`. Record the acceptance rate for each proposal standard deviation: a very small value accepts almost every step but moves slowly, and a very large value rejects almost every step.
+
+**Exercise 5.** Greedy decoding takes the index of the largest logit at each step. Use `temperature_sample`, `top_k_sample`, and `top_p_sample` for the other three methods. Greedy must give the same sequence in all 5 runs, so count the distinct sequences for each method to measure diversity.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

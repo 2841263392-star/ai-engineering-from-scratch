@@ -355,6 +355,14 @@ This lesson produces:
 
 3. Take a dataset with 50 features where only 5 are informative (generate one with `sklearn.datasets.make_classification`). Apply PCA and check whether the explained variance curve correctly identifies that the data is effectively 5-dimensional.
 
+### Hints
+
+**Exercise 1.** Read `inverse_transform` in the `PCA` class and fit one model for each number of components. Compute `reconstruction_error` for 10, 50, and 200 components; the error must fall as the number of components grows.
+
+**Exercise 2.** Fit `sklearn.manifold.TSNE` three times on the same subset, changing only `perplexity`, and use the same `random_state`. Low perplexity looks at few neighbors, so expect small tight groups; high perplexity looks at more neighbors, so expect larger, smoother groups.
+
+**Exercise 3.** Call `make_classification(n_features=50, n_informative=5, n_redundant=45)`, fit `PCA`, and print the cumulative explained variance. Redundant features are linear combinations of the informative ones, so the curve reaches almost 1.0 at 5 components. Then try `n_redundant=0`: the other 45 features are independent noise, and the curve does not flatten.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

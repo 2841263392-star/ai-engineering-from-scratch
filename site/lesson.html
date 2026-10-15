@@ -342,6 +342,41 @@
       scroll-margin-top: var(--header-offset, 92px);
     }
 
+    .lesson-article p.lesson-section-guide {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+      color: var(--ink-soft);
+      margin: -4px 0 20px;
+    }
+
+    .lesson-article .lesson-section-guide a {
+      color: var(--blueprint);
+    }
+
+    .lesson-article details.lesson-hints {
+      margin: 28px 0;
+      border: 1px solid var(--rule-soft);
+      padding: 0 18px;
+    }
+
+    .lesson-article details.lesson-hints > summary {
+      cursor: pointer;
+      padding: 14px 0;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blueprint);
+    }
+
+    .lesson-article details.lesson-hints > summary:focus-visible {
+      outline: 2px solid var(--blueprint);
+      outline-offset: 2px;
+    }
+
     .lesson-article p {
       font-family: var(--font-body);
       font-size: 1.06rem;
@@ -2759,7 +2794,7 @@
     }());
   </script>
   <script src="content-source.js?v=20260821a"></script>
-  <script src="lesson-markdown.js?v=20261014a"></script>
+  <script src="lesson-markdown.js?v=20261015a"></script>
   <script src="progress.js?v=20260822a"></script>
   <script id="learningPathProgressRuntime">
     (function (root) {
@@ -2860,7 +2895,7 @@
       root.AIFSLearningPathProgress = createStore(root.localStorage);
     }(window));
   </script>
-  <script src="header.js?v=20260927a" defer></script>
+  <script src="header.js?v=20261015a" defer></script>
   <script src="cmdpalette.js?v=20260821a" defer></script>
   <script src="lesson-figures.js?v=843871fd2942"></script>
   <script src="figure-manifest.js?v=98984ac816e2"></script>
@@ -3931,6 +3966,7 @@
 
         var article = el.querySelector('.lesson-article');
         renderLessonActionPanel(article);
+        renderSectionGuides(article);
         initCodeCopy();
         renderMermaidBlocks(article);
         renderMathBlocks(article);
@@ -4416,6 +4452,44 @@
           });
         }
         return katexPromise;
+      }
+
+      var LESSON_SECTION_GUIDES = {
+        'build-it': 'Type this code in your own file and run it after each step.',
+        'use-it': 'Install the library in a virtual environment, then compare its result with your Build It result.',
+        'ship-it': 'Open the file in this lesson\'s outputs/ folder and use it in your own work.',
+        exercises: 'Say the task again, predict a small case by hand, then write the smallest version that works.'
+      };
+
+      function renderSectionGuides(article) {
+        if (!article || currentLang() !== 'en') return;
+        Object.keys(LESSON_SECTION_GUIDES).forEach(function (id) {
+          var heading = article.querySelector('h2#' + id);
+          if (!heading) return;
+          var note = document.createElement('p');
+          note.className = 'lesson-section-guide';
+          note.appendChild(document.createTextNode(LESSON_SECTION_GUIDES[id] + ' '));
+          var link = document.createElement('a');
+          link.href = 'how-to-learn.html#' + id;
+          link.textContent = 'How to work this part';
+          note.appendChild(link);
+          heading.insertAdjacentElement('afterend', note);
+        });
+        var hints = article.querySelector('h3#hints');
+        if (!hints) return;
+        var details = document.createElement('details');
+        details.className = 'lesson-hints';
+        var summary = document.createElement('summary');
+        summary.textContent = 'Hints: open after you try the exercises';
+        details.appendChild(summary);
+        var node = hints.nextElementSibling;
+        while (node && !/^H[12]$/.test(node.tagName) && node.tagName !== 'NAV' && !node.classList.contains('ai-panels')) {
+          var next = node.nextElementSibling;
+          details.appendChild(node);
+          node = next;
+        }
+        details.id = hints.id;
+        hints.parentNode.replaceChild(details, hints);
       }
 
       function renderMathBlocks(root) {

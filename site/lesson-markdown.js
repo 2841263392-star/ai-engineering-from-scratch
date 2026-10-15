@@ -27,6 +27,7 @@
     var inList = false;
     var listType = '';
     var listItems = [];
+    var listStart = 1;
     var firstBlockquoteDone = false;
     var firstParaAfterMottoDone = false;
     var inBlockquote = false;
@@ -46,7 +47,9 @@
       if (!inList) return '';
       inList = false;
       var tag = listType === 'ol' ? 'ol' : 'ul';
-      var h = '<' + tag + '>';
+      var h = tag === 'ol' && listStart > 1
+        ? '<ol start="' + listStart + '" style="counter-reset: ol-counter ' + (listStart - 1) + '">'
+        : '<' + tag + '>';
       for (var li = 0; li < listItems.length; li++) {
         h += '<li>' + inlineFormat(listItems[li]) + '</li>';
       }
@@ -267,7 +270,7 @@
         continue;
       }
 
-      var olMatch = line.match(/^\d+\.\s+(.+)/);
+      var olMatch = line.match(/^(\d+)\.\s+(.+)/);
       if (olMatch) {
         out += flushTable();
         out += flushBlockquote();
@@ -275,8 +278,9 @@
           out += flushList();
           inList = true;
           listType = 'ol';
+          listStart = parseInt(olMatch[1], 10) || 1;
         }
-        listItems.push(olMatch[1]);
+        listItems.push(olMatch[2]);
         continue;
       }
 

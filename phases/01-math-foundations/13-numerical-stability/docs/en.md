@@ -580,6 +580,18 @@ These stable implementations reappear in Phase 3 when building the training loop
 
 5. **Loss scaling experiment.** Simulate training with float16: create random gradients in the range [1e-9, 1e-3], convert to float16, and measure what fraction become zero. Then apply loss scaling (multiply by 1024), convert to float16, scale back, and measure the zero fraction again.
 
+### Hints
+
+**Exercise 1.** Convert the three values with `np.float32` before you square them, then call `variance_naive` and `welford_variance`. A value near $10^{12}$ in float32 has a spacing much larger than 1, so expect the naive result to be far from 0.6667 and the Welford result to be close.
+
+**Exercise 2.** Start with `x = np.float32(1.0)` and halve it while `np.float32(1.0) + x != np.float32(1.0)`. Keep every value in float32, then compare the last value that still changed the sum with `numpy.finfo(numpy.float32).eps`, which is $2^{-23}$.
+
+**Exercise 3.** Predict each answer first. For $n$ equal values $c$, the result is $c + \ln n$. For one large value, the result is close to that value. For values near -1000, the result is near $-1000 + \ln n$, while `logsumexp_naive` returns `-inf` because each exponential underflows to 0.
+
+**Exercise 4.** For $y = Wx + b$ with a loss $L$, the gradient for $W$ is the outer product of the upstream gradient and $x$. Wrap the loss as a function of the flattened $W$, call `numerical_gradient`, and pass both results to `check_gradient`.
+
+**Exercise 5.** Sample the magnitudes on a log scale with `10 ** np.random.uniform(-9, -3, n)` and convert with `np.float16`. Float16 cannot keep values below about $6 \times 10^{-8}$, so expect roughly a quarter of the values to become zero before scaling and almost none after you multiply by 1024.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

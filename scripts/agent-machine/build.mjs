@@ -300,7 +300,7 @@ ${STUDIO ? STUDIO_PANEL : `          <a class="am-btn am-poster" href="anatomy/i
       });
     })();
   </script>
-  <script src="header.js?v=20260927a" defer></script>
+  <script src="header.js?v=20261015a" defer></script>
   <script>${wrapped.replace(/<\/(script)/gi, "<\\/$1")}</script>
 </body>
 </html>

@@ -357,6 +357,16 @@ The optimizer classes built here reappear in Phase 3 when we train a neural netw
 
 4. **Implement learning rate decay.** Add an exponential decay schedule to the GradientDescent class: `lr = lr_0 * 0.999^step`. Compare convergence with and without decay on the Rosenbrock function.
 
+### Hints
+
+**Exercise 1.** Loop over the learning rates, create a `GradientDescent(lr=...)` for each, and pass it to `optimize` with `rosenbrock` and `rosenbrock_gradient`. A run that diverges shows a loss that grows or becomes `nan`; the minimum is at $(1, 1)$ with loss 0.
+
+**Exercise 2.** Create `SGDMomentum(momentum=m)` for each value and record the loss after each step. Use `find_convergence_step` to compare speed, and look for losses that go up and down to find overshoot.
+
+**Exercise 3.** Write the gradient $(2x, -2y)$ and run the three optimizers from (0.01, 0.01). Print $y$ every 100 steps: the optimizer that escapes is the one where $\lvert y \rvert$ grows large.
+
+**Exercise 4.** Store `lr_0` and a step counter in `GradientDescent`, and compute `lr = lr_0 * 0.999 ** step` inside `step`. Print the learning rate at step 0 and step 1000; it must fall from `lr_0` to about $0.37 \times \text{lr}_0$.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

@@ -322,6 +322,14 @@ The Matrix class built here is the foundation for the mini neural network framew
 
 3. **Build a two-layer network.** Using only your Matrix class (no NumPy), create a two-layer neural network: input (3) -> hidden (4) -> output (2). Initialize random weights, run a forward pass, and verify all shapes are correct.
 
+### Hints
+
+**Exercise 1.** Multiply `A @ A.inverse_2x2()` for three matrices and compare each cell with the identity within `1e-9`. For a matrix with a determinant of 0, such as [[1, 2], [2, 4]], `inverse_2x2` raises a `ValueError`, and this is the expected result.
+
+**Exercise 2.** Compute the 3x3 cofactor matrix, transpose it to get the adjugate, then divide each cell by `determinant()`. Check that `A @ A_inv` gives the identity and that each cell matches `np.linalg.inv(A)` within `1e-9`.
+
+**Exercise 3.** Write the shape of each matrix before you multiply: `W1` is 4x3 and `W2` is 2x4, as in `demo_neural_network_layer`. A 3x1 input must give a 4x1 hidden vector and a 2x1 output.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

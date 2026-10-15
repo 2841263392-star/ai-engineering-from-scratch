@@ -461,6 +461,16 @@ You built from scratch what `torch.nn.CrossEntropyLoss()` does internally. Now y
 
 4. Build a function that computes perplexity for a sequence of token predictions. Given a list of (true_token_index, predicted_logits) pairs, return the perplexity of the sequence.
 
+### Hints
+
+**Exercise 1.** Call `entropy` with 26 equal probabilities; the result must be $\log_2 26 \approx 4.70$ bits. Real letter frequencies are not uniform, so the entropy with them must be lower.
+
+**Exercise 2.** Compute `softmax` of the logits, then $-\ln$ of the probability at index 1, and compare with `cross_entropy_loss(1, logits)`; both must be close to 3.06. The loss approaches 0 only when the logit for class 1 is much larger than the other two.
+
+**Exercise 3.** Use two small distributions with different shapes, for example $P = [0.9, 0.1]$ and $Q = [0.5, 0.5]$, and call `kl_divergence` in both orders. The two values must differ, because each direction weights the log ratio by a different distribution.
+
+**Exercise 4.** For each pair, compute `cross_entropy_loss(true_token_index, predicted_logits)`, take the mean, and pass it to `perplexity`. Check with uniform logits over $V$ tokens: the perplexity must be $V$.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

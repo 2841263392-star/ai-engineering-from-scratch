@@ -481,6 +481,18 @@ where $\hat{A} = A + I$ (adjacency plus self-loops) and $\hat{D}$ is the degree 
 
 5. **Analyze a real-world graph.** Use the Karate Club graph (34 nodes, 78 edges). Compute degree distribution, Laplacian eigenvalues, and spectral clustering. Compare the spectral clustering result to the known ground truth split.
 
+### Hints
+
+**Exercise 1.** Use the formula from the exercise. A node without outgoing edges must share its score equally with all nodes, or the total falls below 1. Check that the scores add up to 1 after each step and compare your result with `pagerank(graph)`.
+
+**Exercise 2.** Build two cliques with `add_edge`, connect them with one edge, and call `spectral_clustering(graph, k=2)`. Check that each clique gets one label. As you add cross edges, print the second smallest eigenvalue of `laplacian()`, which grows as the two groups join.
+
+**Exercise 3.** Keep a priority queue with `heapq` and always expand the node with the smallest known distance. Make every weight 1 and check that each Dijkstra distance equals the BFS layer of that node from `bfs(graph, start)`.
+
+**Exercise 4.** Use the identity matrix as `features`, so that each column marks one node, and apply `message_passing` twice. Then the nonzero entries in the row for node $v$ show which nodes reached $v$. Compare that set with the nodes within distance 2 from a breadth first search.
+
+**Exercise 5.** `networkx.karate_club_graph()` gives the edge list and the ground truth in the node attribute `club`. Copy the edges into a `Graph` and check that it has 34 nodes and 78 edges. Compare the labels from `spectral_clustering` with the `club` values, and allow the two label names to be swapped.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

@@ -499,6 +499,16 @@ The Value class built here is the foundation for the neural network training loo
 
 4. Implement forward-mode autodiff using dual numbers. Create a `Dual` class and verify it gives the same derivatives as your reverse-mode engine.
 
+### Hints
+
+**Exercise 1.** `Value` already defines `__pow__`. Read its `_backward` and confirm it applies $n x^{n-1}$ to the incoming gradient. Run `x = Value(2.0)`, `y = x ** 3`, `y.backward()`; `x.grad` must be 12.0.
+
+**Exercise 2.** Use $\tanh'(x) = 1 - \tanh(x)^2$ in `_backward`. Check against your own finite difference: $\frac{\tanh(x + h) - \tanh(x - h)}{2h}$ must agree at $x = 0$ and $x = 2$.
+
+**Exercise 3.** Build `w1*x1 + w2*x2 + b` from `Value` objects, apply `relu`, and call `backward`. Before you compare with PyTorch, check by hand: if the input to `relu` is positive, the gradient for `w1` equals `x1`; if it is negative, all five gradients are 0.
+
+**Exercise 4.** Store a value and a derivative in each `Dual`, and use the product rule $(a, a')(b, b') = (ab, a'b + ab')$ for multiplication. Seed the input with derivative 1 and compare the result with `x.grad` from the reverse-mode engine for the same function.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

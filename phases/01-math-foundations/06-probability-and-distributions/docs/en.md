@@ -448,6 +448,16 @@ You built these from scratch. Now you know what the library calls are doing.
 
 4. Write a function that takes a list of log probabilities and returns the most likely sequence, the total log probability, and the equivalent raw probability. Test it with a sentence of 50 words where each word has probability 0.01.
 
+### Hints
+
+**Exercise 1.** Draw `u` from a uniform distribution and return $-\ln(1 - u) / \lambda$. Check that the sample mean is close to $1/\lambda$ and that the histogram bins follow $\lambda e^{-\lambda x}$.
+
+**Exercise 2.** Fill a 6x6 table where every cell is a probability and the sum of all cells is 1, then call `joint_to_marginals`. Use `check_independence`: the dice are independent only if every cell equals the product of its two marginals.
+
+**Exercise 3.** Apply `softmax` to the logits and take $-\ln$ of the probability at index 3. The result must be close to 0.421, which is the value `nn.CrossEntropyLoss` gives for the same logits and target.
+
+**Exercise 4.** Add the log probabilities; do not multiply raw probabilities. For 50 words with probability 0.01, the total must be $50 \ln(0.01) \approx -230.26$, and the raw probability is $10^{-100}$.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

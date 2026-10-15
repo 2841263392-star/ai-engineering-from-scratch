@@ -451,6 +451,16 @@ Advantages over frequentist A/B testing:
 
 4. **MAP by hand.** Given observed data (7 heads in 10 coin flips), compute the MAP estimate of the bias using a $\text{Beta}(2,2)$ prior. Compare it to the MLE estimate ($7/10$).
 
+### Hints
+
+**Exercise 1.** Call `bayes` once to get the posterior after test 1, then call it again with that posterior as the prior. `sequential_bayes(prior, likelihood, false_positive_rate, 2)` must give the same value, close to 0.5.
+
+**Exercise 2.** Create one `NaiveBayes(smoothing=s)` for each value, train it on the same data, and print `top_words` for each. With smoothing 0, a word that never appears in spam gets probability 0, so its log is not defined.
+
+**Exercise 3.** Count how many spam and ham messages are short, divide by the number of messages in each class, and add the log of that ratio to the score in `predict`. Check that the two probabilities for each class add up to 1.
+
+**Exercise 4.** With a $\text{Beta}(\alpha, \beta)$ prior, the MAP estimate is $\frac{h + \alpha - 1}{n + \alpha + \beta - 2}$. Put in $h = 7$, $n = 10$; the result must be between the MLE (0.7) and the prior mode (0.5).
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

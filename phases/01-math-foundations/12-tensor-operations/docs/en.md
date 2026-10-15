@@ -320,6 +320,16 @@ This lesson produces two reusable prompts:
 
 4. **Hard -- Attention shape tracker.** Write a function that takes `batch_size`, `seq_len`, `embed_dim`, and `num_heads` as inputs and prints the exact shape at every step of multi-head attention: input, Q/K/V projection, head split, attention scores, softmax weights, weighted sum, head merge, output projection. Verify against the `demo_attention_einsum()` output.
 
+### Hints
+
+**Exercise 1.** Build the tensor from `list(range(24))` so that each element shows its own position. After each `reshape` call, print `flatten().to_list()` and check that it is still 0 to 23 in order.
+
+**Exercise 2.** A dimension can broadcast only when the two sizes are equal or one of them is 1, so check that rule first and raise an error when it fails. For shapes `(3, 1)` and `(1, 4)`, check that entry `[i][j]` of the result equals `a[i][0] + b[0][j]`, and compare the full result with NumPy.
+
+**Exercise 3.** Split the subscripts on `->`. A letter that is in the inputs but not in the output is a summed index, so loop over all values of every letter and add into the output position. Test each of the four cases on small random arrays with `np.allclose(mine, np.einsum(...))`.
+
+**Exercise 4.** Start with the head size `embed_dim // num_heads` and assert that `embed_dim % num_heads == 0`. The attention scores have shape `(batch_size, num_heads, seq_len, seq_len)`, so check your printout against that shape and against the shapes that `demo_attention_einsum()` prints.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

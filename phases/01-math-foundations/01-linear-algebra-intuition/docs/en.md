@@ -449,6 +449,20 @@ LoRA deserves special mention. It fine-tunes large language models by decomposin
 5. Create a 3x3 matrix with rank 2. Verify using the `rank()` method. Then explain what geometric object the columns span.
 6. Project the vector [1, 2, 3] onto [1, 1, 1]. What does the result represent geometrically?
 
+### Hints
+
+**Exercise 1.** Start from `cosine_similarity`, keep the value between -1 and 1, then take the arc cosine and convert radians to degrees. Check that `Vector([1, 0])` and `Vector([0, 1])` give 90 and that a vector with itself gives 0.
+
+**Exercise 2.** Put the two scale factors on the diagonal of a 2x2 matrix and put 0 in the other two cells. The result for [1, 1] must be [2, 3].
+
+**Exercise 3.** Compute the cosine similarity for every pair of the 5 vectors (10 pairs) and keep the largest value. Check your loop first with a vector against itself, which must give 1.
+
+**Exercise 4.** Use `gram_schmidt` on three independent vectors, then compute `dot` for each pair and `magnitude` for each vector. Compare with a tolerance such as `1e-9`, because floating point does not give exact zeros.
+
+**Exercise 5.** Make the third row or column the sum of the first two, so one direction repeats. `rank()` must return 2, and the columns then span a plane through the origin.
+
+**Exercise 6.** Compute the scale $\frac{a \cdot b}{b \cdot b}$ and multiply $b$ by it, or call `project_onto`. Check that the remainder $a$ minus the projection has a dot product of 0 with [1, 1, 1].
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

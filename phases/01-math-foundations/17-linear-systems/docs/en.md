@@ -560,6 +560,18 @@ This lesson produces:
 
 5. Time your Cholesky solver vs your LU solver vs `np.linalg.solve` on symmetric positive definite matrices of size 10, 50, 200, 500. Plot the results. Verify Cholesky is roughly 2x faster than LU.
 
+### Hints
+
+**Exercise 1.** Call `gaussian_elimination(A, b)`, then `lu_decompose(A)` followed by `lu_solve(P, L, U, b)`, then `np.linalg.solve(A, b)`. Check each answer with `np.allclose(A @ x, b)` and compare the three answers with `np.allclose`.
+
+**Exercise 2.** Use `least_squares_normal` for the normal equations and the three NumPy functions for the other methods. All four answers should be close to `w_true`. Compare `condition_number(X.T @ X)` with `condition_number(X)`: the first is the square of the second, so the normal equations lose the most precision.
+
+**Exercise 3.** Expect a condition number above $10^{9}$. Solve with `np.linalg.solve` and with `ridge_regression(A, b, 0.01)`, then compare `np.linalg.norm(x)` and the residual norm for each. Both residuals can be small, but the solution without regularization usually has very large entries.
+
+**Exercise 4.** Make a symmetric positive definite matrix with `B @ B.T + n * np.eye(n)`, so that every eigenvalue is positive. Add a counter to the loop in your copy of `conjugate_gradient`, then check that the final residual norm is below 1e-8 and that the count is at most 100.
+
+**Exercise 5.** Use the same `B @ B.T + n * np.eye(n)` matrices for all three solvers and time each solve with `time.perf_counter`, taking the best of several runs. Cholesky needs about half the arithmetic of LU, so the ratio is clearest at the larger sizes.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

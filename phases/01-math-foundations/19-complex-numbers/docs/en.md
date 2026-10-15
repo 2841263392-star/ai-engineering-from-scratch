@@ -440,6 +440,18 @@ Run `code/complex_numbers.py` to generate `outputs/skill-complex-arithmetic.md`.
 
 5. **Rotation matrix equivalence.** For 10 random angles and 10 random points, verify that complex multiplication gives the same result as matrix-vector multiplication with the 2x2 rotation matrix. Print the maximum numerical difference.
 
+### Hints
+
+**Exercise 1.** Expand the product with $i^2 = -1$, then divide by multiplying the top and the bottom by the conjugate $1 + 3i$. Check the product with `Complex(2, 3) * Complex(4, -1)`: its `magnitude()` must equal the product of the two magnitudes, and its `phase()` must equal the sum of the two phases.
+
+**Exercise 2.** Make the step with `euler(math.pi / 6)` and multiply 12 times. At each step, check that the magnitude stays 1 and that the angle grows by 30 degrees. The final point must be within about 1e-12 of (1, 0).
+
+**Exercise 3.** Make the time points with $t = n/32$ and call `dft`. Look only at bins 0 to 15, because the upper half is a mirror image. The magnitude at bin $k$ for a sine of amplitude $A$ is $AN/2$, so expect about 16 at bin 3 and about 8 at bin 7.
+
+**Exercise 4.** Call `roots_of_unity(8)` and add the roots: the magnitude of the sum must be near 0. Divide each root by the previous root and check that every result equals `euler(2 * math.pi / 8)`.
+
+**Exercise 5.** The rotation matrix is [[cos t, -sin t], [sin t, cos t]]. For each angle and point, compute `euler(t) * Complex(x, y)` and the matrix product, then record the largest absolute difference. Expect a value near $10^{-15}$.
+
 ## Key Terms
 
 | Term | What it means |

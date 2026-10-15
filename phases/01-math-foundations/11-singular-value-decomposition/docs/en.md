@@ -520,6 +520,18 @@ This lesson produces:
 
 5. Generate a clean low-rank matrix (rank 3, size 50x40) and add Gaussian noise at different levels ($\sigma$ = 0.1, 0.5, 1.0, 2.0). For each noise level, find the optimal truncation rank by sweeping $k$ from 1 to 40 and measuring reconstruction error against the clean matrix. Plot how the optimal $k$ changes with noise level.
 
+### Hints
+
+**Exercise 1.** Compute $A^T A$, get its eigenvalues and eigenvectors with `np.linalg.eigh`, and sort them in descending order. The singular values are the square roots of the eigenvalues; check that $U \Sigma V^T$ rebuilds $A$ and compare the error with `svd_from_scratch` and `np.linalg.svd`.
+
+**Exercise 2.** Call `truncated_svd` for each rank, rebuild the image with `reconstruct`, and use `compression_ratio(m, n, k)` for the size. The relative error must fall as the rank grows, and the first rank where you see no clear blocks is the answer.
+
+**Exercise 3.** Mark the missing cells, fill them with the row mean, then rebuild a rank 3 approximation with `truncated_svd` and `reconstruct`. Then measure the result: count the predictions outside the rating range, and print the largest change in a known cell. A rank 3 approximation does not guarantee either property, so clip predictions to the range if you need valid ratings.
+
+**Exercise 4.** Give each topic a block of 5 terms with high counts for its documents, then add small noise. Print the singular values: the first 3 must be much larger than the 4th. Then color the 3D coordinates by topic and check that each topic forms one group.
+
+**Exercise 5.** Make the clean matrix as the product of a 50x3 and a 3x40 random matrix, then add noise for each $\sigma$. For each $k$, compare the rank $k$ reconstruction with the clean matrix; expect the best $k$ near 3 for low noise and smaller for high noise.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

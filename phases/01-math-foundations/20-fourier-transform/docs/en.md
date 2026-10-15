@@ -440,6 +440,18 @@ Run `code/fourier.py` to generate `outputs/prompt-spectral-analyzer.md`.
 
 5. **Positional encoding analysis.** Generate the sinusoidal positional encodings for d_model = 128 and max_pos = 512. For each pair of positions $(p_1, p_2)$, compute the dot product of their encodings. Show that the dot product depends only on $\lvert p_1 - p_2 \rvert$, not on the absolute positions. What happens to the dot product as the distance increases?
 
+### Hints
+
+**Exercise 1.** With 128 samples over 1 second, bin $k$ is $k$ Hz, so for an integer frequency the index of the largest value in bins 1 to 63 is the frequency. Pick an integer number of hertz. A frequency between two bins spreads into its neighbors, and the peak gives only the nearest bin. Use `generate_signal` and `magnitude_spectrum`. After you add noise, check that the peak is still at the same bin while the other bins rise.
+
+**Exercise 2.** Use a power of two length, because `fft` splits the signal in halves. Check `max(abs(a - b))` over all coefficients. The time ratio should grow roughly as $N / \log_2 N$.
+
+**Exercise 3.** For circular convolution, compute $y[n] = \sum_k h[k] x[(n-k) \bmod 8]$ by hand for $n$ = 0, 1, and 2, and compare the first three values of `convolve_direct` and `convolve_fft`. Linear convolution has length 4 + 3 - 1 = 6, so first check if the length 8 is already long enough.
+
+**Exercise 4.** Use `hann_window`, `hamming_window`, `apply_window`, and `power_spectrum`, and count the separate peaks between 9 and 13 Hz. Both 10 Hz and 12 Hz complete whole cycles in 1 second, so no window may look best. Repeat with 10.5 Hz and 12.5 Hz to see the leakage that windows reduce.
+
+**Exercise 5.** Compute each encoding with `positional_encoding(pos, 128)`. Compare the dot product for positions (0, 10) with the dot product for (100, 110): the two values must match to about 1e-10. Then plot the dot product against $\lvert p_1 - p_2 \rvert$ for one fixed $p_1$.
+
 ## Key Terms
 
 | Term | What it means |

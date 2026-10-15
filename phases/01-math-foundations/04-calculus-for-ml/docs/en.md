@@ -612,6 +612,14 @@ You just built gradient descent from scratch. PyTorch automates the gradient com
 2. Use gradient descent to find the minimum of $f(x, y) = (x - 3)^2 + (y + 1)^2$. Start from $(0, 0)$. The answer should converge to $(3, -1)$.
 3. Add momentum to the gradient descent loop: maintain a velocity vector that accumulates past gradients. Compare convergence speed with and without momentum on $f(x) = x^4 - 3x^2$.
 
+### Hints
+
+**Exercise 1.** Define a helper that returns `numerical_derivative(f, x)` and pass that helper to `numerical_derivative` again. If the result is noisy, use a larger step such as `h=1e-4` for both calls; the value at $x=2$ must be close to 12.
+
+**Exercise 2.** Write the gradient $(2(x - 3), 2(y + 1))$ or use `numerical_gradient`, and call `gradient_descent_nd` from $(0, 0)$. Print the point every 10 steps; it must move toward $(3, -1)$ and the loss must fall to near 0.
+
+**Exercise 3.** Keep a velocity `v`, update it as `v = momentum * v - lr * grad`, then add `v` to `x`. Count the steps each method needs to reach a gradient near 0; the minimum is at $x = \pm\sqrt{1.5} \approx \pm 1.225$.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |

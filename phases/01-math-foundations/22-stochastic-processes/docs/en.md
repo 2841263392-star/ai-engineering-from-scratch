@@ -437,6 +437,18 @@ The key insight across all these connections: stochastic processes are not just 
 
 5. **Implement the forward diffusion process.** Start with a 1D signal (e.g., a sine wave). Add noise progressively over 100 steps with a linear noise schedule. Show how the signal degrades to pure noise. Then implement a simple denoiser that reverses the process (even a naive one that just subtracts the estimated noise).
 
+### Hints
+
+**Exercise 1.** Call `random_walk_1d(10000, seed=i)` for 1000 seeds and keep each final position. Check that the mean is near 0, the standard deviation is near 100, and about 68% of the final positions are between -100 and 100.
+
+**Exercise 2.** Count each word pair, then divide each row by its total so that every row adds up to 1. Pass the matrix to `MarkovChain(transition_matrix, state_names)` and call `simulate`. Check that every pair of words in your output also occurs in the corpus.
+
+**Exercise 3.** Accept a worse point with probability $\exp(-\Delta / T)$ and multiply $T$ by a factor such as 0.99 after each step. Test on a function whose minimum you know, and check your answer against a fine grid search.
+
+**Exercise 4.** The gradient is $4x(x^2 - 1)$, so pass that to `langevin_dynamics(grad_U, x0, dt, temperature, n_steps)`. The barrier at $x = 0$ has height 1, so count how often the sign of $x$ changes for temperatures from 0.05 to 1 and look for the temperature where the count starts to rise quickly.
+
+**Exercise 5.** Call `diffusion_forward(signal, 100)` and compute $\bar{\alpha}$ at the last step as the product of $(1 - \beta_t)$. If $\bar{\alpha}$ is far from 0, the signal is not yet pure noise, so raise `beta_end`. Test your denoiser first with the true noise: then $(x_t - \sqrt{1 - \bar{\alpha}_t} \epsilon)/\sqrt{\bar{\alpha}_t}$ must give back the original signal exactly.
+
 ## Key Terms
 
 | Term | What people say | What it actually means |
