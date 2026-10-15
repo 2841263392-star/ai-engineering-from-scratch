@@ -141,7 +141,7 @@ const html = `<!DOCTYPE html>
       <nav class="header-nav">
         <a href="index.html#contents">Contents</a>
         <a href="catalog.html">Catalog</a>
-        <a href="prereqs.html">Roadmap</a>
+        <a href="roadmap.html">Roadmap</a>
         <a href="glossary.html">Glossary</a>
         <a href="about.html">About</a>
         <a href="https://github.com/rohitg00/ai-engineering-from-scratch" target="_blank" rel="noopener" class="header-github">GitHub <span class="star-count" data-loading="true" aria-label="GitHub stars">…</span></a>
@@ -300,7 +300,7 @@ ${STUDIO ? STUDIO_PANEL : `          <a class="am-btn am-poster" href="anatomy/i
       });
     })();
   </script>
-  <script src="header.js?v=20261015a" defer></script>
+  <script src="header.js?v=20261015b" defer></script>
   <script>${wrapped.replace(/<\/(script)/gi, "<\\/$1")}</script>
 </body>
 </html>

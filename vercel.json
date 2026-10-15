@@ -73,21 +73,6 @@
       "destination": "/api/certification"
     },
     {
-      "source": "/prereqs",
-      "has": [
-        {
-          "type": "header",
-          "key": "accept",
-          "value": "(?i).*text/markdown.*"
-        }
-      ],
-      "destination": "/agent-pages/prereqs.md"
-    },
-    {
-      "source": "/prereqs",
-      "destination": "/prereqs.html"
-    },
-    {
       "source": "/project",
       "destination": "/project.html"
     },
@@ -179,21 +164,6 @@
       "destination": "/hubs/phase/:page.html"
     },
     {
-      "source": "/path",
-      "has": [
-        {
-          "type": "header",
-          "key": "accept",
-          "value": "(?i).*text/markdown.*"
-        }
-      ],
-      "destination": "/agent-pages/prereqs.md"
-    },
-    {
-      "source": "/path",
-      "destination": "/prereqs.html"
-    },
-    {
       "source": "/roadmap",
       "has": [
         {
@@ -202,11 +172,11 @@
           "value": "(?i).*text/markdown.*"
         }
       ],
-      "destination": "/agent-pages/prereqs.md"
+      "destination": "/agent-pages/roadmap.md"
     },
     {
       "source": "/roadmap",
-      "destination": "/prereqs.html"
+      "destination": "/roadmap.html"
     },
     {
       "source": "/developer",
@@ -572,6 +542,21 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/prereqs",
+      "destination": "/roadmap",
+      "permanent": true
+    },
+    {
+      "source": "/path",
+      "destination": "/roadmap",
+      "permanent": true
+    },
+    {
+      "source": "/prereqs.html",
+      "destination": "/roadmap",
+      "permanent": true
+    },
+    {
       "source": "/index.html",
       "destination": "/",
       "permanent": true
@@ -582,7 +567,7 @@
       "permanent": true
     },
     {
-      "source": "/:page(about|catalog|glossary|prereqs|developer|contact|privacy|sponsors|projects|project|learning-paths|certifications|assessment|inside-an-ai-agent|skills|how-to-learn).html",
+      "source": "/:page(about|catalog|glossary|roadmap|developer|contact|privacy|sponsors|projects|project|learning-paths|certifications|assessment|inside-an-ai-agent|skills|how-to-learn).html",
       "destination": "/:page",
       "permanent": true
     },

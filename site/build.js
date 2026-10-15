@@ -2333,7 +2333,7 @@ function writeSitemap(lessonManifest, glossaryCount, certifications, projects, h
   const urls = [
     { loc: '/', priority: '1.0', freq: 'weekly' },
     { loc: '/catalog.html', priority: '0.8', freq: 'weekly' },
-    { loc: '/prereqs.html', priority: '0.7', freq: 'monthly' },
+    { loc: '/roadmap', priority: '0.7', freq: 'monthly' },
     { loc: '/learning-paths.html', priority: '0.8', freq: 'monthly' },
     { loc: '/blogs', priority: '0.7', freq: 'daily' },
     { loc: '/about.html', priority: '0.5', freq: 'yearly' },
@@ -2465,7 +2465,7 @@ function writeLlms(phases, glossaryCount, artifactCount, certifications, lessonM
   out += `## Optional\n`;
   out += `- [Catalog](${SITE_ORIGIN}/catalog.html) — full searchable lesson index\n`;
   out += `- [Blogs & Guides](${SITE_ORIGIN}/blogs) - articles and practical guides on AI engineering, developer tools, and building software\n`;
-  out += `- [Roadmap](${SITE_ORIGIN}/prereqs.html) — prerequisite ordering across phases\n`;
+  out += `- [Roadmap](${SITE_ORIGIN}/roadmap) — prerequisite ordering across phases\n`;
   out += `- [AI Engineering Learning Paths](${SITE_ORIGIN}/learning-paths.html) — four core domain paths and six career routes connected to practical lessons\n`;
   if (glossaryCount > 0) out += `- [Glossary](${SITE_ORIGIN}/glossary.html) — plain-language definitions of ${glossaryCount} terms\n`;
   out += `- [Sponsor the project](${SITE_ORIGIN}/sponsors.html) — sponsorship tiers, rules, and current sponsors from SPONSORS.md\n`;
@@ -2537,7 +2537,7 @@ function syncReadme(lessons) {
 // ─── Keep marketing counts in sync (single source of truth = this build) ──
 function syncCounts(lessons, phaseCount, outputs) {
   const counts = { lessons, phases: phaseCount, outputs };
-  const targets = ['index.html', 'catalog.html', 'lesson.html', 'prereqs.html', 'learning-paths.html', 'about.html', 'cmdpalette.js']
+  const targets = ['index.html', 'catalog.html', 'lesson.html', 'roadmap.html', 'learning-paths.html', 'about.html', 'cmdpalette.js']
     .map(f => path.join(__dirname, f))
     .concat(SPONSORS_SOURCE_PATH);
   for (const p of targets) {
