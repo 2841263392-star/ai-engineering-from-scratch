@@ -51,6 +51,8 @@ sglang:prefill_effective_tokens_total{…mode="host_hit"…} 0.0
 sglang:prefill_effective_tokens_total{…mode="storage_hit"…} 0.0
 ```
 
+The HELP text says that re-counted tokens are excluded. In the code, that is true only for the `input` mode. The three hit modes add the raw hit counts, so after a retraction they can count the same tokens twice {{code}}. Our run had no retractions, so the numbers below are exact.
+
 From the counters, the hit rate over the whole run is 182,079 divided by 286,136, which is 0.636. The gauge says 0.942. Both are correct, and they answer different questions. The gauge describes the shared-prefix benchmark at the end of the run. The counters describe all of it, including the random-prompt benchmarks that could hit nothing.
 
 ```figure
@@ -90,7 +92,7 @@ histogram_quantile(0.99,
   sum by (le) (rate(sglang:time_to_first_token_seconds_bucket[5m])))
 ```
 
-**We measured** what queueing does to TTFT with the same snapshot. The queue time histogram has a sum of 251.7 s over 266 requests, a mean of 0.95 s. The streaming TTFT histogram has a sum of 612.7 s over 261 requests, a mean of 2.35 s. On this Mac, about 40 percent of the average first-token time was spent waiting in the queue before any compute.
+**We measured** both histograms in the same snapshot. The queue time histogram has a sum of 251.7 s over 266 requests, a mean of 0.95 s. The streaming TTFT histogram has a sum of 612.7 s over 261 requests, a mean of 2.35 s. The two series count different requests, so their ratio is an estimate, not a measured share. It suggests that queueing was a large part of the first-token time on this Mac. For an exact share, compare queue time and TTFT of the same requests.
 
 ```listing
 title: queue time against first-token time
@@ -106,7 +108,7 @@ sglang:time_to_first_token_seconds_count{…is_streaming="true"…} 261.0
 
 ## Our position
 
-Build alerts on histograms and counters, and use gauges only for live dashboards. A gauge answers a question about the last few seconds, and an alert asks about the last few minutes. When the two disagree, as the cache hit rate did here, the counter is the one to trust.
+Alert on latency and activity with histogram percentiles and counter rates over a window. Alert on state with a gauge only when the condition lasts, such as `num_queue_reqs` above 0 or `token_usage` near 1.0 for several minutes. A single gauge scrape describes the last few seconds. When a gauge and a counter disagree, as the cache hit rate did here, the counter is the one to trust.
 
 Read every new metric in its HELP text and in the code before you build on it. Not every gauge works.
 
@@ -122,7 +124,7 @@ Read every new metric in its HELP text and in the code before you build on it. N
 - Compute the cache hit rate from `prefill_effective_tokens_total`, not from the `cache_hit_rate` gauge.
 - Page on sustained `num_queue_reqs` above 0 and on `token_usage` near 1.0.
 - Ignore `sglang:utilization` at v0.5.22, because it stays at 0.
-- Compare mean queue time with mean TTFT to see how much latency is waiting.
+- Compare queue time and TTFT of the same requests to see how much latency is waiting.
 ```
 
 Sources: python/sglang/srt/arg_groups/fields/observability.py (enable_metrics), python/sglang/srt/managers/scheduler_components/metrics_reporter.py (cache hit rate and utilization), python/sglang/srt/observability/metrics_collector.py, all at v0.5.22 (baa9befa); capture/out/metrics.txt, capture/out/no-radix-cache-metrics.txt, capture/out/server-default.command.txt; issues #35884 and #22511.

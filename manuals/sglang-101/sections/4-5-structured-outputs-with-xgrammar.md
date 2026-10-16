@@ -10,7 +10,7 @@ When you finish this section, you can constrain output with a JSON schema, a reg
 
 The obvious fix is to validate after generation and retry on failure. That works and stays slow. It also fails in the cases you care about most. A model that broke the schema once on a prompt tends to break it again on that prompt.
 
-**Constrained decoding:** removing every token that would break the grammar before the sampler picks one. The model can only produce valid output, so validity becomes a property of the server.
+**Constrained decoding:** removing every token that would break the grammar before the sampler picks one. The output then satisfies every rule that the backend enforces, so those rules become a property of the server.
 
 ## What SGLang does
 

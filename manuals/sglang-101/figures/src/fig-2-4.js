@@ -14,7 +14,7 @@ function step(f, x, y, n) {
 module.exports = figure('fig-2-4', {
   height: 262,
   title: 'The same three decode steps without and with overlap',
-  desc: 'Two timelines with a GPU lane and a CPU lane. Without overlap, each GPU step is followed by a hatched gap while the CPU processes its results, and three steps end at 500. With overlap, the GPU runs steps back to back while the CPU processes the previous step under the next one, and three steps end at 380.',
+  desc: 'Two timelines with a GPU lane and a CPU lane. Without overlap, each GPU step is followed by a hatched gap while the CPU processes its results, and three steps end at 500. With overlap, the GPU runs steps back to back while the CPU processes the previous step under the next one, and both lanes finish three steps at 420.',
 }, f => {
   f.kicker(80, 22, 'without overlap: event_loop_normal');
   lane(f, 32, 'GPU');
@@ -35,7 +35,7 @@ module.exports = figure('fig-2-4', {
     step(f, 80 + i * 100, 150, i + 1);
     f.rect(180 + i * 100, 182, 40, 22, { hue: 'blue' });
   }
-  f.text(430, 166, 'three steps by 380', { size: 11, serif: true, hue: 'ink-soft' });
+  f.text(430, 166, 'three steps by 420', { size: 11, serif: true, hue: 'ink-soft' });
   f.text(200, 222, 'the CPU processes step N under step N+1', { size: 11, serif: true, hue: 'ink-soft' });
 
   f.arrow([80, 246], [600, 246], { style: 'call' });

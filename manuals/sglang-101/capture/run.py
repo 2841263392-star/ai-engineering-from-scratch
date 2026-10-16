@@ -20,7 +20,7 @@ COMMON = ["--model-path", MODEL, "--disable-cuda-graph", "--host", "127.0.0.1", 
 
 
 def bench(name, *args):
-    return [PYTHON, "-m", "sglang.benchmark.serving", "--backend", "sglang", "--port", str(PORT), "--seed", "7", "--output-file", str(OUT / f"{name}.jsonl"), *args]
+    return lambda: [PYTHON, "-m", "sglang.benchmark.serving", "--backend", "sglang", "--port", str(PORT), "--seed", "7", "--output-file", str(OUT / f"{name}.jsonl"), *args]
 
 
 RANDOM = ["--dataset-name", "random", "--random-input-len", "512", "--random-output-len", "128", "--random-range-ratio", "1.0"]
@@ -40,7 +40,7 @@ EXPERIMENTS = [
         ("bench-shared-prefix", bench("no-radix-cache-bench-shared-prefix", *SHARED)),
         ("metrics", None),
     ]},
-    {"name": "no-overlap", "flags": ["--disable-overlap-schedule"], "clients": [
+    {"name": "no-overlap", "flags": ["--disable-overlap-schedule"], "expect_crash": True, "clients": [
         ("bench-random-c8", bench("no-overlap-bench-random-c8", *RANDOM, "--num-prompts", "32", "--max-concurrency", "8")),
     ]},
     {"name": "small-pool", "flags": ["--max-total-tokens", "4096"], "clients": [
@@ -59,6 +59,8 @@ def healthy():
 
 
 def start_server(name, flags, log_path):
+    if healthy():
+        raise RuntimeError(f"{name}: another server already answers on port {PORT}")
     env = dict(os.environ, SGLANG_USE_MLX="1")
     command = [shutil.which("sglang") or "sglang", "serve", *COMMON, *flags]
     log = open(log_path, "w")
@@ -83,7 +85,8 @@ def stop_server(process):
             os.killpg(process.pid, signal.SIGKILL)
         except (ProcessLookupError, PermissionError):
             pass
-    while healthy():
+    deadline = time.time() + 60
+    while healthy() and time.time() < deadline:
         time.sleep(1)
 
 
@@ -228,7 +231,10 @@ def record(only=None):
     OUT.mkdir(exist_ok=True)
     (OUT / "environment.json").write_text(json.dumps(environment(), indent=2) + "\n")
     if not only:
-        result = subprocess.run([shutil.which("sglang") or "sglang", "serve", "--help"], capture_output=True, text=True, env=dict(os.environ, SGLANG_USE_MLX="1"))
+        try:
+            result = subprocess.run([shutil.which("sglang") or "sglang", "serve", "--help"], capture_output=True, text=True, env=dict(os.environ, SGLANG_USE_MLX="1"), timeout=300)
+        except subprocess.TimeoutExpired as error:
+            raise RuntimeError("sglang serve --help did not finish in 300 s") from error
         (OUT / "serve-help.txt").write_text(result.stdout)
     for experiment in EXPERIMENTS:
         if only and experiment["name"] not in only:
@@ -243,13 +249,16 @@ def record(only=None):
                 if command is None:
                     save_metrics(target)
                     continue
+                if callable(command):
+                    command = command()
                 result = subprocess.run(command, capture_output=True, text=True, timeout=1800)
                 target.write_text((result.stdout + result.stderr).replace(str(Path.home()), "~"))
-                if result.returncode != 0:
-                    print(f"[{name}] {client} exited {result.returncode}", flush=True)
-                if process.poll() is not None:
-                    print(f"[{name}] server exited with {process.returncode}", flush=True)
-                    break
+                crashed = process.poll() is not None
+                if result.returncode != 0 or crashed:
+                    print(f"[{name}] {client} exited {result.returncode}, server running: {not crashed}", flush=True)
+                    if experiment.get("expect_crash") and crashed:
+                        break
+                    raise RuntimeError(f"{name}: {client} failed, see {target}")
         finally:
             stop_server(process)
     print("done", flush=True)

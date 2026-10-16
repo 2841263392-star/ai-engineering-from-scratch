@@ -85,7 +85,7 @@ note: One startup line from the default kit configuration.
 
 The budget is now 19.39 GB, which is 0.4 of the 48.49 GB snapshot. The pool still holds 181,574 tokens, far more than 32 requests of 640 tokens need. A smaller pool cost nothing in this workload, because the workload never filled the pool.
 
-On a dedicated GPU, trust the automatic value first. Raise the fraction in steps of 0.02 only when the scheduler log shows a full pool and retractions, and stop at the first out-of-memory error. Lower it when long prompts fail in attention, as in issue #6027.
+On a dedicated GPU, trust the automatic value first. Raise the fraction in steps of 0.02 only when the scheduler log shows a full pool and retractions. Find the upper limit in staging with your longest prompts, then run production one or two steps below it. Lower it when long prompts fail in attention, as in issue #6027.
 
 The fraction also changes comparisons. One independent benchmark ran SGLang with its automatic fraction and vLLM with its default of 0.9 of GPU memory {{field Rawlinson 2025-12}}. The two engines had KV pools of very different sizes. Read [section 5.3](#s-reading-other-peoples-benchmarks) before you trust a comparison that does not state both values.
 

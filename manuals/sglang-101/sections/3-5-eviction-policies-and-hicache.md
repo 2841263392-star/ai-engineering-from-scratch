@@ -1,6 +1,6 @@
 # Eviction policies and HiCache
 
-> When the GPU pool is full, SGLang evicts the least recently used prefix by default, and HiCache keeps evicted prefixes in host memory and storage instead of losing them.
+> When the GPU pool is full, SGLang evicts the least recently used prefix by default, and HiCache keeps evicted prefixes in host memory and in optional storage.
 
 A coding agent holds a session of eight turns, and its history grows past 25,000 tokens. The GPU pool holds a few dozen such sessions. The ninety-first user arrives, and SGLang must evict a cached prefix to make room. When the first user returns, their history is gone, and the server computes all 25,000 tokens again.
 

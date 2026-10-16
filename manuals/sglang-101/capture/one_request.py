@@ -6,7 +6,7 @@ BASE = "http://127.0.0.1:30000"
 
 def post(path, body):
     request = urllib.request.Request(BASE + path, json.dumps(body).encode(), {"Content-Type": "application/json"})
-    with urllib.request.urlopen(request) as response:
+    with urllib.request.urlopen(request, timeout=120) as response:
         return json.loads(response.read())
 
 

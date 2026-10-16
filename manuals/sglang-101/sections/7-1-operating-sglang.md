@@ -54,7 +54,7 @@ SGLang has two kinds of health endpoint {{code}}:
 
 The docstring says that the probe request costs nothing when the server is busy, because any output from the scheduler counts as proof of life. That is true for the work, and false for the timing. **A real incident:** issue #22511 reports "health check failed. server could not get a response from detokenizer for last 20 seconds" on GLM-5 with 2 H800 GPUs under high load, on v0.5.10 {{issue #22511}}. A related issue, #35884, found that a timed-out probe left its request in the scheduler, so failed probes accumulated {{issue #35884}}.
 
-**Our position:** use `/ready` for the readiness probe. Use `/health` for the liveness probe, with a timeout above 20 s and a failure threshold of at least three. One slow scheduler step then does not restart the pod that carries the most traffic.
+**Our position:** use `/ready` for the readiness probe. Keep the liveness probe from generating. Set `SGLANG_ENABLE_HEALTH_ENDPOINT_GENERATION=false`, and `/health` then returns 200 without a request to the scheduler {{code}}. Use `/health_generate` for a slower deep check that alerts a person and restarts nothing. A busy server then does not lose its busiest pod to a probe that waited in the queue.
 
 ## Graceful shutdown: signal the main process only
 
@@ -160,7 +160,7 @@ Batch tokenization took P99 latency from 4,583 ms to 464 ms. A scoring path that
 ```takeaways
 - Pin an image tag such as `lmsysorg/sglang:v0.5.22` and upgrade on purpose.
 - Mount `~/.cache/sglang` and the Hugging Face cache on persistent volumes.
-- Probe readiness with `/ready` and liveness with `/health`, with a timeout above 20 s.
+- Probe readiness with `/ready`, and liveness with `/health` with generation turned off.
 - Send SIGTERM to the main process only, and check the log for the drain lines.
 - Set `SGL_FORCE_SHUTDOWN` for a forced stop at v0.5.22, never only `SGLANG_FORCE_SHUTDOWN`.
 - Cap output length before you choose the termination grace period.

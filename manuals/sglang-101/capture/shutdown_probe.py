@@ -37,7 +37,12 @@ env = dict(os.environ, SGLANG_USE_MLX="1")
 command = ["sglang", "serve", "--model-path", "mlx-community/Qwen3-0.6B-4bit", "--disable-cuda-graph", "--host", "127.0.0.1", "--port", "30001", "--mem-fraction-static", "0.4"]
 with open(LOG, "w") as log:
     server = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT, env=env, start_new_session=True)
+    deadline = time.time() + 600
     while healthy() != 200:
+        if server.poll() is not None or time.time() > deadline:
+            if server.poll() is None:
+                os.killpg(server.pid, signal.SIGKILL)
+            sys.exit(f"server did not become healthy, see {LOG}")
         time.sleep(2)
     results = []
     worker = threading.Thread(target=long_request, args=(results,))

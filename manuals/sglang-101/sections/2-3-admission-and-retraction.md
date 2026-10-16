@@ -113,7 +113,7 @@ Queueing is the honest failure. A queue keeps every running request fast and mak
 
 The SGLang tuning docs say an occasional retraction, about one per minute, is fine. Treat more than that as a configuration bug. Raise `--schedule-conservativeness`, for example to 1.3, so the forecast starts higher. Or lower `--max-running-requests`. Do not fix it with a larger `--mem-fraction-static` alone, because [section 3.2](#s-mem-fraction-static-and-startup-sizing) shows what that costs.
 
-Set realistic `max_new_tokens` in your clients. A client that asks for 4,096 tokens and uses 200 makes every new request look eight times bigger than it is.
+Set realistic `max_new_tokens` in your clients. A client that asks for 4,096 tokens and uses 200 makes every new request look about 20 times bigger than it is.
 
 ```takeaways
 - Compute admission as uncached prompt plus max_new_tokens, against the free pool.

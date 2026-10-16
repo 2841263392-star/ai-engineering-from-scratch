@@ -21,7 +21,7 @@ def ask(system, question):
     start = time.perf_counter()
     ttft = None
     usage = None
-    with urllib.request.urlopen(request) as response:
+    with urllib.request.urlopen(request, timeout=300) as response:
         for raw in response:
             line = raw.decode().strip()
             if not line.startswith("data: ") or line == "data: [DONE]":

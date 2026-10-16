@@ -5,7 +5,7 @@ const { figure } = require('../../../_shared/figkit.js');
 module.exports = figure('fig-3-1', {
   height: 250,
   title: 'What one token costs in Qwen3-0.6B',
-  desc: 'Five factors from the Qwen3-0.6B config multiply to 114,688 bytes per token: 2 for key and value, 28 layers, 8 KV heads, a head dimension of 128, and 2 bytes for bfloat16. The startup log prints the same number as bytes_per_slot, and 181,574 slots of that size make a pool of about 19.9 GB.',
+  desc: 'Five factors from the Qwen3-0.6B config multiply to 114,688 bytes per token: 2 for key and value, 28 layers, 8 KV heads, a head dimension of 128, and 2 bytes for bfloat16. The startup log prints the same number as bytes_per_slot, and 181,574 slots of that size make a pool of 20.82 GB, which is 19.39 GiB.',
 }, f => {
   f.kicker(20, 20, 'one token, five factors');
   const factors = [
@@ -25,5 +25,5 @@ module.exports = figure('fig-3-1', {
   f.kicker(20, 124, 'the same number in the startup log');
   f.box({ x: 20, y: 134, w: 600, h: 44, hue: 'blue', title: 'Auto-sized attention KV pool', sub: ['kv_budget=19.39 GB · bytes_per_slot=114688 · pool_size=181574'], align: 'left' });
   f.kicker(20, 206, 'pool size');
-  f.text(20, 228, '181,574 slots × 114,688 bytes = about 19.9 GB of KV', { size: 12, serif: true });
+  f.text(20, 228, '181,574 slots × 114,688 bytes = 20.82 GB, or 19.39 GiB, of KV', { size: 12, serif: true });
 });

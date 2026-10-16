@@ -84,7 +84,7 @@ The function `calculate_metrics` in the benchmark module computes every line. Fi
 
 **Concurrency:** the sum of every request's end-to-end latency divided by the run duration. It is the average number of requests in progress, measured after the fact. Here it is 7.96 against a cap of 8. It tells you the cap was reached, and nothing more.
 
-**Peak concurrent requests:** the largest count of requests that were active at any point inside one second of the run. A request that ends and a request that starts in the same second both count. That is why the report says 16 at a cap of 8, and 64 at a cap of 32. It is not a violation of your cap.
+**Peak concurrent requests:** the run is cut into one-second buckets, and each request counts in every bucket that its interval touches. The line reports the largest bucket count. Two requests that run one after the other inside the same second both count, so the number can exceed the cap. That is why the report says 16 at a cap of 8, and 64 at a cap of 32.
 
 **TTFT:** the time from sending the request to receiving the first streamed chunk. It contains queueing, prefill, and the network.
 

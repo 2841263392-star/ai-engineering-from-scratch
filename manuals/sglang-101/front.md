@@ -96,11 +96,16 @@ cp python/pyproject_other.toml python/pyproject.toml
 uv pip install -e "python[srt_mps]"
 ```
 
-On the capture Mac, the install took 3 minutes and 15 seconds. Then start a server and send one request:
+On the capture Mac, the install took 3 minutes and 15 seconds. Start a server in one terminal:
 
 ```bash
 SGLANG_USE_MLX=1 sglang serve --model-path mlx-community/Qwen3-0.6B-4bit \
   --disable-cuda-graph --enable-cache-report --mem-fraction-static 0.4
+```
+
+Wait for the line "The server is fired up and ready to roll!". Then send one request from a second terminal:
+
+```bash
 curl -s http://127.0.0.1:30000/generate \
   -H 'Content-Type: application/json' \
   -d '{"text": "The capital of France is", "sampling_params": {"max_new_tokens": 12, "temperature": 0}}'

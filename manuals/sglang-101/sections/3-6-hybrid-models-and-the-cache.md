@@ -41,7 +41,7 @@ For Mamba, the tree stores state snapshots on some nodes and copies a snapshot w
 id: fig-3-6
 kind: tree
 title: a Mamba prefix resumes only at a snapshot
-claim: A new request that matches 1,800 tokens of a Mamba model resumes from the last snapshot at 1,536 tokens, and prefills the rest.
+claim: A new request that matches 1,800 tokens of a Mamba model resumes from the last snapshot at 1,792 tokens, and prefills 8 tokens.
 caption: Read from the root down. Snapshots every 256 decode tokens follow the --mamba-track-interval default. The token counts are an example, not a capture.
 ```
 
