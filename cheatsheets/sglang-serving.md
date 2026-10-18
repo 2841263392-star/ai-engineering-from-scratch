@@ -21,19 +21,26 @@ from: manuals/sglang-101/capture/out/server-default.command.txt, manuals/sglang-
 | Benchmark at a fixed request rate | `--request-rate <rps>` |
 | Stop with a drain | `docker stop <container>` |
 
-## Start and benchmark
+## Start the server (terminal 1)
 type: annotated-code
 lang: bash
-from: manuals/sglang-101/capture/out/server-default.command.txt, manuals/sglang-101/capture/run.py, manuals/sglang-101/sections/5-1-sglang-benchmark-serving.md, manuals/sglang-101/sections/r-1-flags-and-defaults.md, manuals/sglang-101/capture/out/bench-random-c8.txt, manuals/sglang-101/capture/out/bench-random-c32.txt, manuals/sglang-101/sections/2-1-sglang-serve-and-the-three-processes.md, manuals/sglang-101/sections/3-2-mem-fraction-static-and-startup-sizing.md
+from: manuals/sglang-101/capture/out/server-default.command.txt, manuals/sglang-101/sections/r-1-flags-and-defaults.md, manuals/sglang-101/sections/2-1-sglang-serve-and-the-three-processes.md, manuals/sglang-101/sections/3-2-mem-fraction-static-and-startup-sizing.md
 
 ```bash
-# Start the server
 sglang serve --model-path <model> \  # weights to load
   --port 30000 \  # HTTP port
   --enable-cache-report \  # cached_tokens in usage
   --enable-metrics \  # turns on /metrics
   --mem-fraction-static 0.4  # weights plus KV pool share
-# Benchmark with a concurrency cap of 8
+```
+
+## Benchmark it (terminal 2)
+type: annotated-code
+lang: bash
+from: manuals/sglang-101/capture/run.py, manuals/sglang-101/sections/5-1-sglang-benchmark-serving.md, manuals/sglang-101/sections/r-1-flags-and-defaults.md, manuals/sglang-101/capture/out/bench-random-c8.txt, manuals/sglang-101/capture/out/bench-random-c32.txt
+
+```bash
+# Concurrency cap of 8. The server in terminal 1 must be up.
 python -m sglang.benchmark.serving --backend sglang \
   --port 30000 --dataset-name random \
   --random-input-len 512 --random-output-len 128 \
