@@ -25,7 +25,7 @@ from: manuals/sglang-101/sections/2-1-sglang-serve-and-the-three-processes.md
     ```
 ```
 
-The front matter has five keys. `id`, `title` and `subtitle` are text. `hue` is a number from 0 to 359. It sets the colour of the poster. `sources` lists the lessons and manuals that the topic covers. Lesson pages link to the sheet from these paths.
+The front matter has five keys. `id`, `title` and `subtitle` are text. The subtitle has a limit of 120 characters, so that it fits on one line. `hue` is a number from 0 to 359. It sets the colour of the poster. `sources` lists the lessons and manuals that the topic covers. Lesson pages link to the sheet from these paths.
 
 Each block starts with a `## ` heading. The heading is the label on the coloured bar. Lines of `key: value` follow the heading. A blank line ends them. The body comes after the blank line.
 
@@ -43,13 +43,13 @@ Each block starts with a `## ` heading. The heading is the label on the coloured
 |---|---|---|
 | `concepts` | violet | bullets: `- **Name**: one line` |
 | `glossary` | violet | bullets: `- **ABBR**: what it stands for and one line` |
-| `task-table` | blue | table: `| Task | Code |`. Put the code cell in backticks |
-| `command-table` | blue | table: `| Command | What it does |` |
+| `task-table` | blue | table: `\| Task \| Code \|`. Put the code cell in backticks |
+| `command-table` | blue | table: `\| Command \| What it does \|` |
 | `annotated-code` | ink | one fenced code block. Put a comment after two or more spaces. The build aligns the comments in a column |
 | `flow` | teal | numbered list: `1. **Actor**: what happens`. The build draws numbered steps |
 | `architecture` | teal | a fenced `arch` block with `node` and `edge` lines, see below |
-| `defaults` | amber | table: `| Setting | Default | Note |` |
-| `troubleshooting` | red | table: `| Symptom | Cause | Fix |` |
+| `defaults` | amber | table: `\| Setting \| Default \| Note \|` |
+| `troubleshooting` | red | table: `\| Symptom \| Cause \| Fix \|` |
 | `qa` | green | bullets: `- **Question?** Answer.` |
 | `tips` | green | bullets |
 
@@ -63,7 +63,7 @@ node | sched | 2,1 | Scheduler | batches and KV pool
 edge | api | sched | ZMQ
 ```
 
-A node line is `node | <id> | <column>,<row> | <label> | <second line>`. Columns and rows start at 1. The second line can be empty. An edge line is `edge | <from id> | <to id> | <label>`. The label can be empty.
+A node line is `node | <id> | <column>,<row> | <label> | <second line> | <kind>`. Columns and rows start at 1. The second line can be empty. The kind is optional. It draws a small mark in the corner of the box: `client`, `process`, `store`, `queue`, `gpu` or `model`. An edge line is `edge | <from id> | <to id> | <label>`. The label can be empty.
 
 ## Facts
 

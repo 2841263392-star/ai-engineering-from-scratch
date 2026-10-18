@@ -11,14 +11,14 @@ type: architecture
 from: phases/19-capstone-projects/20-agent-harness-loop-contract/docs/en.md, phases/19-capstone-projects/20-agent-harness-loop-contract/code/main.py, phases/19-capstone-projects/23-function-call-dispatcher/docs/en.md, phases/19-capstone-projects/25-verification-gates-observation-budget/docs/en.md, phases/19-capstone-projects/26-sandbox-runner-denylist/docs/en.md, phases/19-capstone-projects/28-observability-otel-traces/docs/en.md
 
 ```arch
-node | caller | 1,1 | Caller | run, resume
-node | loop | 2,1 | HarnessLoop | 6 states
-node | hooks | 3,1 | HookRegistry | 10 topics
-node | budget | 4,1 | Budget | turns, tool_calls
-node | policy | 1,2 | Planner | plan steps
-node | gates | 2,2 | GateChain | first deny wins
-node | tools | 3,2 | Dispatcher + Sandbox | registry, retry, jail
-node | trace | 4,2 | Events + spans | traces.jsonl
+node | caller | 1,1 | Caller | run, resume | client
+node | loop | 2,1 | HarnessLoop | 6 states | process
+node | hooks | 3,1 | HookRegistry | 10 topics | queue
+node | budget | 4,1 | Budget | turns, tool_calls | store
+node | policy | 1,2 | Planner | plan steps | model
+node | gates | 2,2 | GateChain | first deny wins | process
+node | tools | 3,2 | Dispatcher + Sandbox | registry, retry, jail | process
+node | trace | 4,2 | Events + spans | traces.jsonl | store
 edge | caller | loop | run
 edge | loop | hooks | fire
 edge | hooks | budget |

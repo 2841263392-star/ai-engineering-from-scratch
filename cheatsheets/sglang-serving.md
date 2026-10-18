@@ -33,13 +33,12 @@ sglang serve --model-path <model> \  # weights to load
   --enable-cache-report \  # cached_tokens in usage
   --enable-metrics \  # turns on /metrics
   --mem-fraction-static 0.4  # weights plus KV pool share
-# Benchmark at a fixed concurrency cap
-python -m sglang.benchmark.serving --backend sglang --port 30000 \
-  --dataset-name random --random-input-len 512 \
-  --random-output-len 128 --random-range-ratio 1.0 \  # default 0.0 halves prompts
+# Benchmark with a concurrency cap of 8
+python -m sglang.benchmark.serving --backend sglang \
+  --port 30000 --dataset-name random \
+  --random-input-len 512 --random-output-len 128 \
+  --random-range-ratio 1.0 \  # default 0.0 halves prompts
   --num-prompts 32 --max-concurrency 8  # 255.63 tok/s on the capture
-# Fixed request rate: end with this line instead
-  --num-prompts 32 --request-rate <rps>  # default inf
 ```
 
 ## Key flags
@@ -62,12 +61,12 @@ type: architecture
 from: manuals/sglang-101/sections/2-1-sglang-serve-and-the-three-processes.md, manuals/sglang-101/sections/3-1-kv-bytes-per-token-and-the-kv-pool.md, manuals/sglang-101/sections/3-3-radixcache.md
 
 ```arch
-node | client | 1,1 | Client | HTTP :30000
-node | tok | 2,1 | TokenizerManager | main process, tokenize
-node | sched | 3,1 | Scheduler | owns the GPU
-node | detok | 2,2 | DetokenizerManager | ids to text
-node | radix | 3,2 | UnifiedRadixCache | prefix tree
-node | pool | 3,3 | KV pool | one slot per token
+node | client | 1,1 | Client | HTTP :30000 | client
+node | tok | 2,1 | TokenizerManager | main process, tokenize | process
+node | sched | 3,1 | Scheduler | owns the GPU | gpu
+node | detok | 2,2 | DetokenizerManager | ids to text | process
+node | radix | 3,2 | UnifiedRadixCache | prefix tree | store
+node | pool | 3,3 | KV pool | one slot per token | store
 edge | client | tok | HTTP
 edge | tok | sched | ZMQ
 edge | sched | detok | ZMQ

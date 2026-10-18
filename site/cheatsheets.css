@@ -215,7 +215,16 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-auto-rows: minmax(8px, auto);
   column-gap: 14px;
-  align-items: start;
+  align-items: stretch;
+}
+
+.cs-grid > .cs-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.cs-grid > .cs-block > .cs-bb {
+  flex: 1 1 auto;
 }
 
 .cs-block {
@@ -329,15 +338,12 @@
   width: 30%;
 }
 
-.cs-t-command-table tbody th {
-  width: 52%;
-}
-
+.cs-t-command-table tbody th,
 .cs-t-defaults tbody th {
-  width: 40%;
+  width: auto;
 }
 
-.cs-cmd {
+.cs-page .cs-cmd {
   display: inline;
   padding: 0 2px;
   background: var(--code-bg);
@@ -345,7 +351,8 @@
   font-family: var(--font-mono);
   font-size: 0.88em;
   cursor: copy;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .cs-cmd:hover,
@@ -499,8 +506,8 @@
   color: var(--g);
 }
 
-.cs-t-architecture .cs-bb {
-  overflow-x: auto;
+.cs-arch.cs-arch-narrow {
+  display: none;
 }
 
 .cs-arch,
@@ -515,6 +522,13 @@
   fill: var(--ph-soft);
   stroke: var(--g);
   stroke-width: 1.2;
+}
+
+.cs-arch-kind {
+  fill: none;
+  stroke: var(--g);
+  stroke-width: 1.3;
+  stroke-linejoin: round;
 }
 
 .cs-arch-label {
@@ -835,8 +849,12 @@
     justify-items: start;
   }
 
-  .cs-arch {
-    min-width: 560px;
+  .cs-arch.cs-arch-wide {
+    display: none;
+  }
+
+  .cs-arch.cs-arch-narrow {
+    display: block;
   }
 
   .cs-legend {
@@ -859,7 +877,8 @@
 }
 
 @media print {
-  .cs-body {
+  .cs-body,
+  [data-theme] .cs-body {
     --bg: #ffffff;
     --ink: #111111;
     --ink-soft: #333333;
@@ -881,9 +900,16 @@
   }
 
   .cs-body,
-  .cs-body [style*="--h"] {
+  .cs-body [style*="--h"],
+  [data-theme] .cs-body,
+  [data-theme] .cs-body [style*="--h"] {
     --ph: hsl(var(--h) 60% 38%);
     --ph-soft: hsl(var(--h) 60% 45% / 0.08);
+  }
+
+  [data-theme] .cs-code,
+  [data-theme] .cs-index-section h2 {
+    color: #ffffff;
   }
 
   @page {
@@ -924,4 +950,11 @@
     color: inherit;
     text-decoration: none;
   }
+}
+
+.cs-grid > .cs-t-architecture > .cs-bb,
+.cs-grid > .cs-t-flow > .cs-bb {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }

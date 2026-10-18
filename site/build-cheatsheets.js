@@ -20,7 +20,8 @@ const OUTPUT_DIR = 'cheatsheets';
 const BASE = '/cheatsheets';
 const COLUMNS = 4;
 const MAX_PAGES = 2;
-const PAGE_BUDGETS = [840, 900];
+const PAGE_BUDGETS = [870, 930];
+const MAX_SUBTITLE = 120;
 const FONT_LINK = 'https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap';
 const THEME_SCRIPT = "(function(){var r=document.documentElement,s='';try{s=localStorage.getItem('theme')||'';}catch(_){}r.setAttribute('data-theme',s||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));function i(){var e=document.getElementById('themeIcon');if(e)e.textContent=r.getAttribute('data-theme')==='light'?'N':'D';}document.addEventListener('DOMContentLoaded',function(){i();var b=document.getElementById('themeToggle');if(b)b.addEventListener('click',function(){var n=r.getAttribute('data-theme')==='light'?'dark':'light';r.setAttribute('data-theme',n);try{localStorage.setItem('theme',n);}catch(_){}i();});});})();";
 const HEAD_ASSETS = '<link rel="stylesheet" href="/style.css">\n<link rel="stylesheet" href="/cheatsheets.css">';
@@ -88,7 +89,7 @@ function placeholders(html) {
 }
 
 function codeSpan(code) {
-  return `<code class="cs-cmd" tabindex="0" title="Click to copy">${placeholders(escapeHtml(code))}</code>`;
+  return `<code class="cs-cmd" tabindex="0" title="Click to copy">${placeholders(escapeHtml(code)).replace(/([=,/])(?![^<]*>)/g, '$1<wbr>')}</code>`;
 }
 
 function cellHtml(cell) {
@@ -141,12 +142,27 @@ function parseBullets(lines) {
 }
 
 function parseFence(lines) {
-  const start = lines.findIndex(line => /^\s*```/.test(line));
+  const start = lines.findIndex(line => /^\s*(?:`{3,}|~{3,})/.test(line));
   if (start < 0) return null;
-  const lang = lines[start].trim().slice(3).trim().toLowerCase();
-  const end = lines.findIndex((line, index) => index > start && /^\s*```\s*$/.test(line));
+  const open = /^\s*(`{3,}|~{3,})\s*(.*)$/.exec(lines[start]);
+  const marker = open[1];
+  const lang = open[2].trim().toLowerCase();
+  const end = lines.findIndex((line, index) => {
+    if (index <= start) return false;
+    const close = /^\s*(`{3,}|~{3,})\s*$/.exec(line);
+    return Boolean(close) && close[1][0] === marker[0] && close[1].length >= marker.length;
+  });
   return { lang, code: lines.slice(start + 1, end < 0 ? undefined : end) };
 }
+
+const NODE_KINDS = {
+  client: 'M1,1 h12 v8 h-12 z M5,12 h4 M7,9 v3',
+  process: 'M1,2 h12 v10 h-12 z M1,5 h12 M3,3.5 h1 M5,3.5 h1',
+  store: 'M1,3 a6,2 0 1,0 12,0 a6,2 0 1,0 -12,0 v8 a6,2 0 0,0 12,0 v-8',
+  queue: 'M1,2 h12 v3 h-12 z M1,6 h12 v3 h-12 z M1,10 h12 v3 h-12 z',
+  gpu: 'M3,3 h8 v8 h-8 z M5,5 h4 v4 h-4 z M5,1 v2 M9,1 v2 M5,11 v2 M9,11 v2 M1,5 h2 M1,9 h2 M11,5 h2 M11,9 h2',
+  model: 'M7,1 l6,3.5 v6 l-6,3.5 l-6,-3.5 v-6 z M7,1 v13 M1,4.5 l6,3.5 l6,-3.5',
+};
 
 function parseArchitecture(lines, errors, where) {
   const fence = parseFence(lines);
@@ -162,7 +178,8 @@ function parseArchitecture(lines, errors, where) {
     if (parts[0] === 'node') {
       const at = /^(\d+),(\d+)$/.exec(parts[2] || '');
       if (!parts[1] || !at || !parts[3]) errors.push(`${where}: bad node line "${line.trim()}"`);
-      else nodes.push({ id: parts[1], col: Number(at[1]), row: Number(at[2]), label: parts[3], sub: parts[4] || '' });
+      else if (parts[5] && !NODE_KINDS[parts[5]]) errors.push(`${where}: node kind "${parts[5]}" must be one of ${Object.keys(NODE_KINDS).join(', ')}`);
+      else nodes.push({ id: parts[1], col: Number(at[1]), row: Number(at[2]), label: parts[3], sub: parts[4] || '', kind: parts[5] || '' });
     } else if (parts[0] === 'edge') {
       if (!parts[1] || !parts[2]) errors.push(`${where}: bad edge line "${line.trim()}"`);
       else edges.push({ from: parts[1], to: parts[2], label: parts[3] || '' });
@@ -297,7 +314,8 @@ function svgText(lines, x, y, size, className, anchor = 'middle') {
   return lines.map((line, index) => `<text class="${className}" x="${x}" y="${y + index * size * 1.25}" font-size="${size}" text-anchor="${anchor}">${escapeHtml(line)}</text>`).join('');
 }
 
-function architectureSvg(block) {
+function architectureSvg(source, narrow = false) {
+  const block = narrow ? { ...source, span: 1, id: `${source.id}-n`, nodes: source.nodes.map(node => ({ ...node, col: node.row, row: node.col })) } : source;
   const width = 300 * (block.span || 1) + 14 * ((block.span || 1) - 1);
   const cols = Math.max(...block.nodes.map(node => node.col));
   const rows = Math.max(...block.nodes.map(node => node.row));
@@ -356,13 +374,14 @@ function architectureSvg(block) {
     const r = box(node);
     const round = value => Math.round(value * 10) / 10;
     parts.push(`<rect class="cs-arch-node" x="${round(r.x)}" y="${round(r.y)}" width="${round(r.w)}" height="${round(r.h)}" rx="2"/>`);
+    if (node.kind) parts.push(`<path class="cs-arch-kind" transform="translate(${round(r.x + 4)} ${round(r.y + 4)}) scale(0.8)" d="${NODE_KINDS[node.kind]}"><title>${node.kind}</title></path>`);
     const top = r.y + (r.h - (node.labelLines.length * labelSize * 1.25 + node.subLines.length * subSize * 1.25)) / 2 + labelSize;
     parts.push(svgText(node.labelLines, round(r.x + r.w / 2), round(top), labelSize, 'cs-arch-label'));
     if (node.subLines.length) parts.push(svgText(node.subLines, round(r.x + r.w / 2), round(top + node.labelLines.length * labelSize * 1.25), subSize, 'cs-arch-sub'));
   }
   const marker = `<defs><marker id="cs-arrow-${block.id}" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="cs-arch-head" d="M0,0 L8,4 L0,8 z"/></marker></defs>`;
   const title = `${block.title}: ${block.nodes.map(node => node.label).join(', ')}`;
-  return `<svg class="cs-arch" viewBox="0 0 ${width} ${Math.round(height)}" role="img" aria-label="${escapeHtml(title)}">${marker}${parts.join('')}</svg>`;
+  return `<svg class="cs-arch${narrow ? ' cs-arch-narrow' : ' cs-arch-wide'}" viewBox="0 0 ${width} ${Math.round(height)}" role="img" aria-label="${escapeHtml(title)}">${marker}${parts.join('')}</svg>`;
 }
 
 function flowSvg(block) {
@@ -455,12 +474,12 @@ function sourceLink(source) {
 function blockBody(block) {
   if (TABLE_SHAPES[block.type]) return tableHtml(block);
   if (block.type === 'annotated-code') return annotatedHtml(block);
-  if (block.type === 'architecture') return architectureSvg(block);
+  if (block.type === 'architecture') return architectureSvg(block) + architectureSvg(block, true);
   if (block.type === 'flow') return flowSvg(block);
   return listHtml(block);
 }
 
-function blockHtml(block, place) {
+function blockHtml(block, place, href = '') {
   const group = TYPES[block.type] ? TYPES[block.type].group : 'know';
   const from = block.from.map(source => {
     const link = sourceLink(source);
@@ -468,7 +487,7 @@ function blockHtml(block, place) {
   }).join(', ');
   const style = place ? ` style="grid-column:${place.col} / span ${place.span};grid-row:${place.row} / span ${place.rows}"` : '';
   const wide = place && place.span > 1 ? ' cs-wide' : '';
-  return `<section class="cs-block cs-g-${group} cs-t-${block.type}${wide}" id="${block.id}"${style}><h2 class="cs-bar"><span>${placeholders(inline(block.title))}</span><a class="cs-anchor" href="#${block.id}" aria-label="Link to this block">#</a></h2><div class="cs-bb">${blockBody(block)}</div><p class="cs-from">From ${from}</p></section>`;
+  return `<section class="cs-block cs-g-${group} cs-t-${block.type}${wide}" id="${block.id}"${style}><h2 class="cs-bar"><span>${placeholders(inline(block.title))}</span><a class="cs-anchor" href="${href}#${block.id}" aria-label="Link to this block">#</a></h2><div class="cs-bb">${blockBody(block)}</div><p class="cs-from">From ${from}</p></section>`;
 }
 
 function textLength(html) {
@@ -498,6 +517,7 @@ function estimateBlock(block) {
 }
 
 const ROW_UNIT = 8;
+const STRETCH_ROWS = 40;
 const BLOCK_GAP = 12;
 
 function layout(topic) {
@@ -543,6 +563,18 @@ function layout(topic) {
     return { page: pageIndex, col: spot.col + 1, span: spot.span, row: spot.start + 1, rows };
   });
   const used = pages.map(page => Math.max(0, ...page.taken.flat().map(([, b]) => b)) * ROW_UNIT);
+  for (const place of places) {
+    const page = pages[place.page];
+    const start = place.row - 1;
+    const end = start + place.rows;
+    let limit = page.budget;
+    for (let c = place.col - 1; c < place.col - 1 + place.span; c++) {
+      for (const [a] of page.taken[c]) if (a >= end && a < limit) limit = a;
+    }
+    const lastRow = Math.max(0, ...page.taken.flat().map(([, b]) => b));
+    if (limit === page.budget) limit = Math.min(limit, lastRow);
+    if (limit > end && limit - end <= STRETCH_ROWS) place.rows = limit - start;
+  }
   return { places, heights, used, pages: pages.length };
 }
 
@@ -557,7 +589,7 @@ function copyLine(year) {
 
 function posterMain(topic, year, neighbours) {
   const { places, pages } = layout(topic);
-  const cols = Array.from({ length: pages }, (_, page) => `<div class="cs-grid cs-sheet-page" data-page="${page + 1}">${topic.blocks.map((block, index) => (places[index].page === page ? blockHtml(block, places[index]) : '')).join('')}</div>`).join('');
+  const cols = Array.from({ length: pages }, (_, page) => `<div class="cs-grid cs-sheet-page" data-page="${page + 1}">${topic.blocks.map((block, index) => (places[index].page === page ? blockHtml(block, places[index], topic.href) : '')).join('')}</div>`).join('');
   const sources = topic.sources.map(source => {
     const link = sourceLink(source);
     return `<a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`;
@@ -711,8 +743,14 @@ function searchIndex(topics) {
   }));
 }
 
+function topicErrors(topics) {
+  return topics.flatMap(topic => topic.errors.map(error => `${topic.file}: ${error}`));
+}
+
 function buildCheatsheets({ root = REPO_ROOT, siteDir = __dirname, edition } = {}) {
   const topics = loadTopics(root);
+  const invalid = topicErrors(topics);
+  if (invalid.length) throw new Error(`Cheat sheet topics have errors. Run node site/build-cheatsheets.js --check for the full report.\n${invalid.join('\n')}`);
   const assets = { head: versionHtml(HEAD_ASSETS, siteDir), body: versionHtml(BODY_ASSETS, siteDir) };
   const date = edition || editionDate(root);
   const year = date.slice(0, 4);
@@ -811,6 +849,7 @@ function checkTopic(topic, root = REPO_ROOT, cache = new Map()) {
       if (!text.includes(fact)) problems.push(`${topic.file}: block "${block.title}": "${fact}" is not in its from files`);
     }
   }
+  if (topic.subtitle.length > MAX_SUBTITLE) problems.push(`${topic.file}: the subtitle has ${topic.subtitle.length} characters, the limit is ${MAX_SUBTITLE}`);
   const { pages } = layout(topic);
   if (pages > MAX_PAGES) problems.push(`${topic.file}: the poster needs ${pages} pages, the limit is ${MAX_PAGES}`);
   return problems;
@@ -878,7 +917,7 @@ function writeCheatsheets({ root = REPO_ROOT, siteDir = __dirname, edition } = {
 
 function printHtml(built) {
   const year = built.date.slice(0, 4);
-  const cover = `<section class="cs-cover"><div class="cs-cover-stamp"><span>AI Engineering from Scratch · Cheat sheets</span><span class="cs-copy">${copyLine(year)}</span></div><h1>Cheat sheets</h1><p class="cs-sub">${built.topics.length} topic posters: tasks, commands, annotated code, diagrams, defaults and fixes.</p><ol class="cs-cover-list">${built.topics.map(topic => `<li style="--h:${topic.hue}"><span class="cs-code">${escapeHtml(topic.code)}</span>${escapeHtml(topic.title)}</li>`).join('')}</ol><div class="cs-cover-edition"><p>Edition ${escapeHtml(built.date)}. The newest edition is at the link below.</p><p><a href="${ORIGIN}${BASE}">aiengineeringfromscratch.com${BASE}</a> · <a href="${REPO}">source on GitHub</a></p></div></section>`;
+  const cover = `<section class="cs-cover"><div class="cs-cover-stamp"><span>AI Engineering from Scratch · Cheat sheets</span><span class="cs-cover-copy">${copyLine(year)}</span></div><h1>Cheat sheets</h1><p class="cs-sub">${built.topics.length} topic posters: tasks, commands, annotated code, diagrams, defaults and fixes.</p><ol class="cs-cover-list">${built.topics.map(topic => `<li style="--h:${topic.hue}"><span class="cs-code">${escapeHtml(topic.code)}</span>${escapeHtml(topic.title)}</li>`).join('')}</ol><div class="cs-cover-edition"><p>Edition ${escapeHtml(built.date)}. The newest edition is at the link below.</p><p><a href="${ORIGIN}${BASE}">aiengineeringfromscratch.com${BASE}</a> · <a href="${REPO}">source on GitHub</a></p></div></section>`;
   const posters = built.topics.map((topic, index) => `<section class="cs-print-topic" style="--h:${topic.hue}">${posterMain(topic, year, { previous: built.topics[index - 1], next: built.topics[index + 1] })}</section>`).join('');
   const colophon = `<section class="cs-colophon"><p class="cs-kicker">About this edition</p><p>Cheat sheets, edition ${escapeHtml(built.date)}, by ${AUTHOR}. They are part of AI Engineering from Scratch, an open source course at <a href="${ORIGIN}">aiengineeringfromscratch.com</a>. The newest edition is always at <a href="${ORIGIN}${BASE}">aiengineeringfromscratch.com${BASE}</a>.</p><p>Each poster comes from one file in the <code>cheatsheets/</code> folder of the repository. Each block names the lessons and manual sections that hold its facts. The build checks that each flag, function name and default in a block appears in those files.</p><p>${copyLine(year)}. You can copy and share these sheets. Keep this page and the copyright line with them. Report an error at <a href="${ISSUES_URL}">${ISSUES_URL.replace('https://', '')}</a>.</p></section>`;
   return `<!DOCTYPE html>
@@ -955,6 +994,11 @@ function main(argv) {
     return 0;
   }
   if (flag('--check')) {
+    const invalid = topicErrors(loadTopics());
+    if (invalid.length) {
+      for (const problem of invalid) console.error(`  ${problem}`);
+      return 1;
+    }
     const first = buildCheatsheets({ edition: '2026-01-01' });
     const second = buildCheatsheets({ edition: '2026-01-01' });
     const problems = [];

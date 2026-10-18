@@ -1,77 +1,96 @@
 @page {
   size: letter landscape;
-  margin: 0.42in 0.42in 0.55in;
+  margin: 7mm;
 }
 
 .cs-print-edition {
-  --bg: #ffffff;
-  --ink: #111111;
-  --ink-soft: #333333;
-  --ink-mute: #666666;
-  --rule-soft: rgba(0, 0, 0, 0.18);
-  --paper-rule: transparent;
-  --blueprint: #2f49e0;
-  --blueprint-tint: rgba(47, 73, 224, 0.07);
-  --code-bg: #f3f2ec;
-  --cs-string: #7a4f00;
   margin: 0;
   background: #ffffff;
   color: #111111;
 }
 
-.cs-print-edition .cs-page {
-  min-height: 0;
-  padding: 0;
-  font-size: 6.8pt;
+.cs-print-topic {
+  break-before: page;
 }
 
-.cs-print-edition .cs-cover {
-  break-after: page;
-  padding-top: 0.2in;
-  font-size: 10pt;
+.cs-print-edition .site-header {
+  display: none;
+}
+
+.cs-print-edition .cs-poster {
+  padding: 0;
+}
+
+.cs-cover {
+  zoom: 0.71;
+  width: 1400px;
+  padding-top: 40px;
+  font-family: var(--font-body);
 }
 
 .cs-cover-stamp {
   display: flex;
   justify-content: space-between;
-  gap: 16pt;
-  padding-bottom: 6pt;
-  border-bottom: 1.5pt solid #111111;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 7pt;
+  gap: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #111111;
+  font-family: var(--font-mono);
+  font-size: 13px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.cs-print-edition .cs-cover h1 {
-  margin: 24pt 0 8pt;
+.cs-cover h1 {
+  margin: 40px 0 10px;
+  color: #2f49e0;
   font-family: var(--font-display);
-  font-size: 72pt;
+  font-size: 120px;
   font-weight: 400;
   line-height: 0.9;
-  color: #2f49e0;
 }
 
-.cs-print-edition .cs-cover .cs-hook {
-  margin-bottom: 18pt;
-  font-size: 13pt;
+.cs-cover .cs-sub {
+  margin-bottom: 30px;
+  font-size: 24px;
 }
 
-.cs-print-edition .cs-cover .cs-index {
-  grid-template-columns: repeat(2, 1fr);
+.cs-cover-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 19px;
+}
+
+.cs-cover-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.cs-cover-list .cs-code {
+  width: 40px;
+  height: 40px;
+  background: hsl(var(--h) 60% 38%);
+  color: #ffffff;
+  font-size: 22px;
 }
 
 .cs-cover-edition {
-  margin-top: 18pt;
-  padding-top: 6pt;
-  border-top: 0.8pt solid #2f49e0;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 7.5pt;
+  margin-top: 36px;
+  padding-top: 10px;
+  border-top: 1.5px solid #2f49e0;
+  font-family: var(--font-mono);
+  font-size: 14px;
   letter-spacing: 0.06em;
 }
 
 .cs-cover-edition p {
-  margin: 0 0 4pt;
+  margin: 0 0 6px;
 }
 
 .cs-cover-edition a,
@@ -80,83 +99,18 @@
   text-decoration: none;
 }
 
-.cs-print-phase {
+.cs-colophon {
+  zoom: 0.71;
+  width: 1400px;
+  max-width: none;
   break-before: page;
-}
-
-.cs-print-edition .cs-hero h1 {
-  font-size: 22pt;
-}
-
-.cs-print-edition .cs-masonry {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  grid-auto-flow: row;
-  align-items: start;
-  column-gap: 8pt;
-}
-
-.cs-print-edition .cs-card {
-  position: static;
-  grid-row-end: auto;
-  break-inside: auto;
-  box-shadow: none;
-}
-
-.cs-print-edition .cs-tab,
-.cs-print-edition .cs-t tr,
-.cs-print-edition .math-display,
-.cs-print-edition .cs-mini-sigs {
-  break-inside: avoid;
-  break-after: avoid;
-}
-
-.cs-print-edition .cs-cardbody {
-  padding: 4px 8px 7px;
-}
-
-.cs-print-edition .cs-hero {
-  gap: 10px;
-  padding: 0 0 6px;
-}
-
-.cs-print-edition .cs-glyph {
-  box-shadow: none;
-}
-
-.cs-print-edition .cs-mini-math {
-  overflow: hidden;
-}
-
-.cs-print-edition a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.cs-print-edition .cs-colophon {
-  break-before: page;
-  max-width: 40em;
-  padding-top: 1.4in;
-  font-size: 9.5pt;
+  padding-top: 160px;
+  font-family: var(--font-body);
+  font-size: 20px;
   line-height: 1.5;
 }
 
-.cs-print-edition .cs-colophon p {
-  margin: 0 0 8pt;
-}
-
-.cs-print-edition .cs-t tr,
-.cs-print-edition .cs-t th,
-.cs-print-edition .cs-t td {
-  display: block;
-  width: auto;
-}
-
-.cs-print-edition .cs-t th {
-  padding: 3pt 0 0;
-  border-bottom: 0;
-}
-
-.cs-print-edition .cs-t td {
-  padding: 0 0 3pt;
+.cs-colophon p {
+  max-width: 56em;
+  margin: 0 0 14px;
 }

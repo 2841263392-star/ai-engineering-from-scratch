@@ -90,6 +90,10 @@ test('bad blocks are reported', () => {
   assert.match(errors, /needs 2 cells/);
   assert.match(errors, /names a missing node/);
   assert.match(sheets.parseTopic(TOPIC, 'cheatsheets/other.md').errors.join('\n'), /must match the file name/);
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cs-broken-'));
+  fs.mkdirSync(path.join(root, 'cheatsheets'));
+  fs.writeFileSync(path.join(root, 'cheatsheets', 'demo.md'), broken);
+  assert.throws(() => sheets.buildCheatsheets({ root, edition: '2026-01-01' }), /cheatsheets\/demo\.md: .*unknown type "story"/s);
 });
 
 test('every flag, name and default must appear in the from files', () => {
@@ -109,9 +113,11 @@ test('diagrams render from the block data', () => {
   const built = sheets.buildCheatsheets({ edition: '2026-01-01' });
   assert.ok(built.pages.length >= 1);
   const html = require('./build-cheatsheets').architectureSvg(topic.blocks[2]);
-  assert.match(html, /<svg class="cs-arch" viewBox="0 0 614 \d+"/);
+  assert.match(html, /<svg class="cs-arch cs-arch-wide" viewBox="0 0 614 \d+"/);
   assert.match(html, />HTTP server</);
   assert.match(html, />ZMQ</);
+  const narrow = sheets.architectureSvg(topic.blocks[2], true);
+  assert.match(narrow, /<svg class="cs-arch cs-arch-narrow" viewBox="0 0 300 \d+"/);
   const flow = sheets.flowSvg(topic.blocks[3]);
   assert.match(flow, />1</);
   assert.match(flow, />Scheduler</);
@@ -194,7 +200,7 @@ test('the print edition carries the attribution and renders math ahead of time',
   assert.match(html, /<meta name="author" content="Rohit Ghumare">/);
   assert.match(html, /<meta name="subject" content="[^"]+edition 2026-10-01">/);
   assert.match(html, /<meta name="keywords" content="[^"]+">/);
-  assert.match(html, /class="cs-copy">© 2026 Rohit Ghumare · MIT license</);
+  assert.match(html, /class="cs-cover-copy">© 2026 Rohit Ghumare · MIT license</);
   assert.match(html, /Keep this page and the copyright line with them/);
   const fake = { renderToString: (tex, options) => `<span class="katex">${options.displayMode ? 'D' : 'I'}:${tex}</span>` };
   const rendered = sheets.prerenderMath('<head></head><span class="math-inline" data-math="inline">a &lt; b</span>', fake);
