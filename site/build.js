@@ -17,6 +17,7 @@ const { TRANSLATION_LANGUAGES, TRANSLATION_SOURCE, NATIVE_NAMES, isIndexedLangua
 const { socialCards } = require('../lib/og-cards');
 const { phaseHubPath, phaseLabel, glossaryLookupKey } = require('../lib/hub-routes');
 const { writeHubs } = require('./build-hubs.js');
+const { writeCheatsheets, loadTopics, coverage } = require('./build-cheatsheets.js');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const README_PATH = path.join(REPO_ROOT, 'README.md');
@@ -2223,7 +2224,10 @@ function build() {
   const seoManifests = writeSeoArtifacts(phases, certifications, learningPaths);
 
   console.log('Writing glossary term pages and phase hubs...');
+  const cheatsheetTopics = loadTopics();
+  const cheatsheetCoverage = coverage(cheatsheetTopics);
   const hubs = writeHubs({
+    cheatsheets: cheatsheetCoverage.phases,
     phases,
     prerequisites: roadmapPrereqs,
     glossary: glossaryTerms,
@@ -2232,6 +2236,11 @@ function build() {
     minutes: lessonMinutes,
   });
   for (const hub of hubs.phaseModels) phases.find(phase => phase.id === hub.id).hub = hub.href;
+
+  console.log('Writing cheat sheets...');
+  const cheatsheets = writeCheatsheets({ siteDir: __dirname });
+  hubs.cheatsheetPages = cheatsheets.pages;
+  console.log(`   wrote ${cheatsheets.topics.length} cheat sheet posters`);
   const glossaryPage = path.join(__dirname, 'glossary.html');
   replaceGeneratedDiscovery(glossaryPage, GLOSSARY_JSONLD_START, GLOSSARY_JSONLD_END, hubs.glossaryJsonLd);
   replaceGeneratedDiscovery(glossaryPage, GLOSSARY_INDEX_START, GLOSSARY_INDEX_END, hubs.glossaryIndex);
@@ -2323,6 +2332,7 @@ function writeHubSitemaps(hubs, siteDir = __dirname) {
   return [
     ['sitemap-phases.xml', hubs.phasePages.map(page => ({ loc: page.href, priority: '0.8', freq: 'monthly' }))],
     ['sitemap-glossary.xml', hubs.termPages.map(page => ({ loc: page.href, priority: '0.5', freq: 'monthly' }))],
+    ['sitemap-cheatsheets.xml', (hubs.cheatsheetPages || []).map(page => ({ loc: page.href, priority: '0.5', freq: 'monthly' }))],
   ].filter(([, urls]) => urls.length).map(([name, urls]) => {
     fs.writeFileSync(path.join(siteDir, name), urlsetXml(urls), 'utf8');
     return name;

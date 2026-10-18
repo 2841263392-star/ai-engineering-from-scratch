@@ -164,6 +164,14 @@
       "destination": "/hubs/phase/:page.html"
     },
     {
+      "source": "/cheatsheets",
+      "destination": "/cheatsheets/index.html"
+    },
+    {
+      "source": "/cheatsheets/:topic([a-z0-9-]+)",
+      "destination": "/cheatsheets/:topic.html"
+    },
+    {
       "source": "/roadmap",
       "has": [
         {
@@ -439,6 +447,15 @@
       ]
     },
     {
+      "source": "/cheatsheets/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
       "source": "/(glossary|phase)/([a-z0-9-]+)",
       "headers": [
         {
@@ -498,7 +515,7 @@
   "functions": {
     "api/lesson.js": {
       "maxDuration": 10,
-      "includeFiles": "{site/lesson.html,site/lesson-seo.json,site/lesson-terms.json,site/lesson-markdown.js,languages.json,phases/*/*/docs/en.md,certifications/*/lessons/*/docs/en.md,lib/og-render.js,lib/og-fonts/*.json}"
+      "includeFiles": "{site/lesson.html,site/lesson-seo.json,site/lesson-terms.json,site/cheatsheet-map.json,site/lesson-markdown.js,languages.json,phases/*/*/docs/en.md,certifications/*/lessons/*/docs/en.md,lib/og-render.js,lib/og-fonts/*.json}"
     },
     "api/certification.js": {
       "maxDuration": 10,
@@ -584,6 +601,11 @@
     {
       "source": "/hubs/phase/:page([a-z0-9-]+).html",
       "destination": "/phase/:page",
+      "permanent": true
+    },
+    {
+      "source": "/cheatsheets/:topic([a-z0-9-]+).html",
+      "destination": "/cheatsheets/:topic",
       "permanent": true
     },
     {

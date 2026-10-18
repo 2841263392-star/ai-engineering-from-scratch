@@ -211,6 +211,7 @@
         if (txt.indexOf('build it') >= 0 || txt.indexOf('build ') === 0) sectionClass = ' section-build';
         else if (txt.indexOf('use it') >= 0 || txt.indexOf('use ') === 0) sectionClass = ' section-use';
         else if (txt.indexOf('ship it') >= 0 || txt.indexOf('ship ') === 0) sectionClass = ' section-ship';
+        else if (txt.indexOf('summary') === 0) sectionClass = ' section-summary';
         if (txt.indexOf('learning objectives') >= 0) {
           var objItems = [];
           for (var lo = i + 1; lo < lines.length; lo++) {
@@ -609,6 +610,9 @@
     extractMath: extractMath,
     splitInlineMath: splitInlineMath,
     slugify: slugify,
-    escapeAttr: escapeAttr
+    escapeAttr: escapeAttr,
+    inlineFormat: inlineFormat,
+    splitTableRow: splitTableRow,
+    highlightSyntax: highlightSyntax
   };
 }));
