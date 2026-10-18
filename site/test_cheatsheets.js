@@ -1,183 +1,191 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 const sheets = require('./build-cheatsheets');
-const { cheatsheetPath } = require('../lib/hub-routes');
 
 const root = path.resolve(__dirname, '..');
 
-const LESSON = [
-  '# Tiny Attention',
+const TOPIC = [
+  '---',
+  'id: demo',
+  'title: Demo Topic',
+  'subtitle: A small topic for the tests.',
+  'hue: 120',
+  'sources: phases/demo/01-lesson',
+  '---',
   '',
-  '> Every token asks every other token a question.',
+  '## Start a server',
+  'type: task-table',
+  'from: phases/demo/01-lesson/docs/en.md',
   '',
-  '**Type:** Build',
-  '**Languages:** Python, TypeScript',
-  '**Prerequisites:** [Softmax](../02-softmax/)',
-  '**Time:** ~45 minutes',
+  '| Task | Code |',
+  '|---|---|',
+  '| Start | `serve --port <port>` |',
+  '| Probe | `GET /health` |',
   '',
-  '## Learning Objectives',
+  '## Run it',
+  'type: annotated-code',
+  'lang: bash',
+  'from: phases/demo/01-lesson/docs/en.md',
   '',
-  '- Compute scaled dot-product attention by hand',
-  '- Explain why the scores are divided by `sqrt(d)`',
-  '',
-  '## The Concept',
-  '',
-  '### Scaled scores',
-  '',
-  '```math',
-  '\\text{Attention}(Q,K,V) = \\mathrm{softmax}\\left(\\frac{QK^T}{\\sqrt{d}}\\right)V',
+  '```bash',
+  '# Start',
+  'serve --port 30000 \\  # HTTP port',
+  '  --enable-metrics      # turn on metrics',
   '```',
   '',
-  '## Build It',
+  '## Parts',
+  'type: architecture',
+  'from: phases/demo/01-lesson/docs/en.md',
   '',
-  '### Step 1: Scores',
-  '',
-  '```python',
-  'class Attention:',
-  '    def __init__(',
-  '        self,',
-  '        d_model: int,',
-  '        heads: int = 1,',
-  '    ) -> None:',
-  '        self.d = d_model',
-  '',
-  '    def forward(self, x):',
-  '        return x',
-  '',
-  '    def _helper(self):',
-  '        return 0',
-  '',
-  'def softmax(xs: list[float]) -> list[float]:',
-  '    return xs',
-  '',
-  'def _private():',
-  '    return 1',
+  '```arch',
+  'node | api | 1,1 | HTTP server | tokenizer',
+  'node | sched | 2,1 | Scheduler |',
+  'edge | api | sched | ZMQ',
   '```',
   '',
-  '```typescript',
-  'export function softmax(xs: number[]): number[] {',
-  '  return xs;',
-  '}',
-  '```',
+  '## One request',
+  'type: flow',
+  'from: phases/demo/01-lesson/docs/en.md',
   '',
-  '## Use It',
+  '1. **Client**: sends a request.',
+  '2. **Scheduler**: admits it.',
   '',
-  '```python',
-  'import torch',
-  'out = torch.nn.functional.scaled_dot_product_attention(q, k, v)',
-  '```',
+  '## Defaults',
+  'type: defaults',
+  'from: phases/demo/01-lesson/docs/en.md',
   '',
-  '## Pitfalls',
-  '',
-  '- **Forgetting the scale.** Large dot products push softmax into one-hot outputs and the gradients vanish.',
-  '- Masks applied after softmax leak future tokens.',
-  '',
-  '## Key Terms',
-  '',
-  '| Term | What people say | What it actually means |',
-  '|------|-----------------|------------------------|',
-  '| Query | "The question" | The vector a token uses to score other tokens |',
-  '| Key | "The label" | The vector each token offers for scoring, compared with `q` |',
-  '',
-  '## Summary',
-  '',
-  '| Formula | Meaning |',
-  '|---------|---------|',
-  '| $QK^T$ | Raw attention scores |',
+  '| Setting | Default | Note |',
+  '|---|---|---|',
+  '| `--port` | 30000 | HTTP port |',
   '',
 ].join('\n');
 
-test('a lesson card takes its parts from the lesson text', () => {
-  const card = sheets.extractLesson(LESSON, { path: 'phases/07-x/01-tiny-attention' });
-  assert.equal(card.title, 'Tiny Attention');
-  assert.equal(card.hook, 'Every token asks every other token a question.');
-  assert.equal(card.type, 'Build');
-  assert.equal(card.time, '~45 minutes');
-  assert.deepEqual(card.objectives, ['Compute scaled dot-product attention by hand', 'Explain why the scores are divided by `sqrt(d)`']);
-  assert.equal(card.formulas.length, 1);
-  assert.equal(card.formulas[0].label, 'Scaled scores');
-  assert.match(card.formulas[0].tex, /^\\text\{Attention\}/);
-  assert.deepEqual(card.terms.map(item => [item.term, item.means]), [
-    ['Query', 'The vector a token uses to score other tokens'],
-    ['Key', 'The vector each token offers for scoring, compared with `q`'],
-  ]);
-  assert.equal(card.summary.rows, 1);
-  assert.equal(card.pitfalls[0].lead, 'Forgetting the scale');
-  assert.equal(card.pitfalls[1].lead, '');
-  assert.equal(card.practice.lang, 'python');
-  assert.match(card.practice.code, /scaled_dot_product_attention/);
+function fixtureRoot(lessonText) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cs-test-'));
+  fs.mkdirSync(path.join(dir, 'phases', 'demo', '01-lesson', 'docs'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'phases', 'demo', '01-lesson', 'docs', 'en.md'), lessonText);
+  return dir;
+}
+
+test('a topic file parses into typed blocks', () => {
+  const topic = sheets.parseTopic(TOPIC, 'cheatsheets/demo.md');
+  assert.deepEqual(topic.errors, []);
+  assert.equal(topic.id, 'demo');
+  assert.equal(topic.hue, 120);
+  assert.equal(topic.code, 'DT');
+  assert.deepEqual(topic.blocks.map(block => [block.type, block.span]), [['task-table', 1], ['annotated-code', 2], ['architecture', 2], ['flow', 1], ['defaults', 2]]);
+  assert.deepEqual(topic.blocks[0].rows[0], ['Start', '`serve --port <port>`']);
+  assert.deepEqual(topic.blocks[2].nodes.map(node => node.id), ['api', 'sched']);
+  assert.deepEqual(topic.blocks[2].edges, [{ from: 'api', to: 'sched', label: 'ZMQ' }]);
+  assert.deepEqual(topic.blocks[3].items.map(item => item.lead), ['Client', 'Scheduler']);
 });
 
-test('signatures come from the first listed language and skip private helpers', () => {
-  const card = sheets.extractLesson(LESSON, {});
-  assert.equal(card.signatures.lang, 'Python');
-  assert.deepEqual(card.signatures.others, ['TypeScript']);
-  assert.deepEqual(card.signatures.items.map(item => item.text), [
-    'class Attention(d_model: int, heads: int = 1)',
-    'softmax(xs: list[float]) -> list[float]',
-  ]);
-  assert.deepEqual(card.signatures.items[0].methods, ['forward']);
+test('bad blocks are reported', () => {
+  const broken = TOPIC.replace('type: flow', 'type: story').replace('| Start | `serve --port <port>` |', '| Start |').replace('edge | api | sched | ZMQ', 'edge | api | nowhere | ZMQ');
+  const errors = sheets.parseTopic(broken, 'cheatsheets/demo.md').errors.join('\n');
+  assert.match(errors, /unknown type "story"/);
+  assert.match(errors, /needs 2 cells/);
+  assert.match(errors, /names a missing node/);
+  assert.match(sheets.parseTopic(TOPIC, 'cheatsheets/other.md').errors.join('\n'), /must match the file name/);
 });
 
-test('lessons without signatures in Build It fall back to the code folder', () => {
-  const source = '# Plain\n\n> Hook.\n\n**Languages:** Rust\n\n## Build It\n\nNo code here.\n';
-  const card = sheets.extractLesson(source, { code: [{ lang: 'rust', file: 'code/main.rs', text: 'pub fn tokenize(text: &str) -> Vec<String> {\n}\nstruct Vocab {\n}\n' }] });
-  assert.equal(card.signatures.file, 'code/main.rs');
-  assert.deepEqual(card.signatures.items.map(item => item.text), ['tokenize(text: &str) -> Vec<String>', 'struct Vocab']);
+test('every flag, name and default must appear in the from files', () => {
+  const grounded = fixtureRoot('Run serve --port 30000 --enable-metrics. GET /health.');
+  const topic = sheets.parseTopic(TOPIC, path.join(grounded, 'cheatsheets', 'demo.md'));
+  topic.file = 'cheatsheets/demo.md';
+  assert.deepEqual(sheets.checkTopic(topic, grounded), []);
+  const thin = fixtureRoot('Run serve --port 8080.');
+  const problems = sheets.checkTopic(topic, thin).join('\n');
+  assert.match(problems, /"--enable-metrics" is not in its from files/);
+  assert.match(problems, /"30000" is not in its from files/);
+  assert.doesNotMatch(problems, /<port>/);
 });
 
-test('clipped text keeps inline code and math balanced', () => {
-  const clipped = sheets.clip('A long explanation that ends inside `some_function_name(argument, other)` and keeps going for a while.', 60);
-  assert.equal((clipped.match(/`/g) || []).length % 2, 0);
-  assert.ok(clipped.endsWith('…'));
-  const math = sheets.clip('The rule says $a + b = c$ and then the text continues with $x^2 + y^2$ beyond the limit here.', 70);
-  assert.equal((math.match(/\$/g) || []).length % 2, 0);
+test('diagrams render from the block data', () => {
+  const topic = sheets.parseTopic(TOPIC, 'cheatsheets/demo.md');
+  const built = sheets.buildCheatsheets({ edition: '2026-01-01' });
+  assert.ok(built.pages.length >= 1);
+  const html = require('./build-cheatsheets').architectureSvg(topic.blocks[2]);
+  assert.match(html, /<svg class="cs-arch" viewBox="0 0 614 \d+"/);
+  assert.match(html, />HTTP server</);
+  assert.match(html, />ZMQ</);
+  const flow = sheets.flowSvg(topic.blocks[3]);
+  assert.match(flow, />1</);
+  assert.match(flow, />Scheduler</);
 });
 
-test('the same lessons give the same bytes', () => {
+test('the real topics pass every check and fit two pages', () => {
+  const topics = sheets.loadTopics(root);
+  assert.ok(topics.length >= 3);
+  const cache = new Map();
+  for (const topic of topics) {
+    assert.deepEqual(sheets.checkTopic(topic, root, cache), [], topic.file);
+    assert.ok(sheets.layout(topic).pages <= 2, topic.file);
+  }
+});
+
+test('the same topics give the same bytes and no broken links', () => {
   const first = sheets.buildCheatsheets({ edition: '2026-01-01' });
   const second = sheets.buildCheatsheets({ edition: '2026-01-01' });
-  assert.equal(first.pages.length, second.pages.length);
+  assert.equal(first.pages.length, first.topics.length + 1);
   for (let i = 0; i < first.pages.length; i++) assert.equal(first.pages[i].html, second.pages[i].html, first.pages[i].href);
-  assert.doesNotMatch(first.pages.map(page => page.html).join(''), /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/);
-});
-
-test('every lesson and phase has a sheet, no sheet is empty and no link is broken', () => {
-  const built = sheets.buildCheatsheets({ edition: '2026-01-01' });
-  const lessons = built.phases.reduce((sum, phase) => sum + phase.lessons.length, 0);
-  let docs = 0;
-  for (const phase of fs.readdirSync(path.join(root, 'phases')).filter(name => /^\d+-/.test(name))) {
-    const dir = path.join(root, 'phases', phase);
-    if (!fs.statSync(dir).isDirectory()) continue;
-    docs += fs.readdirSync(dir).filter(name => fs.existsSync(path.join(dir, name, 'docs', 'en.md'))).length;
-  }
-  assert.equal(lessons, docs);
-  assert.equal(built.pages.length, 1 + built.phases.length + lessons);
-  assert.deepEqual(sheets.audit(built.phases).empty, []);
-  assert.deepEqual(sheets.checkLinks(built), []);
-});
-
-test('sheet URLs follow the lesson path', () => {
-  assert.equal(cheatsheetPath('phases/01-math-foundations/01-linear-algebra-intuition'), '/cheatsheets/math-foundations/01-linear-algebra-intuition');
-  assert.equal(cheatsheetPath('phases/01-math-foundations'), '/cheatsheets/math-foundations');
-  assert.equal(cheatsheetPath('certifications/claude/lessons/01-x'), '');
-  const built = sheets.buildCheatsheets({ edition: '2026-01-01' });
-  for (const page of built.pages.slice(1)) {
-    const file = page.file.replace(/\/index\.html$/, '').replace(/\.html$/, '');
-    assert.equal(page.href, `/cheatsheets/${file}`);
+  assert.equal(first.search, second.search);
+  assert.deepEqual(sheets.checkLinks(first), []);
+  const ids = [];
+  for (const page of first.pages) {
+    const found = [...page.html.matchAll(/ id="([^"]+)"/g)].map(match => match[1]);
+    assert.equal(new Set(found).size, found.length, page.href);
+    ids.push(...found);
   }
 });
 
-test('the lesson page links to its sheets without a new request', () => {
+test('blocks are placed on the grid without overlap', () => {
+  for (const topic of sheets.loadTopics(root)) {
+    const { places } = sheets.layout(topic);
+    const cells = new Set();
+    for (const place of places) {
+      for (let c = place.col; c < place.col + place.span; c++) {
+        for (let r = place.row; r < place.row + place.rows; r++) {
+          const key = `${place.page}:${c}:${r}`;
+          assert.ok(!cells.has(key), `${topic.id} overlaps at ${key}`);
+          cells.add(key);
+        }
+      }
+      assert.ok(place.col + place.span - 1 <= 4);
+    }
+  }
+});
+
+test('lesson and phase pages learn which topics cover them', () => {
+  const topics = sheets.loadTopics(root);
+  const map = sheets.coverage(topics, root);
+  const harness = topics.find(topic => topic.id === 'agent-harness');
+  assert.ok(harness);
+  assert.ok(map.lessons['phases/14-agent-engineering/01-the-agent-loop'].some(item => item.id === 'agent-harness'));
+  assert.ok(map.phases['agent-engineering'].some(item => item.href === '/cheatsheets/agent-harness'));
+  for (const lesson of Object.keys(map.lessons)) assert.ok(fs.existsSync(path.join(root, lesson, 'docs', 'en.md')), lesson);
   const source = fs.readFileSync(path.join(root, 'api', 'lesson.js'), 'utf8');
-  assert.match(source, /function sheetLinks\(lessonPath\)/);
+  assert.match(source, /cheatsheet-map\.json/);
   const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
   const rewrites = new Map(vercel.rewrites.map(rule => [rule.source, rule.destination]));
   assert.equal(rewrites.get('/cheatsheets'), '/cheatsheets/index.html');
-  assert.equal(rewrites.get('/cheatsheets/:phase([a-z0-9-]+)'), '/cheatsheets/:phase/index.html');
-  assert.equal(rewrites.get('/cheatsheets/:phase([a-z0-9-]+)/:lesson([a-z0-9-]+)'), '/cheatsheets/:phase/:lesson.html');
+  assert.equal(rewrites.get('/cheatsheets/:topic([a-z0-9-]+)'), '/cheatsheets/:topic.html');
+  assert.ok(vercel.functions && JSON.stringify(vercel.functions).includes('site/cheatsheet-map.json'));
+});
+
+test('search covers every table row and term', () => {
+  const built = sheets.buildCheatsheets({ edition: '2026-01-01' });
+  const index = JSON.parse(built.search);
+  assert.equal(index.length, built.topics.length);
+  for (const topic of built.topics) {
+    const entry = index.find(item => item.i === topic.id);
+    const rows = topic.blocks.filter(block => block.rows).reduce((sum, block) => sum + block.rows.length, 0);
+    assert.ok(entry.r.length >= rows, topic.id);
+    for (const row of entry.r) assert.ok(topic.blocks.some(block => block.id === row[2]));
+  }
 });
 
 test('the print edition carries the attribution and renders math ahead of time', () => {
@@ -189,63 +197,7 @@ test('the print edition carries the attribution and renders math ahead of time',
   assert.match(html, /class="cs-copy">© 2026 Rohit Ghumare · MIT license</);
   assert.match(html, /Keep this page and the copyright line with them/);
   const fake = { renderToString: (tex, options) => `<span class="katex">${options.displayMode ? 'D' : 'I'}:${tex}</span>` };
-  const rendered = sheets.prerenderMath('<head></head><div class="math-display" data-math="display">a &lt; b</div>', fake);
+  const rendered = sheets.prerenderMath('<head></head><span class="math-inline" data-math="inline">a &lt; b</span>', fake);
   assert.match(rendered, /katex\.min\.css/);
-  assert.match(rendered, /data-math-rendered><span class="katex">D:a < b<\/span>/);
-});
-
-test('draft summaries are a starting table for the author', () => {
-  const draft = sheets.draftSummary('phases/01-math-foundations/01-linear-algebra-intuition');
-  assert.match(draft, /^## Summary\n\n\| Idea \| What to remember \|\n\|------\|------------------\|\n\| /);
-});
-
-test('one-line defs, method snippets and bullet key terms parse cleanly', () => {
-  const found = sheets.pythonSignatures('def encode(x):    return x * 0.5\ndef decode(z):\n    return z\ndef backward(self):\n    pass\n');
-  assert.deepEqual(found.map(item => item.text), ['encode(x)', 'decode(z)', 'backward()']);
-  const card = sheets.extractLesson('# T\n\n> H.\n\n## Key Terms\n\n- **Resource:** Content that a server exposes.\n- **Prompt.** A message template.\n', {});
-  assert.deepEqual(card.terms, [{ term: 'Resource', means: 'Content that a server exposes.' }, { term: 'Prompt', means: 'A message template.' }]);
-});
-
-test('sheets use anchored cards, copy buttons and a static search index', () => {
-  const built = sheets.buildCheatsheets({ edition: '2026-01-01' });
-  const lesson = built.pages.find(page => page.href === '/cheatsheets/math-foundations/01-linear-algebra-intuition').html;
-  assert.match(lesson, /<section class="cs-section" aria-labelledby="start-here">/);
-  assert.match(lesson, /<section class="cs-card cs-card-wide" id="summary" style="--rows:\d+"><header class="cs-tab"><h3>Summary<\/h3><a class="cs-anchor" href="#summary"/);
-  const phase = built.pages.find(page => page.href === '/cheatsheets/math-foundations').html;
-  const order = [...phase.matchAll(/ id="(l\d+|this-phase)" style="--rows:(\d+)"/g)];
-  assert.deepEqual(order.slice(0, 4).map(match => match[1]), ['this-phase', 'l01', 'l02', 'l03']);
-  assert.ok(order.every(match => Number(match[2]) >= 6 && Number(match[2]) < 400));
-  assert.deepEqual(built.phases.map(item => item.glyph).filter(glyph => !/^[A-Z]{2}$/.test(glyph)), []);
-  assert.equal(new Set(built.phases.map(item => item.glyph)).size, built.phases.length);
-  assert.match(lesson, /<button type="button" class="cs-copy" data-copy/);
-  const ids = [...lesson.matchAll(/ id="([^"]+)"/g)].map(match => match[1]);
-  assert.equal(new Set(ids).size, ids.length);
-  const index = JSON.parse(built.search);
-  assert.equal(index.length, built.phases.length);
-  assert.equal(index.reduce((sum, phase) => sum + phase.l.length, 0), built.phases.reduce((sum, phase) => sum + phase.lessons.length, 0));
-  for (const phase of index) for (const lesson of phase.l) assert.ok(built.pages.some(page => page.href === `${phase.u}/${lesson[2]}`));
-  assert.ok(built.images.every(image => fs.existsSync(image.file)));
-  assert.doesNotMatch(built.pages.map(page => page.html).join(''), /&amp;#39;|&#<span/);
-});
-
-test('Build It steps carry their lead sentence and code', () => {
-  const card = sheets.extractLesson(LESSON, {});
-  assert.equal(card.steps.length, 1);
-  assert.equal(card.steps[0].heading, 'Step 1: Scores');
-  assert.match(card.steps[0].code, /^class Attention:/);
-});
-
-test('search covers every key term and formula label', () => {
-  const built = sheets.buildCheatsheets({ edition: '2026-01-01' });
-  const index = JSON.parse(built.search);
-  const keywords = new Map(index.flatMap(phase => phase.l.map(lesson => [`${phase.u}/${lesson[2]}`, lesson[3]])));
-  let checked = 0;
-  for (const phase of built.phases) {
-    for (const card of phase.lessons) {
-      const words = keywords.get(card.href);
-      for (const term of card.termNames) assert.ok(words.includes(term), `${card.path}: ${term}`);
-      checked += card.termNames.length;
-    }
-  }
-  assert.ok(checked > 3000);
+  assert.match(rendered, /data-math-rendered><span class="katex">I:a < b<\/span>/);
 });

@@ -1,28 +1,50 @@
 .cs-body {
   --h: 222;
+  --g-know: #6a3fc8;
+  --g-do: #2f49e0;
+  --g-code: #2b2b2b;
+  --g-see: #0f7f78;
+  --g-numbers: #a86a00;
+  --g-fix: #c0392b;
+  --g-recall: #2e7d32;
+  --bar-ink: #ffffff;
+  --cs-string: #8a5a00;
+  --cs-ph: #b0306a;
+  background: var(--bg);
 }
 
 .cs-body,
 .cs-body [style*="--h"] {
-  --ph: hsl(var(--h) 58% 40%);
-  --ph-ink: #ffffff;
-  --ph-soft: hsl(var(--h) 60% 45% / 0.09);
-  --ph-line: hsl(var(--h) 55% 45% / 0.35);
-  --cs-string: #8a5a00;
+  --ph: hsl(var(--h) 60% 40%);
+  --ph-soft: hsl(var(--h) 60% 45% / 0.1);
 }
 
-.cs-body {
-  background: var(--bg-surface);
+[data-theme="dark"] .cs-body {
+  --g-know: #b49cff;
+  --g-do: #8aa2ff;
+  --g-code: #d8d6cc;
+  --g-see: #5fd1c4;
+  --g-numbers: #f0b44a;
+  --g-fix: #ff8a7a;
+  --g-recall: #7fd38a;
+  --bar-ink: #0a0d1a;
+  --cs-string: #d4a83d;
+  --cs-ph: #ff8fc0;
 }
 
 [data-theme="dark"] .cs-body,
 [data-theme="dark"] .cs-body [style*="--h"] {
   --ph: hsl(var(--h) 80% 72%);
-  --ph-ink: #0a0d1a;
   --ph-soft: hsl(var(--h) 70% 60% / 0.12);
-  --ph-line: hsl(var(--h) 70% 70% / 0.35);
-  --cs-string: #d4a83d;
 }
+
+.cs-g-know { --g: var(--g-know); }
+.cs-g-do { --g: var(--g-do); }
+.cs-g-code { --g: var(--g-code); }
+.cs-g-see { --g: var(--g-see); }
+.cs-g-numbers { --g: var(--g-numbers); }
+.cs-g-fix { --g: var(--g-fix); }
+.cs-g-recall { --g: var(--g-recall); }
 
 .cs-page :where(p) {
   font-size: inherit;
@@ -31,71 +53,36 @@
 }
 
 .cs-page {
-  max-width: 1280px;
-  min-height: 100vh;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 108px 24px 72px;
-  font-size: 16px;
-  line-height: 1.45;
+  padding: 96px 20px 56px;
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 .cs-page code {
   font-family: var(--font-mono);
-  font-size: 0.86em;
+  font-size: 0.92em;
   overflow-wrap: anywhere;
 }
 
 .cs-kicker,
-.cs-stats,
+.cs-legend,
 .cs-actions,
-.cs-tab h3,
-.cs-t th,
-.cs-cardnote,
+.cs-bar,
+.cs-from,
 .cs-foot,
-.cs-jump,
+.cs-table thead th,
 .cs-tile-meta,
-.cs-search-count,
-.cs-lessonlist span {
+.cs-search-count {
   font-family: var(--font-mono);
-  letter-spacing: 0.05em;
-}
-
-.cs-hero {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 22px;
-  align-items: start;
-  padding: 8px 0 26px;
-}
-
-.cs-hero-index {
-  grid-template-columns: 1fr;
-  padding-bottom: 12px;
-}
-
-.cs-glyph {
-  display: grid;
-  place-items: center;
-  width: 2.6em;
-  height: 2.6em;
-  background: var(--ph);
-  color: var(--ph-ink);
-  font-family: var(--font-display);
-  font-size: 1.9em;
-  line-height: 1;
-  box-shadow: 4px 4px 0 var(--ink);
-}
-
-.cs-hero-text {
-  display: grid;
-  gap: 10px;
-  min-width: 0;
+  letter-spacing: 0.04em;
 }
 
 .cs-kicker {
-  margin: 0;
+  margin: 0 0 2px;
   color: var(--ph);
-  font-size: 0.72em;
+  font-size: 0.78em;
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -105,61 +92,97 @@
   text-decoration: none;
 }
 
-.cs-kicker a:hover {
-  text-decoration: underline;
+.cs-poster-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px 24px;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 3px solid var(--ph);
 }
 
-.cs-hero h1 {
+.cs-title-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.cs-code {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  background: var(--ph);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 30px;
+  line-height: 1;
+}
+
+[data-theme="dark"] .cs-code {
+  color: #0a0d1a;
+}
+
+.cs-poster-head h1,
+.cs-index-head h1 {
   margin: 0;
   color: var(--ph);
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6vw, 4.2rem);
+  font-size: clamp(2.2rem, 4.4vw, 3.6rem);
   font-weight: 400;
-  line-height: 0.92;
-  text-wrap: balance;
+  line-height: 0.9;
   overflow-wrap: anywhere;
 }
 
-.cs-muted {
-  color: var(--ink-mute);
-}
-
-.cs-hook {
-  max-width: 70ch;
-  margin: 0;
+.cs-sub {
+  max-width: 76ch;
+  margin: 4px 0 0;
   color: var(--ink-soft);
   font-family: var(--font-body);
-  font-size: 1.1em;
+  font-size: 1.08em;
   font-style: italic;
-  line-height: 1.45;
 }
 
-.cs-stats {
+.cs-head-side {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+
+.cs-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin: 2px 0 0;
+  justify-content: flex-end;
+  gap: 4px 12px;
+  margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 0.72em;
+  font-size: 0.74em;
+  text-transform: uppercase;
 }
 
-.cs-stats li {
-  padding: 3px 9px;
-  border: 1px solid var(--rule-soft);
-  background: var(--bg);
+.cs-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ink-soft);
 }
 
-.cs-stats strong {
-  color: var(--ph);
+.cs-legend span {
+  width: 11px;
+  height: 11px;
+  background: var(--g);
 }
 
 .cs-actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 4px 0 0;
-  font-size: 0.72em;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.74em;
   text-transform: uppercase;
 }
 
@@ -167,8 +190,8 @@
 .cs-print {
   display: inline-flex;
   align-items: center;
-  min-height: 34px;
-  padding: 0 13px;
+  min-height: 28px;
+  padding: 0 10px;
   border: 1px solid var(--ink);
   background: var(--bg);
   color: var(--ink);
@@ -176,7 +199,6 @@
   letter-spacing: inherit;
   text-decoration: none;
   cursor: pointer;
-  transition: transform var(--motion-press) var(--ease-out), background-color var(--motion-feedback) var(--ease-out);
 }
 
 .cs-actions a:hover,
@@ -184,486 +206,479 @@
   background: var(--ph-soft);
 }
 
-.cs-actions a:active,
-.cs-print:active {
-  transform: translate(1px, 1px);
+.cs-sheet-page + .cs-sheet-page {
+  margin-top: 4px;
 }
 
-.cs-actions a:first-child {
-  border-color: var(--ph);
-  background: var(--ph);
-  color: var(--ph-ink);
-}
-
-.cs-jump {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin: 0 0 8px;
-  font-size: 0.72em;
-}
-
-.cs-jump a {
-  min-width: 2.6em;
-  padding: 4px 6px;
-  border: 1px solid var(--rule-soft);
-  background: var(--bg);
-  color: var(--ink-soft);
-  text-align: center;
-  text-decoration: none;
-}
-
-.cs-jump a:hover {
-  border-color: var(--ph);
-  color: var(--ph);
-}
-
-.cs-section {
-  margin-top: 22px;
-}
-
-.cs-h {
-  margin: 0 0 14px;
-  color: var(--ph);
-  font-family: var(--font-display);
-  font-size: 2em;
-  font-weight: 400;
-  line-height: 1;
-}
-
-.cs-h a {
-  color: var(--ink-mute);
-  text-decoration: none;
-}
-
-.cs-masonry {
+.cs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-auto-rows: minmax(8px, auto);
-  grid-auto-flow: row dense;
-  column-gap: 20px;
+  column-gap: 14px;
+  align-items: start;
 }
 
-.cs-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  grid-row-end: span var(--rows, 24);
+.cs-block {
+  margin-bottom: 12px;
+}
+
+.cs-block {
   min-width: 0;
-  margin: 0 0 20px;
-  break-inside: avoid;
-  border: 1px solid var(--rule-soft);
+  overflow: hidden;
+  border: 1.5px solid var(--g);
   background: var(--bg);
-  box-shadow: 3px 3px 0 var(--ph-line);
-  scroll-margin-top: 100px;
+  scroll-margin-top: 90px;
 }
 
-.cs-card-wide {
-  grid-column: span 2;
+.cs-block:target {
+  outline: 3px solid var(--g);
+  outline-offset: 1px;
 }
 
-.cs-card:target {
-  outline: 2px solid var(--ph);
-  outline-offset: 2px;
-}
-
-.cs-tab {
+.cs-bar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  gap: 6px;
-  min-height: 24px;
-}
-
-.cs-tab h3 {
-  order: 2;
+  gap: 8px;
   margin: 0;
-  padding: 4px 10px;
-  max-width: 85%;
-  background: var(--ph);
-  color: var(--ph-ink);
-  font-size: 0.68em;
+  padding: 4px 8px 4px 9px;
+  background: var(--g);
+  color: var(--bar-ink);
+  font-size: 0.8em;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.25;
   text-transform: uppercase;
-  overflow-wrap: anywhere;
 }
 
-.cs-tab h3 a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.cs-tab h3 code {
+.cs-bar code {
   font-size: 1em;
   background: none;
   color: inherit;
 }
 
 .cs-anchor {
-  order: 1;
-  color: var(--ink-mute);
-  font-family: var(--font-mono);
-  font-size: 0.8em;
-  text-decoration: none;
+  color: inherit;
   opacity: 0;
-  transition: opacity var(--motion-feedback) var(--ease-out);
-}
-
-.cs-card:hover .cs-anchor,
-.cs-anchor:focus-visible {
-  opacity: 1;
-}
-
-.cs-cardbody {
-  flex: 1 1 auto;
-  padding: 8px 16px 14px;
-  font-size: 0.9em;
-}
-
-.cs-cardbody > :first-child {
-  margin-top: 0;
-}
-
-.cs-cardbody > :last-child {
-  margin-bottom: 0;
-}
-
-.cs-cardbody p {
-  margin: 0 0 8px;
-}
-
-.cs-lead {
-  font-family: var(--font-body);
-  font-size: 1.04em;
-}
-
-.cs-card-start .cs-lead {
-  font-style: italic;
-}
-
-.cs-cardtitle {
-  font-family: var(--font-body);
-  font-size: 1.12em;
-  font-weight: 700;
-  line-height: 1.25;
-}
-
-.cs-cardtitle a {
-  color: var(--ink);
   text-decoration: none;
 }
 
-.cs-cardtitle a:hover {
-  color: var(--ph);
-  text-decoration: underline;
+.cs-block:hover .cs-anchor,
+.cs-anchor:focus-visible {
+  opacity: 0.8;
 }
 
-.cs-cardnote {
+.cs-bb {
+  padding: 6px 8px 7px;
+}
+
+.cs-from {
   margin: 0;
-  padding: 7px 16px 8px;
-  border-top: 1px solid var(--rule-soft);
-  background: var(--ph-soft);
-  color: var(--ink-soft);
-  font-size: 0.7em;
+  padding: 3px 8px 4px;
+  border-top: 1px dotted var(--rule-soft);
+  color: var(--ink-mute);
+  font-size: 0.68em;
+  line-height: 1.35;
 }
 
-.cs-t {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.cs-t th,
-.cs-t td {
-  padding: 6px 0;
-  border-bottom: 1px dotted var(--rule-soft);
-  text-align: left;
-  vertical-align: top;
-}
-
-.cs-t tr:last-child th,
-.cs-t tr:last-child td {
-  border-bottom: 0;
-}
-
-.cs-t th {
-  width: 36%;
-  padding-right: 12px;
-  color: var(--ph);
-  font-size: 0.8em;
-  font-weight: 500;
-  overflow-wrap: anywhere;
-}
-
-.cs-t th code {
-  font-size: 1em;
-}
-
-.cs-t td {
-  color: var(--ink);
-  font-family: var(--font-body);
-  font-size: 0.95em;
-  line-height: 1.38;
-}
-
-.cs-page .math-display {
-  margin: 6px 0;
-  padding: 6px 10px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  background: var(--ph-soft);
-  text-align: left;
-}
-
-.cs-page .math-display:not([data-math-rendered]),
-.cs-page .math-inline:not([data-math-rendered]) {
-  font-family: var(--font-mono);
-  font-size: 0.82em;
-  white-space: pre-wrap;
-}
-
-.cs-page .katex-display {
-  margin: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  text-align: left;
-}
-
-.cs-page .katex-display > .katex {
-  text-align: left;
-}
-
-.cs-page .katex {
-  font-size: 1.04em;
+.cs-from a {
   color: inherit;
 }
 
-.cs-code {
-  position: relative;
-  margin: 4px -16px 0;
+.cs-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
 }
 
-.cs-cardbody > .cs-code:last-child {
-  margin-bottom: -14px;
+.cs-table thead th {
+  padding: 0 4px 3px 0;
+  border-bottom: 1.5px solid var(--g);
+  color: var(--g);
+  font-size: 0.72em;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
 }
 
-.cs-code pre,
-.cs-sig {
-  margin: 0;
-  padding: 12px 16px;
-  overflow-x: auto;
+.cs-table tbody th,
+.cs-table td {
+  padding: 3px 6px 3px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  text-align: left;
+  vertical-align: top;
+  font-family: var(--font-body);
+  font-size: 0.98em;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.cs-table td:last-child {
+  padding-right: 0;
+}
+
+.cs-table tbody tr:last-child th,
+.cs-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.cs-table tbody th {
+  width: 40%;
+}
+
+.cs-cols-3 tbody th {
+  width: 30%;
+}
+
+.cs-t-command-table tbody th {
+  width: 52%;
+}
+
+.cs-t-defaults tbody th {
+  width: 40%;
+}
+
+.cs-cmd {
+  display: inline;
+  padding: 0 2px;
   background: var(--code-bg);
-  font-size: 0.8em;
-  line-height: 1.5;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  cursor: copy;
+  overflow-wrap: anywhere;
 }
 
-.cs-sig {
-  margin: 8px -16px 0;
-  padding: 8px 16px;
+.cs-cmd:hover,
+.cs-cmd:focus-visible {
+  outline: 1px solid var(--g);
 }
 
-.cs-cardbody > .cs-sig:last-child {
-  margin-bottom: -14px;
+.cs-cmd.is-copied {
+  outline: 1px solid var(--g-recall);
 }
 
-.cs-code code,
-.cs-sig code {
-  display: block;
+.cs-ph {
+  color: var(--cs-ph);
+  font-style: italic;
+}
+
+.cs-ann {
+  position: relative;
+  margin: -6px -8px -7px;
+  padding: 8px 8px 8px;
+  background: var(--code-bg);
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  line-height: 1.45;
+}
+
+.cs-ann-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+}
+
+.cs-ann-row code {
+  font-size: 1em;
   background: none;
   color: var(--ink);
-  font-size: 1em;
-  white-space: pre;
-  overflow-wrap: normal;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
-.cs-code pre {
-  padding-top: 30px;
+.cs-ann-row > span {
+  color: var(--ink-mute);
+  font-style: italic;
+}
+
+.cs-ann-row > span:not(:empty)::before {
+  content: "# ";
+  font-style: normal;
+}
+
+.cs-ann[data-lang="typescript"] .cs-ann-row span:not(:empty)::before,
+.cs-ann[data-lang="javascript"] .cs-ann-row span:not(:empty)::before,
+.cs-ann[data-lang="rust"] .cs-ann-row > span:not(:empty)::before {
+  content: "// ";
+}
+
+.cs-ann-head {
+  margin-top: 4px;
+  color: var(--g-see);
+  font-weight: 700;
+}
+
+.cs-ann-head:first-of-type {
+  margin-top: 0;
+}
+
+.cs-ann-gap {
+  height: 5px;
 }
 
 .cs-copy {
   position: absolute;
-  top: 5px;
-  right: 6px;
-  padding: 2px 8px;
+  top: 4px;
+  right: 4px;
+  padding: 1px 6px;
   border: 1px solid var(--rule-soft);
   background: var(--bg);
   color: var(--ink-soft);
   font-family: var(--font-mono);
-  font-size: 0.68em;
-  letter-spacing: 0.05em;
+  font-size: 0.82em;
   text-transform: uppercase;
   cursor: pointer;
 }
 
-.cs-copy:hover {
-  border-color: var(--ph);
-  color: var(--ph);
-}
-
-.cs-page .syn-keyword { color: var(--ph); font-weight: 500; }
+.cs-page .syn-keyword { color: var(--g-do); font-weight: 500; }
 .cs-page .syn-string { color: var(--cs-string); }
 .cs-page .syn-number { color: var(--cs-string); }
 .cs-page .syn-comment { color: var(--ink-mute); font-style: italic; }
 
-.cs-sigs {
+.cs-defs,
+.cs-qa {
   margin: 0;
-  padding: 0;
-  list-style: none;
-  font-family: var(--font-mono);
-  font-size: 0.82em;
-  line-height: 1.45;
 }
 
-.cs-sigs li {
-  padding: 5px 0;
-  border-bottom: 1px dotted var(--rule-soft);
+.cs-defs > div {
+  padding: 2px 0;
+  border-bottom: 1px solid var(--rule-soft);
 }
 
-.cs-sigs li:last-child {
+.cs-defs > div:last-child,
+.cs-qa > div:last-child {
   border-bottom: 0;
 }
 
-.cs-sigs code {
-  font-size: 1em;
-  background: none;
-  color: var(--ink);
+.cs-defs dt {
+  display: inline;
+  color: var(--g);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  font-weight: 700;
 }
 
-.cs-methods {
-  display: block;
-  color: var(--ph);
-  font-size: 0.92em;
-  overflow-wrap: anywhere;
+.cs-defs dt::after {
+  content: " ";
 }
 
-.cs-list {
+.cs-defs dd {
+  display: inline;
   margin: 0;
-  padding-left: 1.1em;
   font-family: var(--font-body);
-  line-height: 1.42;
 }
 
-.cs-list li {
-  margin-bottom: 5px;
+.cs-qa > div {
+  padding: 3px 0;
+  border-bottom: 1px solid var(--rule-soft);
 }
 
-.cs-list li::marker {
-  color: var(--ph);
+.cs-qa dt {
+  color: var(--g);
+  font-family: var(--font-body);
+  font-weight: 700;
 }
 
-.cs-card-warn .cs-list li::marker {
-  content: "! ";
+.cs-qa dd {
+  margin: 1px 0 0;
+  font-family: var(--font-body);
+}
+
+.cs-tips {
+  margin: 0;
+  padding-left: 1.05em;
+  font-family: var(--font-body);
+}
+
+.cs-tips li {
+  margin-bottom: 3px;
+}
+
+.cs-tips li::marker {
+  color: var(--g);
+}
+
+.cs-t-architecture .cs-bb {
+  overflow-x: auto;
+}
+
+.cs-arch,
+.cs-flow {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.cs-arch-node {
+  fill: var(--ph-soft);
+  stroke: var(--g);
+  stroke-width: 1.2;
+}
+
+.cs-arch-label {
+  fill: var(--ink);
   font-family: var(--font-mono);
   font-weight: 700;
 }
 
-.cs-files {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.cs-arch-sub {
+  fill: var(--ink-soft);
+  font-family: var(--font-mono);
 }
 
-.cs-files code {
-  display: inline-block;
-  padding: 2px 6px;
-  border: 1px solid var(--rule-soft);
+.cs-arch-edge {
+  stroke: var(--ink-soft);
+  stroke-width: 1.1;
+}
+
+.cs-arch-head {
+  fill: var(--ink-soft);
+}
+
+.cs-arch-knock {
+  fill: var(--bg);
+}
+
+.cs-arch-elabel {
+  fill: var(--g);
+  font-family: var(--font-mono);
+}
+
+.cs-flow-box {
+  fill: var(--bg);
+  stroke: var(--rule-soft);
+}
+
+.cs-flow-dot {
+  fill: var(--g);
+}
+
+.cs-flow-num {
+  fill: var(--bar-ink);
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.cs-flow-link {
+  stroke: var(--g);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 2;
+}
+
+.cs-flow-lead {
+  fill: var(--g);
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.cs-flow-text {
+  fill: var(--ink);
+  font-family: var(--font-body);
+}
+
+.cs-foot {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 8px;
+  border-top: 2px solid var(--ph);
   font-size: 0.78em;
 }
 
-.cs-figure {
-  display: block;
-  margin: 0 -16px -14px;
-  padding: 10px;
-  background: #ffffff;
+.cs-covers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 0;
+  color: var(--ink-soft);
 }
 
-.cs-figure img {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 320px;
-  object-fit: contain;
-}
-
-.cs-card-wide table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95em;
-}
-
-.cs-card-wide th,
-.cs-card-wide td {
-  padding: 5px 6px;
-  border-bottom: 1px dotted var(--rule-soft);
-  text-align: left;
-  vertical-align: top;
-}
-
-.cs-card-wide th {
-  color: var(--ink-mute);
-  font-family: var(--font-mono);
-  font-size: 0.7em;
-  letter-spacing: 0.05em;
+.cs-covers span {
+  color: var(--ph);
+  font-weight: 700;
   text-transform: uppercase;
 }
 
-.cs-card-wide .table-wrap,
-.cs-card-wide .table-scroll {
-  overflow-x: auto;
+.cs-covers a {
+  color: inherit;
 }
 
-.cs-mini-math .math-display {
-  margin: 4px 0;
-  font-size: 0.88em;
-}
-
-.cs-mini-sigs {
+.cs-pager {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  margin: 8px 0 0;
+  justify-content: space-between;
+  gap: 6px 14px;
 }
 
-.cs-mini-sigs code {
-  padding: 1px 6px;
-  background: var(--code-bg);
-  font-size: 0.74em;
-  line-height: 1.6;
+.cs-pager a {
+  color: var(--ph);
 }
 
-.cs-card-lesson .cs-t th {
-  width: 34%;
+.cs-stamp {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 14px;
+  margin: 0;
+  color: var(--ink-mute);
+  text-transform: uppercase;
 }
 
-.cs-card-lesson .cs-t td {
-  font-size: 0.9em;
+.cs-stamp span:first-child {
+  color: var(--ph);
+}
+
+.cs-index {
+  max-width: 1180px;
+  font-size: 15px;
+}
+
+.cs-index-head {
+  display: grid;
+  gap: 8px;
+  padding-bottom: 18px;
+}
+
+.cs-index-section {
+  margin-top: 22px;
+}
+
+.cs-index-section h2 {
+  margin: 0 0 10px;
+  padding: 4px 10px;
+  background: var(--ph);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.8em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+[data-theme="dark"] .cs-index-section h2 {
+  color: #0a0d1a;
 }
 
 .cs-search {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   max-width: 720px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .cs-search input {
   width: 100%;
-  min-height: 52px;
-  padding: 0 16px;
+  min-height: 48px;
+  padding: 0 14px;
   border: 1.5px solid var(--ink);
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-mono);
   font-size: 1em;
   box-shadow: 4px 4px 0 var(--ink);
-}
-
-.cs-search input:focus-visible {
-  outline: 2px solid var(--blueprint);
-  outline-offset: 3px;
 }
 
 .cs-search-count {
@@ -674,11 +689,9 @@
 }
 
 .cs-results {
-  display: grid;
-  gap: 0;
-  max-height: 420px;
   margin: 0;
   padding: 0;
+  max-height: 440px;
   overflow-y: auto;
   border: 1px solid var(--rule-soft);
   background: var(--bg);
@@ -691,10 +704,10 @@
 
 .cs-results a {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 2px 12px;
-  padding: 9px 14px;
-  border-bottom: 1px dotted var(--rule-soft);
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1px 10px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--rule-soft);
   color: var(--ink);
   text-decoration: none;
 }
@@ -704,12 +717,11 @@
   background: var(--ph-soft);
 }
 
-.cs-results .cs-glyph {
+.cs-results .cs-code {
   grid-row: span 2;
-  width: 2.2em;
-  height: 2.2em;
-  font-size: 1.1em;
-  box-shadow: none;
+  width: 34px;
+  height: 34px;
+  font-size: 18px;
 }
 
 .cs-results b {
@@ -719,14 +731,14 @@
 .cs-results small {
   color: var(--ink-mute);
   font-family: var(--font-mono);
-  font-size: 0.7em;
+  font-size: 0.74em;
   overflow-wrap: anywhere;
 }
 
 .cs-tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -734,14 +746,12 @@
 
 .cs-tile a {
   display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto auto;
-  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 2px 12px;
   height: 100%;
   padding: 12px;
-  border: 1px solid var(--ph-line);
-  border-left: 5px solid var(--ph);
+  border: 1.5px solid var(--ph);
+  border-top-width: 6px;
   background: var(--bg);
   color: var(--ink);
   text-decoration: none;
@@ -749,318 +759,165 @@
 }
 
 .cs-tile a:hover {
-  box-shadow: 3px 3px 0 var(--ph);
+  box-shadow: 4px 4px 0 var(--ph);
   transform: translate(-1px, -1px);
 }
 
-.cs-tile .cs-glyph {
-  grid-row: span 2;
-  width: 2.1em;
-  height: 2.1em;
-  font-size: 1.4em;
-  box-shadow: none;
+.cs-tile .cs-code {
+  grid-row: span 3;
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
 }
 
 .cs-tile-name {
   font-family: var(--font-body);
+  font-size: 1.05em;
   font-weight: 700;
   line-height: 1.2;
 }
 
-.cs-tile-meta {
-  color: var(--ink-mute);
-  font-size: 0.66em;
-  white-space: nowrap;
+.cs-tile-sub {
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: 0.86em;
+  line-height: 1.3;
 }
 
-.cs-lessonlist {
+.cs-tile-meta {
+  color: var(--ph);
+  font-size: 0.7em;
+  text-transform: uppercase;
+}
+
+.cs-by-phase {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.cs-lessonlist a {
+.cs-by-phase li {
   display: grid;
-  grid-template-columns: 2.4em 1fr;
-  gap: 6px;
-  padding: 3px 0;
-  color: var(--ink);
+  grid-template-columns: minmax(0, 18em) minmax(0, 1fr);
+  gap: 12px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--rule-soft);
   font-family: var(--font-body);
-  font-size: 0.9em;
-  line-height: 1.3;
-  text-decoration: none;
 }
 
-.cs-lessonlist a:hover {
-  color: var(--ph);
+.cs-by-phase a {
+  color: var(--ink);
 }
 
-.cs-lessonlist span {
-  color: var(--ph);
-  font-size: 0.78em;
-  line-height: 1.6;
+.cs-index .cs-tips {
+  font-size: 0.95em;
 }
 
-.cs-card-list .cs-cardbody,
-.cs-card-list .cs-lessonlist {
-  padding: 6px 16px 12px;
-}
-
-.cs-foot {
-  display: grid;
-  gap: 10px;
-  margin-top: 28px;
-  padding-top: 12px;
-  border-top: 2px solid var(--ink);
-  font-size: 0.72em;
-}
-
-.cs-pager {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 8px 16px;
-}
-
-.cs-pager a {
-  color: var(--ph);
-}
-
-.cs-stamp {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 4px 16px;
-  margin: 0;
-  color: var(--ink-mute);
-  font-family: var(--font-mono);
-  font-size: inherit;
-  text-transform: uppercase;
-}
-
-.cs-stamp span:first-child {
-  color: var(--ph);
-}
-
-@media (max-width: 760px) {
-  .cs-card-wide {
-    grid-column: auto;
-  }
-}
-
-@media (max-width: 640px) {
-  .cs-page {
-    padding: 88px 14px 48px;
-  }
-
-  .cs-hero {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-
-  .cs-glyph {
-    width: 2em;
-    height: 2em;
-    font-size: 1.6em;
-  }
-
-  .cs-masonry {
+@media screen and (max-width: 1180px) {
+  .cs-grid {
     grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
   }
 
-  .cs-card {
-    grid-row-end: auto;
+  .cs-grid > .cs-block {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .cs-page {
+    padding: 84px 12px 40px;
+    font-size: 14px;
   }
 
-  .cs-t th {
-    width: 40%;
+  .cs-head-side {
+    justify-items: start;
+  }
+
+  .cs-arch {
+    min-width: 560px;
+  }
+
+  .cs-legend {
+    justify-content: flex-start;
+  }
+
+  .cs-by-phase li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+
+  .cs-ann-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .cs-ann-row > span:not(:empty) {
+    padding-left: 1.2em;
   }
 }
 
 @media print {
-  .cs-body,
-  .cs-body [style*="--h"] {
+  .cs-body {
     --bg: #ffffff;
-    --bg-surface: #ffffff;
     --ink: #111111;
     --ink-soft: #333333;
     --ink-mute: #666666;
-    --rule-soft: rgba(0, 0, 0, 0.2);
-    --code-bg: #f3f2ec;
-    --ph: hsl(var(--h) 58% 38%);
-    --ph-ink: #ffffff;
-    --ph-soft: hsl(var(--h) 60% 45% / 0.07);
-    --ph-line: transparent;
-    --cs-string: #7a4f00;
-  }
-
-  .cs-body {
+    --rule-soft: rgba(0, 0, 0, 0.18);
+    --code-bg: #f2f1ec;
+    --g-know: #6a3fc8;
+    --g-do: #2f49e0;
+    --g-code: #2b2b2b;
+    --g-see: #0f7f78;
+    --g-numbers: #a86a00;
+    --g-fix: #c0392b;
+    --g-recall: #2e7d32;
+    --bar-ink: #ffffff;
+    --cs-ph: #b0306a;
     background: #ffffff;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
+  .cs-body,
+  .cs-body [style*="--h"] {
+    --ph: hsl(var(--h) 60% 38%);
+    --ph-soft: hsl(var(--h) 60% 45% / 0.08);
+  }
+
   @page {
-    margin: 9mm;
-  }
-
-  @page phase {
     size: landscape;
-    margin: 8mm;
-  }
-
-  .cs-phase-page {
-    page: phase;
+    margin: 7mm;
   }
 
   .site-header,
   .skip-link,
   .cs-actions,
   .cs-pager,
-  .cs-jump,
   .cs-search,
   .cs-anchor,
-  .cs-copy,
-  .cs-h a,
-  .cs-phase-page #this-phase,
-  .cs-phase-page #lessons,
-  .cs-index-page .cs-section:last-of-type {
+  .cs-copy {
     display: none !important;
   }
 
-  .cs-page {
+  .cs-poster {
+    zoom: 0.71;
+    width: 1400px;
     max-width: none;
-    min-height: 0;
     padding: 0;
   }
 
-  .cs-lesson-page {
-    font-size: 8.4pt;
+  .cs-index {
+    padding: 0;
   }
 
-  .cs-phase-page,
-  .cs-index-page {
-    font-size: 6.8pt;
+  .cs-sheet-page + .cs-sheet-page {
+    break-before: page;
   }
 
-  .cs-hero {
-    gap: 12px;
-    padding: 0 0 6px;
-  }
-
-  .cs-glyph {
-    box-shadow: none;
-  }
-
-  .cs-hero h1 {
-    font-size: 24pt;
-  }
-
-  .cs-hook {
-    font-size: 1em;
-  }
-
-  .cs-section {
-    margin-top: 6px;
-  }
-
-  .cs-h {
-    margin-bottom: 5px;
-    font-size: 1.5em;
-  }
-
-  .cs-masonry {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-auto-flow: row;
-    align-items: start;
-    column-gap: 10px;
-  }
-
-  .cs-phase-page .cs-masonry,
-  .cs-index-page .cs-masonry {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    column-gap: 8px;
-  }
-
-  .cs-masonry > .cs-card {
-    grid-row-end: auto;
-  }
-
-  .cs-index-page .cs-card,
-  .cs-phase-page .cs-card {
-    break-inside: auto;
-  }
-
-  .cs-phase-page .cs-t tr,
-  .cs-phase-page .cs-t th,
-  .cs-phase-page .cs-t td {
-    display: block;
-    width: auto;
-  }
-
-  .cs-phase-page .cs-t th {
-    padding: 3px 0 0;
-    border-bottom: 0;
-  }
-
-  .cs-phase-page .cs-t td {
-    padding: 0 0 3px;
-  }
-
-  .cs-phase-page .cs-tab,
-  .cs-t tr,
-  .cs-page .math-display,
-  .cs-mini-sigs {
+  .cs-block {
     break-inside: avoid;
-    break-after: avoid;
-  }
-
-  .cs-card {
-    position: static;
-    margin-bottom: 7px;
-    border-color: rgba(0, 0, 0, 0.25);
-    box-shadow: none;
-  }
-
-  .cs-cardbody {
-    padding: 4px 8px 7px;
-  }
-
-  .cs-code,
-  .cs-sig,
-  .cs-figure {
-    margin-left: -8px;
-    margin-right: -8px;
-  }
-
-  .cs-cardbody > .cs-code:last-child,
-  .cs-cardbody > .cs-sig:last-child,
-  .cs-figure {
-    margin-bottom: -7px;
-  }
-
-  .cs-code pre,
-  .cs-sig {
-    padding: 6px 8px;
-    white-space: pre-wrap;
-  }
-
-  .cs-code code,
-  .cs-sig code {
-    white-space: pre-wrap;
-  }
-
-  .cs-cardnote {
-    padding: 3px 8px;
-  }
-
-  .cs-page .math-display {
-    overflow: visible;
-  }
-
-  .cs-tiles {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
   }
 
   a {

@@ -168,12 +168,8 @@
       "destination": "/cheatsheets/index.html"
     },
     {
-      "source": "/cheatsheets/:phase([a-z0-9-]+)",
-      "destination": "/cheatsheets/:phase/index.html"
-    },
-    {
-      "source": "/cheatsheets/:phase([a-z0-9-]+)/:lesson([a-z0-9-]+)",
-      "destination": "/cheatsheets/:phase/:lesson.html"
+      "source": "/cheatsheets/:topic([a-z0-9-]+)",
+      "destination": "/cheatsheets/:topic.html"
     },
     {
       "source": "/roadmap",
@@ -519,7 +515,7 @@
   "functions": {
     "api/lesson.js": {
       "maxDuration": 10,
-      "includeFiles": "{site/lesson.html,site/lesson-seo.json,site/lesson-terms.json,site/lesson-markdown.js,languages.json,phases/*/*/docs/en.md,certifications/*/lessons/*/docs/en.md,lib/og-render.js,lib/og-fonts/*.json}"
+      "includeFiles": "{site/lesson.html,site/lesson-seo.json,site/lesson-terms.json,site/cheatsheet-map.json,site/lesson-markdown.js,languages.json,phases/*/*/docs/en.md,certifications/*/lessons/*/docs/en.md,lib/og-render.js,lib/og-fonts/*.json}"
     },
     "api/certification.js": {
       "maxDuration": 10,
@@ -608,13 +604,8 @@
       "permanent": true
     },
     {
-      "source": "/cheatsheets/:phase([a-z0-9-]+)/index.html",
-      "destination": "/cheatsheets/:phase",
-      "permanent": true
-    },
-    {
-      "source": "/cheatsheets/:phase([a-z0-9-]+)/:lesson([a-z0-9-]+).html",
-      "destination": "/cheatsheets/:phase/:lesson",
+      "source": "/cheatsheets/:topic([a-z0-9-]+).html",
+      "destination": "/cheatsheets/:topic",
       "permanent": true
     },
     {

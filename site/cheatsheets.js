@@ -62,23 +62,38 @@
     }).catch(function () {}).then(done);
   }
 
-  function bindPrint() {
-    Array.prototype.forEach.call(document.querySelectorAll('[data-print]'), function (button) {
-      button.addEventListener('click', function () {
-        window.print();
-      });
-    });
+  function copyText(text, target, label) {
+    if (!navigator.clipboard) return;
+    navigator.clipboard.writeText(text).then(function () {
+      target.classList.add('is-copied');
+      if (label) target.textContent = 'Copied';
+      setTimeout(function () {
+        target.classList.remove('is-copied');
+        if (label) target.textContent = label;
+      }, 1200);
+    }, function () {});
   }
 
   function bindCopy() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-copy]'), function (button) {
       button.addEventListener('click', function () {
-        var code = button.parentNode.querySelector('code');
-        if (!code || !navigator.clipboard) return;
-        navigator.clipboard.writeText(code.textContent).then(function () {
-          button.textContent = 'Copied';
-          setTimeout(function () { button.textContent = 'Copy'; }, 1400);
-        }, function () {});
+        copyText(button.getAttribute('data-copy'), button, 'Copy');
+      });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.cs-cmd'), function (code) {
+      code.addEventListener('click', function () {
+        copyText(code.textContent, code, '');
+      });
+      code.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') copyText(code.textContent, code, '');
+      });
+    });
+  }
+
+  function bindPrint() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-print]'), function (button) {
+      button.addEventListener('click', function () {
+        window.print();
       });
     });
   }
@@ -102,12 +117,12 @@
       if (!loading) {
         loading = fetch(input.getAttribute('data-index')).then(function (response) {
           return response.json();
-        }).then(function (phases) {
+        }).then(function (topics) {
           entries = [];
-          phases.forEach(function (phase) {
-            entries.push({ phase: phase, title: phase.t, href: phase.u, meta: 'Phase ' + phase.n + ' sheet', text: (phase.t + ' phase ' + phase.n).toLowerCase() });
-            phase.l.forEach(function (lesson) {
-              entries.push({ phase: phase, title: lesson[1], href: phase.u + '/' + lesson[2], meta: 'Phase ' + phase.n + ' · Lesson ' + lesson[0] + (lesson[3] ? ' · ' + (lesson[3].length > 140 ? lesson[3].slice(0, lesson[3].lastIndexOf(', ', 140)) + ', …' : lesson[3]) : ''), text: (lesson[1] + ' ' + lesson[3] + ' ' + phase.t).toLowerCase() });
+          topics.forEach(function (topic) {
+            entries.push({ topic: topic, title: topic.t, meta: 'Cheat sheet', href: '/cheatsheets/' + topic.i, text: topic.t.toLowerCase() });
+            topic.r.forEach(function (row) {
+              entries.push({ topic: topic, title: row[0], meta: topic.t + (row[1] ? ' · ' + row[1] : ''), href: '/cheatsheets/' + topic.i + '#' + row[2], text: (row[0] + ' ' + row[1] + ' ' + topic.t).toLowerCase() });
             });
           });
           return entries;
@@ -134,12 +149,10 @@
         var item = element('li');
         var link = element('a');
         link.href = entry.href;
-        var glyph = element('span', 'cs-glyph', entry.phase.g);
-        glyph.style.setProperty('--h', entry.phase.h);
-        link.style.setProperty('--h', entry.phase.h);
-        link.appendChild(glyph);
+        link.style.setProperty('--h', entry.topic.h);
+        link.appendChild(element('span', 'cs-code', entry.topic.c));
         link.appendChild(element('b', '', entry.title));
-        link.appendChild(element('small', '', entry.meta));
+        link.appendChild(element('small', '', entry.meta.length > 160 ? entry.meta.slice(0, 157) + '...' : entry.meta));
         item.appendChild(link);
         list.appendChild(item);
       });

@@ -17,7 +17,7 @@ const { TRANSLATION_LANGUAGES, TRANSLATION_SOURCE, NATIVE_NAMES, isIndexedLangua
 const { socialCards } = require('../lib/og-cards');
 const { phaseHubPath, phaseLabel, glossaryLookupKey } = require('../lib/hub-routes');
 const { writeHubs } = require('./build-hubs.js');
-const { writeCheatsheets } = require('./build-cheatsheets.js');
+const { writeCheatsheets, loadTopics, coverage } = require('./build-cheatsheets.js');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const README_PATH = path.join(REPO_ROOT, 'README.md');
@@ -2224,7 +2224,10 @@ function build() {
   const seoManifests = writeSeoArtifacts(phases, certifications, learningPaths);
 
   console.log('Writing glossary term pages and phase hubs...');
+  const cheatsheetTopics = loadTopics();
+  const cheatsheetCoverage = coverage(cheatsheetTopics);
   const hubs = writeHubs({
+    cheatsheets: cheatsheetCoverage.phases,
     phases,
     prerequisites: roadmapPrereqs,
     glossary: glossaryTerms,
@@ -2237,7 +2240,7 @@ function build() {
   console.log('Writing cheat sheets...');
   const cheatsheets = writeCheatsheets({ siteDir: __dirname });
   hubs.cheatsheetPages = cheatsheets.pages;
-  console.log(`   wrote ${cheatsheets.pages.length} cheat sheets for ${cheatsheets.phases.length} phases`);
+  console.log(`   wrote ${cheatsheets.topics.length} cheat sheet posters`);
   const glossaryPage = path.join(__dirname, 'glossary.html');
   replaceGeneratedDiscovery(glossaryPage, GLOSSARY_JSONLD_START, GLOSSARY_JSONLD_END, hubs.glossaryJsonLd);
   replaceGeneratedDiscovery(glossaryPage, GLOSSARY_INDEX_START, GLOSSARY_INDEX_END, hubs.glossaryIndex);

@@ -121,6 +121,7 @@ site/sitemap-glossary.xml
 site/sitemap-phases.xml
 site/sitemap-cheatsheets.xml
 site/cheatsheets/
+site/cheatsheet-map.json
 site/manual-*.html
 site/manuals-data.js
 site/manuals.html
