@@ -287,6 +287,8 @@
 
 .cs-page .katex-display {
   margin: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
   text-align: left;
 }
 

@@ -198,3 +198,10 @@ test('draft summaries are a starting table for the author', () => {
   const draft = sheets.draftSummary('phases/01-math-foundations/01-linear-algebra-intuition');
   assert.match(draft, /^## Summary\n\n\| Idea \| What to remember \|\n\|------\|------------------\|\n\| /);
 });
+
+test('one-line defs, method snippets and bullet key terms parse cleanly', () => {
+  const found = sheets.pythonSignatures('def encode(x):    return x * 0.5\ndef decode(z):\n    return z\ndef backward(self):\n    pass\n');
+  assert.deepEqual(found.map(item => item.text), ['encode(x)', 'decode(z)', 'backward()']);
+  const card = sheets.extractLesson('# T\n\n> H.\n\n## Key Terms\n\n- **Resource:** Content that a server exposes.\n- **Prompt.** A message template.\n', {});
+  assert.deepEqual(card.terms, [{ term: 'Resource', means: 'Content that a server exposes.' }, { term: 'Prompt', means: 'A message template.' }]);
+});

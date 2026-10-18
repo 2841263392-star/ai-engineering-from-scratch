@@ -32,7 +32,7 @@ const LIMITS = {
   phaseFormulaChars: 140,
   phaseTerms: 5,
   phaseSignatures: 4,
-  termChars: 150,
+  termChars: 240,
   phaseTermChars: 96,
 };
 const THIN_ITEMS = 6;
@@ -195,8 +195,11 @@ function pythonSignatures(text) {
     }
     let header = line.trim();
     let j = i;
-    while (!/\)\s*(?:->\s*[^:]+)?:\s*(?:#.*)?$/.test(header) && j + 1 < lines.length && j - i < 16) header += ` ${lines[++j].trim()}`;
-    const params = (/\((.*)\)/.exec(header) || [, ''])[1].replace(/\s+/g, ' ').replace(/,\s*\)/, ')').trim();
+    const end = /\)\s*(?:->\s*[^:]+)?:/;
+    while (!end.test(header) && j + 1 < lines.length && j - i < 16) header += ` ${lines[++j].trim()}`;
+    const stop = end.exec(header);
+    if (stop) header = header.slice(0, stop.index + stop[0].length);
+    const params = (/\((.*)\)/.exec(header) || [, ''])[1].replace(/\s+/g, ' ').trim().replace(/,$/, '').replace(/^(?:self|cls)\s*(?:,\s*|$)/, '');
     const returns = (/\)\s*->\s*([^:]+):/.exec(header) || [, ''])[1].trim();
     const name = def[2];
     if (def[1].length === 0) {
@@ -205,7 +208,7 @@ function pythonSignatures(text) {
       out.push({ name, kind: 'def', text: `${name}(${params})${returns ? ` -> ${returns}` : ''}` });
     } else if (currentClass && def[1].length <= 4) {
       if (name === '__init__') {
-        const args = params.split(',').map(item => item.trim()).filter(item => item && item !== 'self');
+        const args = params.split(',').map(item => item.trim()).filter(Boolean);
         currentClass.text = args.length ? `class ${currentClass.name}(${args.join(', ')})` : `class ${currentClass.name}`;
       } else if (!name.startsWith('_') || name === '__call__') {
         currentClass.methods.push(name);
@@ -317,6 +320,19 @@ function outputsOf(lessonDir) {
     .sort();
 }
 
+function termsOf(section, table) {
+  if (table.rows.length) {
+    return table.rows
+      .filter(row => row.length >= 2 && row[0])
+      .map(row => ({ term: row[0], means: row[row.length - 1] }));
+  }
+  if (!section) return [];
+  return bullets(section.lines)
+    .map(item => /^\*\*(.+?)\*\*\s*[:.\-]?\s*(.+)$/.exec(item))
+    .filter(Boolean)
+    .map(match => ({ term: match[1].replace(/[:.]$/, ''), means: match[2].replace(/^[:\-]\s*/, '') }));
+}
+
 function extractLesson(source, info = {}) {
   const sections = scanLesson(source);
   const top = sections.find(section => section.h1) || sections[0];
@@ -349,10 +365,7 @@ function extractLesson(source, info = {}) {
     objectives: objectives ? bullets(objectives.lines).slice(0, LIMITS.objectives) : [],
     summary: summaryBody ? { markdown: summaryBody, rows: summaryTable.rows.length + bullets(summary.lines).length } : null,
     formulas: formulasFor(sections),
-    terms: termTable.rows
-      .filter(row => row.length >= 2 && row[0])
-      .map(row => ({ term: row[0], means: row[row.length - 1], says: row.length >= 3 ? row[1] : '' }))
-      .slice(0, LIMITS.terms),
+    terms: termsOf(terms, termTable).slice(0, LIMITS.terms),
     signatures,
     practice: practiceFor(use.flatMap(section => section.blocks)),
     pitfalls: pitfallsFor(sections),
@@ -444,7 +457,10 @@ function termList(terms, compact) {
 }
 
 function formulaList(formulas) {
-  return `<dl class="cs-formulas">${formulas.map(item => `<div><dt>${escapeHtml(item.label)}</dt><dd>${mathHtml(item.tex, true)}</dd></div>`).join('')}</dl>`;
+  return `<dl class="cs-formulas">${formulas.map((item, index) => {
+    const repeat = index > 0 && formulas[index - 1].label === item.label;
+    return `<div>${repeat ? '' : `<dt>${escapeHtml(item.label)}</dt>`}<dd>${mathHtml(item.tex, true)}</dd></div>`;
+  }).join('')}</dl>`;
 }
 
 function lessonPanels(card) {
@@ -468,6 +484,7 @@ function lessonPanels(card) {
 
 function metaList(card) {
   const rows = [['Type', card.type], ['Languages', card.languages], ['Time', card.time], ['Needs', plain(card.prerequisites)]]
+    .map(([key, value]) => [key, plain(value)])
     .filter(([, value]) => value && value !== '—' && value.toLowerCase() !== 'none');
   return `<ul class="cs-meta">${rows.map(([key, value]) => `<li><span>${key}</span>${escapeHtml(value)}</li>`).join('')}</ul>`;
 }
@@ -484,7 +501,8 @@ function sheetFooter(parts, year, hash) {
 function pagerLink(item, rel, label) {
   if (!item) return '';
   const arrow = rel === 'prev' ? '←' : '→';
-  const text = rel === 'prev' ? `${arrow} ${label}` : `${label} ${arrow}`;
+  const short = clip(label, 40);
+  const text = rel === 'prev' ? `${arrow} ${short}` : `${short} ${arrow}`;
   return `<a href="${item.href}" rel="${rel}">${escapeHtml(text)}</a>`;
 }
 
@@ -582,11 +600,13 @@ function lessonDescription(card) {
 }
 
 function editionYear(root) {
+  const epoch = Number(process.env.SOURCE_DATE_EPOCH);
+  if (epoch > 0) return new Date(epoch * 1000).toISOString().slice(0, 10);
   try {
     const date = execFileSync('git', ['log', '-1', '--format=%cs'], { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
     if (/^\d{4}-\d{2}-\d{2}$/.test(date)) return date;
   } catch (_) {}
-  return '2026-01-01';
+  return new Date().toISOString().slice(0, 10);
 }
 
 const HEAD_ASSETS = '<link rel="stylesheet" href="/style.css">\n<link rel="stylesheet" href="/cheatsheets.css">';
@@ -686,9 +706,9 @@ function writeCheatsheets({ root = REPO_ROOT, siteDir = __dirname, edition } = {
 
 function printHtml(built) {
   const year = built.date.slice(0, 4);
-  const cover = `<section class="cs-cover"><div class="cs-cover-stamp"><span>AI Engineering from Scratch · Cheat sheets</span><span class="cs-copy">${copyLine(year)}</span></div><h1>Cheat sheets</h1><p class="cs-hook">Formulas, key terms and functions from ${built.phases.reduce((sum, phase) => sum + phase.lessons.length, 0)} lessons in ${built.phases.length} phases. One sheet for each phase.</p><ol class="cs-index">${built.phases.map(phase => `<li><span class="cs-num">${phase.number}</span><span class="cs-index-name">${escapeHtml(phase.name)}</span><span class="cs-index-count">${phase.lessons.length} lessons</span></li>`).join('')}</ol><div class="cs-cover-edition"><p>Edition ${escapeHtml(built.date)} · a snapshot of living cheat sheets · the newest edition is at the link below</p><p><a href="${ORIGIN}${BASE}">aiengineeringfromscratch.com${BASE}</a> · <a href="${REPO}">source on GitHub</a></p></div></section>`;
+  const cover = `<section class="cs-cover"><div class="cs-cover-stamp"><span>AI Engineering from Scratch · Cheat sheets</span><span class="cs-copy">${copyLine(year)}</span></div><h1>Cheat sheets</h1><p class="cs-hook">Formulas, key terms and functions from ${built.phases.reduce((sum, phase) => sum + phase.lessons.length, 0)} lessons in ${built.phases.length} phases. One sheet for each phase.</p><ol class="cs-index">${built.phases.map(phase => `<li><span class="cs-num">${phase.number}</span><span class="cs-index-name">${escapeHtml(phase.name)}</span><span class="cs-index-count">${phase.lessons.length} lessons</span></li>`).join('')}</ol><div class="cs-cover-edition"><p>Edition ${escapeHtml(built.date)}. The newest edition is at the link below.</p><p><a href="${ORIGIN}${BASE}">aiengineeringfromscratch.com${BASE}</a> · <a href="${REPO}">source on GitHub</a></p></div></section>`;
   const sheets = built.phases.map(phase => `<section class="cs-print-phase"><header class="cs-head"><p class="cs-kicker">Cheat sheet · Phase ${phase.number}</p><h1>${escapeHtml(phase.name)}</h1>${phase.hook ? `<p class="cs-hook">${inline(phase.hook)}</p>` : ''}</header><div class="cs-columns">${phase.lessons.map(phaseCard).join('')}</div></section>`).join('');
-  const colophon = `<section class="cs-colophon"><p class="cs-kicker">About this edition</p><p>Cheat sheets, edition ${escapeHtml(built.date)}, by ${AUTHOR}. They are part of AI Engineering from Scratch, an open source course at <a href="${ORIGIN}">aiengineeringfromscratch.com</a>. The newest edition is always at <a href="${ORIGIN}${BASE}">aiengineeringfromscratch.com${BASE}</a>.</p><p>A script makes each sheet from the text of the lessons. It takes the formulas, the Key Terms tables, the function signatures from the lesson code and the Summary sections. No person and no model rewrites the text. The source is <code>site/build-cheatsheets.js</code> in <a href="${REPO}">${REPO.replace('https://', '')}</a>.</p><p>${copyLine(year)}. You can copy and share these sheets. Keep this page and the copyright line with them. Report an error at <a href="${ISSUES_URL}">${ISSUES_URL.replace('https://', '')}</a>.</p></section>`;
+  const colophon = `<section class="cs-colophon"><p class="cs-kicker">About this edition</p><p>Cheat sheets, edition ${escapeHtml(built.date)}, by ${AUTHOR}. They are part of AI Engineering from Scratch, an open source course at <a href="${ORIGIN}">aiengineeringfromscratch.com</a>. The newest edition is always at <a href="${ORIGIN}${BASE}">aiengineeringfromscratch.com${BASE}</a>.</p><p>A script makes each sheet from the text of the lessons. It uses the formulas, the Key Terms tables, the function signatures from the lesson code and the Summary sections. No person and no model rewrites the text. The source is <code>site/build-cheatsheets.js</code> in <a href="${REPO}">${REPO.replace('https://', '')}</a>.</p><p>${copyLine(year)}. You can copy and share these sheets. Keep this page and the copyright line with them. Report an error at <a href="${ISSUES_URL}">${ISSUES_URL.replace('https://', '')}</a>.</p></section>`;
   return `<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
