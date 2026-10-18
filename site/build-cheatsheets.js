@@ -360,7 +360,8 @@ function formulasFor(sections) {
       const tex = block.text.trim();
       if (!tex || seen.has(tex) || tex.split('\n').length > LIMITS.formulaLines) continue;
       seen.add(tex);
-      out.push({ label: plain(block.heading || section.title).replace(/^step\s+\d+[:.]?\s*/i, ''), tex });
+      const label = plain(block.heading || section.title).replace(/^step\s+\d+[:.]?\s*/i, '');
+      out.push({ label: /^(?:the )?(?:problem|concept|build it|use it|ship it|key insight|intuition|math)$/i.test(label) ? 'Key formula' : label, tex });
     }
   }
   return out.slice(0, LIMITS.formulas);
@@ -368,8 +369,18 @@ function formulasFor(sections) {
 
 function pitfallsFor(sections) {
   const section = findSection(sections, text => /^(?:common )?pitfalls\b|failure modes\b/.test(text));
-  if (!section) return [];
-  return bullets(section.lines).map(item => {
+  let lines = section ? section.lines : [];
+  if (!section) {
+    for (const candidate of sections) {
+      const start = candidate.lines.findIndex(line => /^###\s+.*(?:pitfalls|failure modes)\b/i.test(line));
+      if (start < 0) continue;
+      const end = candidate.lines.findIndex((line, index) => index > start && /^#{3,6}\s/.test(line));
+      lines = candidate.lines.slice(start + 1, end < 0 ? undefined : end);
+      break;
+    }
+  }
+  if (!lines.length) return [];
+  return bullets(lines).map(item => {
     const lead = /^\*\*(.+?)\*\*[.:]?\s*(.*)$/.exec(item);
     if (lead) return { lead: lead[1].replace(/[.:]$/, ''), text: clip(plain(lead[2]), 120) };
     return { lead: '', text: clip(item, 140) };
@@ -465,6 +476,7 @@ function extractLesson(source, info = {}) {
     summary: summaryBody ? { markdown: summaryBody, rows: summaryTable.rows.length + bullets(summary.lines).length } : null,
     formulas: formulasFor(sections),
     terms: termsOf(terms, termTable).slice(0, LIMITS.terms),
+    termNames: termsOf(terms, termTable).map(item => plain(item.term)),
     signatures,
     practice: practiceFor(use.flatMap(section => section.blocks)),
     steps: (() => {
@@ -548,10 +560,12 @@ function collect(root = REPO_ROOT) {
 }
 
 const PHASE_STYLE = [
-  ['$_', 222], ['Σ', 262], ['ŷ', 300], ['∇', 340], ['▦', 12], ['¶', 32], ['∿', 172], ['QK', 200],
-  ['z~', 280], ['π', 150], ['LM', 232], ['{}', 318], ['⊕', 186], ['⇄', 24], ['↻', 248], ['◎', 132],
-  ['⋈', 352], ['▤', 210], ['±', 98], ['★', 44],
+  ['ST', 222], ['MF', 262], ['ML', 300], ['DL', 340], ['CV', 12], ['NL', 32], ['SA', 172], ['TF', 200],
+  ['GA', 280], ['RL', 150], ['LM', 232], ['LE', 318], ['MM', 186], ['TP', 24], ['AE', 248], ['AS', 132],
+  ['MA', 352], ['IP', 210], ['ES', 98], ['CP', 44],
 ];
+const ROW_UNIT = 8;
+const CARD_GAP = 20;
 
 function phaseStyle(number) {
   const entry = PHASE_STYLE[Number(number)] || ['·', 222];
@@ -582,10 +596,65 @@ function idMaker() {
   };
 }
 
+function textOf(html) {
+  return html.replace(/<[^>]+>/g, '').replace(/&[a-z#0-9]+;/g, 'x').replace(/\s+/g, ' ').trim();
+}
+
+function linesOf(text, perLine) {
+  return Math.max(1, Math.ceil(text.length / perLine));
+}
+
+function estimateHeight(body, note) {
+  let height = 24 + 22 + (note ? 12 + 16 * linesOf(textOf(note), 52) : 0);
+  let rest = body;
+  rest = rest.replace(/<div class="cs-code">[\s\S]*?<\/code><\/pre><\/div>/g, block => {
+    height += 46 + 19 * (block.match(/\n/g) || []).length + 19;
+    return '';
+  });
+  rest = rest.replace(/<pre class="cs-sig">[\s\S]*?<\/pre>/g, block => {
+    height += 30 + 17 * linesOf(textOf(block), 44);
+    return '';
+  });
+  rest = rest.replace(/<div class="math-display"[^>]*>([\s\S]*?)<\/div>/g, (block, tex) => {
+    const rows = (tex.match(/\\\\/g) || []).length + 1;
+    const tall = /\\(?:frac|sum|prod|int|begin|left|underset|overset)/.test(tex) ? 14 : 0;
+    height += 24 + rows * (26 + tall);
+    return '';
+  });
+  rest = rest.replace(/<tr>([\s\S]*?)<\/tr>/g, (row, cells) => {
+    const parts = cells.split(/<\/th>|<\/td>/).map(textOf);
+    const lines = parts.length >= 2 ? Math.max(linesOf(parts[0], 17), linesOf(parts[1], 31)) : linesOf(parts[0] || '', 50);
+    height += 13 + 20 * lines;
+    return '';
+  });
+  rest = rest.replace(/<li>([\s\S]*?)<\/li>/g, (item, inner) => {
+    if (/cs-methods/.test(inner)) height += 28 + 16 * linesOf(textOf(inner), 44);
+    else height += 5 + 21 * linesOf(textOf(inner), 46);
+    return '';
+  });
+  rest = rest.replace(/<img [^>]*>/g, () => {
+    height += 240;
+    return '';
+  });
+  rest = rest.replace(/<p[^>]*>([\s\S]*?)<\/p>/g, (paragraph, inner) => {
+    height += 8 + 22 * linesOf(textOf(inner), 46);
+    return '';
+  });
+  const left = textOf(rest);
+  if (left) height += 20 * linesOf(left, 50);
+  return height;
+}
+
+function rowSpan(height) {
+  return Math.ceil((Math.round(height * 0.92) + CARD_GAP) / ROW_UNIT);
+}
+
 function cardHtml(id, label, body, options = {}) {
   const note = options.note ? `<p class="cs-cardnote">${options.note}</p>` : '';
   const kind = options.kind ? ` cs-card-${options.kind}` : '';
-  return `<section class="cs-card${kind}" id="${id}"><header class="cs-tab"><h3>${label}</h3><a class="cs-anchor" href="#${id}" aria-label="Link to this card">#</a></header><div class="cs-cardbody">${body}</div>${note}</section>`;
+  const height = estimateHeight(body, options.note || '');
+  const rows = rowSpan(options.kind === 'wide' ? Math.round(height * 0.62) : height);
+  return `<section class="cs-card${kind}" id="${id}" style="--rows:${rows}"><header class="cs-tab"><h3>${label}</h3><a class="cs-anchor" href="#${id}" aria-label="Link to this card">#</a></header><div class="cs-cardbody">${body}</div>${note}</section>`;
 }
 
 function sectionHtml(id, title, cards) {
@@ -655,7 +724,7 @@ function lessonSections(card) {
     if (entry.fn) extra.push(`<pre class="cs-sig"><code>${escapeHtml(entry.fn.text)}</code></pre>`);
     return cardHtml(id(entry.term.term), inline(entry.term.term), `<p>${inline(clip(entry.term.means, LIMITS.termChars))}</p>${extra.join('')}`, { kind: 'concept' });
   });
-  chunk(rest, 6).forEach((group, index, all) => {
+  chunk(rest, Math.ceil(rest.length / Math.max(1, Math.ceil(rest.length / 6)))).forEach((group, index, all) => {
     ideas.push(cardHtml(id('terms'), all.length > 1 ? `Terms ${index + 1}/${all.length}` : 'Terms', rowsTable(group.map(item => [inline(item.term), inline(clip(item.means, LIMITS.termChars))])), { kind: 'terms' }));
   });
 
@@ -755,10 +824,9 @@ function phaseMain(phase, year) {
   const head = hero(`<a href="${BASE}">Cheat sheets</a> · Phase ${phase.number}`, phase.name, phase.hook, actions, phase);
   const jump = `<nav class="cs-jump" aria-label="Lessons in this phase">${phase.lessons.map(card => `<a href="#l${card.number}" title="${escapeHtml(card.title)}">${card.number}</a>`).join('')}</nav>`;
   const startBody = `<p class="cs-lead">${phase.lessons.length} lessons. Each card below is one lesson. Open a card title for the full lesson sheet.</p>${rowsTable([['First', `<a href="${phase.lessons[0].href}">${escapeHtml(phase.lessons[0].title)}</a>`], ['Last', `<a href="${phase.lessons[phase.lessons.length - 1].href}">${escapeHtml(phase.lessons[phase.lessons.length - 1].title)}</a>`], ['Before', phase.previous ? `<a href="${phase.previous.href}">Phase ${phase.previous.number} sheet</a>` : 'Nothing'], ['After', phase.next ? `<a href="${phase.next.href}">Phase ${phase.next.number} sheet</a>` : 'Nothing']])}`;
-  const start = sectionHtml('start-here', 'Start here', [cardHtml('this-phase', 'This phase', startBody, { kind: 'start' })]);
-  const lessons = sectionHtml('lessons', 'Lessons', phase.lessons.map(phaseLessonCard));
+  const lessons = sectionHtml('lessons', 'Lessons', [cardHtml('this-phase', 'Start here', startBody, { kind: 'start' })].concat(phase.lessons.map(phaseLessonCard)));
   const foot = sheetFooter([pagerLink(phase.previous, 'prev', phase.previous && `Phase ${phase.previous.number}`), `<a href="${BASE}">All cheat sheets</a>`, pagerLink(phase.next, 'next', phase.next && `Phase ${phase.next.number}`)], year, '');
-  return `<main id="main" class="cs-page cs-phase-page">${head}${jump}${start}${lessons}${foot}</main>`;
+  return `<main id="main" class="cs-page cs-phase-page">${head}${jump}${lessons}${foot}</main>`;
 }
 
 function phaseTile(phase) {
@@ -770,7 +838,8 @@ function indexMain(phases, year) {
   const search = `<div class="cs-search" role="search"><label for="cs-q" class="cs-kicker">Search ${total} lessons</label><input id="cs-q" type="search" autocomplete="off" spellcheck="false" placeholder="attention, LoRA, backprop, MCP" data-index="${BASE}/search.json"><p class="cs-search-count" aria-live="polite"></p><ol class="cs-results" hidden></ol></div>`;
   const head = `<header class="cs-hero cs-hero-index"><div class="cs-hero-text"><p class="cs-kicker">AI Engineering from Scratch</p><h1>Cheat sheets</h1><p class="cs-hook">One printable sheet for each phase and each lesson. Every sheet comes from the lesson text: formulas, key terms, functions and pitfalls.</p>${search}</div></header>`;
   const tiles = `<section class="cs-section" aria-labelledby="phases"><h2 class="cs-h" id="phases"><a href="#phases" aria-hidden="true" tabindex="-1">#</a> Phases</h2><ol class="cs-tiles">${phases.map(phaseTile).join('')}</ol></section>`;
-  const lists = phases.map(phase => `<section class="cs-card cs-card-list" id="p-${phase.slug}" style="--h:${phase.hue}"><header class="cs-tab"><h3><a href="${phase.href}">${escapeHtml(phase.glyph)} ${escapeHtml(phase.name)}</a></h3><a class="cs-anchor" href="#p-${phase.slug}" aria-label="Link to this card">#</a></header><ol class="cs-lessonlist">${phase.lessons.map(card => `<li><a href="${card.href}"><span>${card.number}</span>${escapeHtml(card.title)}</a></li>`).join('')}</ol></section>`).join('');
+  const listRows = phase => rowSpan(42 + phase.lessons.reduce((sum, card) => sum + 7 + 19 * linesOf(card.title, 38), 0));
+  const lists = phases.map(phase => `<section class="cs-card cs-card-list" id="p-${phase.slug}" style="--h:${phase.hue};--rows:${listRows(phase)}"><header class="cs-tab"><h3><a href="${phase.href}">${escapeHtml(phase.glyph)} ${escapeHtml(phase.name)}</a></h3><a class="cs-anchor" href="#p-${phase.slug}" aria-label="Link to this card">#</a></header><ol class="cs-lessonlist">${phase.lessons.map(card => `<li><a href="${card.href}"><span>${card.number}</span>${escapeHtml(card.title)}</a></li>`).join('')}</ol></section>`).join('');
   const all = `<section class="cs-section" aria-labelledby="lessons"><h2 class="cs-h" id="lessons"><a href="#lessons" aria-hidden="true" tabindex="-1">#</a> All lessons</h2><div class="cs-masonry">${lists}</div></section>`;
   const how = sectionHtml('how', 'How to use them', [cardHtml('reading', 'Reading', '<ul class="cs-list"><li>Read the lesson first. A sheet helps you remember. It does not teach.</li><li>Before you start a new phase, read the sheet of the phase before it.</li></ul>'), cardHtml('printing', 'Printing', '<ul class="cs-list"><li>Use the Print button or the print command of your browser.</li><li>Lesson sheets print upright. Phase sheets print sideways in five columns. Both fit A4 and Letter paper.</li></ul>'), cardHtml('updates', 'Updates', '<ul class="cs-list"><li>A script makes the sheets from the lesson text on every deploy.</li><li>To improve a sheet, add a Summary section to the lesson.</li></ul>')]);
   return `<main id="main" class="cs-page cs-index-page">${head}${tiles}${all}${how}${sheetFooter([], year, '')}</main>`;
@@ -783,7 +852,7 @@ function searchIndex(phases) {
     g: phase.glyph,
     h: phase.hue,
     u: phase.href,
-    l: phase.lessons.map(card => [card.number, card.title, card.href.slice(phase.href.length + 1), card.terms.slice(0, 8).map(item => plain(item.term)).join(', ')]),
+    l: phase.lessons.map(card => [card.number, card.title, card.href.slice(phase.href.length + 1), card.termNames.concat(card.formulas.map(item => item.label)).filter((value, index, list) => value && list.indexOf(value) === index).join(', ')]),
   }));
 }
 

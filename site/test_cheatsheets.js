@@ -210,7 +210,13 @@ test('sheets use anchored cards, copy buttons and a static search index', () => 
   const built = sheets.buildCheatsheets({ edition: '2026-01-01' });
   const lesson = built.pages.find(page => page.href === '/cheatsheets/math-foundations/01-linear-algebra-intuition').html;
   assert.match(lesson, /<section class="cs-section" aria-labelledby="start-here">/);
-  assert.match(lesson, /<section class="cs-card[^"]*" id="summary"><header class="cs-tab"><h3>Summary<\/h3><a class="cs-anchor" href="#summary"/);
+  assert.match(lesson, /<section class="cs-card cs-card-wide" id="summary" style="--rows:\d+"><header class="cs-tab"><h3>Summary<\/h3><a class="cs-anchor" href="#summary"/);
+  const phase = built.pages.find(page => page.href === '/cheatsheets/math-foundations').html;
+  const order = [...phase.matchAll(/ id="(l\d+|this-phase)" style="--rows:(\d+)"/g)];
+  assert.deepEqual(order.slice(0, 4).map(match => match[1]), ['this-phase', 'l01', 'l02', 'l03']);
+  assert.ok(order.every(match => Number(match[2]) >= 6 && Number(match[2]) < 400));
+  assert.deepEqual(built.phases.map(item => item.glyph).filter(glyph => !/^[A-Z]{2}$/.test(glyph)), []);
+  assert.equal(new Set(built.phases.map(item => item.glyph)).size, built.phases.length);
   assert.match(lesson, /<button type="button" class="cs-copy" data-copy/);
   const ids = [...lesson.matchAll(/ id="([^"]+)"/g)].map(match => match[1]);
   assert.equal(new Set(ids).size, ids.length);
@@ -227,4 +233,19 @@ test('Build It steps carry their lead sentence and code', () => {
   assert.equal(card.steps.length, 1);
   assert.equal(card.steps[0].heading, 'Step 1: Scores');
   assert.match(card.steps[0].code, /^class Attention:/);
+});
+
+test('search covers every key term and formula label', () => {
+  const built = sheets.buildCheatsheets({ edition: '2026-01-01' });
+  const index = JSON.parse(built.search);
+  const keywords = new Map(index.flatMap(phase => phase.l.map(lesson => [`${phase.u}/${lesson[2]}`, lesson[3]])));
+  let checked = 0;
+  for (const phase of built.phases) {
+    for (const card of phase.lessons) {
+      const words = keywords.get(card.href);
+      for (const term of card.termNames) assert.ok(words.includes(term), `${card.path}: ${term}`);
+      checked += card.termNames.length;
+    }
+  }
+  assert.ok(checked > 3000);
 });

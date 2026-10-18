@@ -107,7 +107,7 @@
           phases.forEach(function (phase) {
             entries.push({ phase: phase, title: phase.t, href: phase.u, meta: 'Phase ' + phase.n + ' sheet', text: (phase.t + ' phase ' + phase.n).toLowerCase() });
             phase.l.forEach(function (lesson) {
-              entries.push({ phase: phase, title: lesson[1], href: phase.u + '/' + lesson[2], meta: 'Phase ' + phase.n + ' · Lesson ' + lesson[0] + (lesson[3] ? ' · ' + lesson[3] : ''), text: (lesson[1] + ' ' + lesson[3] + ' ' + phase.t).toLowerCase() });
+              entries.push({ phase: phase, title: lesson[1], href: phase.u + '/' + lesson[2], meta: 'Phase ' + phase.n + ' · Lesson ' + lesson[0] + (lesson[3] ? ' · ' + (lesson[3].length > 140 ? lesson[3].slice(0, lesson[3].lastIndexOf(', ', 140)) + ', …' : lesson[3]) : ''), text: (lesson[1] + ' ' + lesson[3] + ' ' + phase.t).toLowerCase() });
             });
           });
           return entries;

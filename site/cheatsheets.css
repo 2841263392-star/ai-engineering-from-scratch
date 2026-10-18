@@ -237,20 +237,29 @@
 }
 
 .cs-masonry {
-  columns: 3 330px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  grid-auto-rows: minmax(8px, auto);
+  grid-auto-flow: row dense;
   column-gap: 20px;
 }
 
 .cs-card {
   position: relative;
-  display: block;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  grid-row-end: span var(--rows, 24);
+  min-width: 0;
   margin: 0 0 20px;
   break-inside: avoid;
   border: 1px solid var(--rule-soft);
   background: var(--bg);
   box-shadow: 3px 3px 0 var(--ph-line);
   scroll-margin-top: 100px;
+}
+
+.cs-card-wide {
+  grid-column: span 2;
 }
 
 .cs-card:target {
@@ -307,6 +316,7 @@
 }
 
 .cs-cardbody {
+  flex: 1 1 auto;
   padding: 8px 16px 14px;
   font-size: 0.9em;
 }
@@ -715,7 +725,7 @@
 
 .cs-tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 14px;
   margin: 0;
   padding: 0;
@@ -759,7 +769,8 @@
 
 .cs-tile-meta {
   color: var(--ink-mute);
-  font-size: 0.68em;
+  font-size: 0.66em;
+  white-space: nowrap;
 }
 
 .cs-lessonlist {
@@ -831,6 +842,12 @@
   color: var(--ph);
 }
 
+@media (max-width: 760px) {
+  .cs-card-wide {
+    grid-column: auto;
+  }
+}
+
 @media (max-width: 640px) {
   .cs-page {
     padding: 88px 14px 48px;
@@ -848,7 +865,11 @@
   }
 
   .cs-masonry {
-    columns: 1;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cs-card {
+    grid-row-end: auto;
   }
 
   .cs-t th {
@@ -901,7 +922,7 @@
   .cs-anchor,
   .cs-copy,
   .cs-h a,
-  .cs-phase-page .cs-section:first-of-type,
+  .cs-phase-page #this-phase,
   .cs-phase-page #lessons,
   .cs-index-page .cs-section:last-of-type {
     display: none !important;
@@ -944,26 +965,46 @@
   }
 
   .cs-h {
-    break-after: avoid;
     margin-bottom: 5px;
     font-size: 1.5em;
   }
 
   .cs-masonry {
-    columns: 3;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-flow: row;
+    align-items: start;
     column-gap: 10px;
-    column-fill: balance;
   }
 
   .cs-phase-page .cs-masonry,
   .cs-index-page .cs-masonry {
-    columns: 5;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     column-gap: 8px;
   }
 
-  .cs-phase-page .cs-card,
-  .cs-index-page .cs-card {
+  .cs-masonry > .cs-card {
+    grid-row-end: auto;
+  }
+
+  .cs-index-page .cs-card,
+  .cs-phase-page .cs-card {
     break-inside: auto;
+  }
+
+  .cs-phase-page .cs-t tr,
+  .cs-phase-page .cs-t th,
+  .cs-phase-page .cs-t td {
+    display: block;
+    width: auto;
+  }
+
+  .cs-phase-page .cs-t th {
+    padding: 3px 0 0;
+    border-bottom: 0;
+  }
+
+  .cs-phase-page .cs-t td {
+    padding: 0 0 3px;
   }
 
   .cs-phase-page .cs-tab,

@@ -89,13 +89,16 @@
 }
 
 .cs-print-edition .cs-masonry {
-  columns: 5;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-auto-flow: row;
+  align-items: start;
   column-gap: 8pt;
-  column-fill: balance;
 }
 
 .cs-print-edition .cs-card {
   position: static;
+  grid-row-end: auto;
   break-inside: auto;
   box-shadow: none;
 }
@@ -140,4 +143,20 @@
 
 .cs-print-edition .cs-colophon p {
   margin: 0 0 8pt;
+}
+
+.cs-print-edition .cs-t tr,
+.cs-print-edition .cs-t th,
+.cs-print-edition .cs-t td {
+  display: block;
+  width: auto;
+}
+
+.cs-print-edition .cs-t th {
+  padding: 3pt 0 0;
+  border-bottom: 0;
+}
+
+.cs-print-edition .cs-t td {
+  padding: 0 0 3pt;
 }
