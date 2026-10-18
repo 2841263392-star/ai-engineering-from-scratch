@@ -22,7 +22,7 @@
 .cs-print-edition .cs-page {
   min-height: 0;
   padding: 0;
-  font-size: 7.3pt;
+  font-size: 6.8pt;
 }
 
 .cs-print-edition .cs-cover {
@@ -84,32 +84,41 @@
   break-before: page;
 }
 
-.cs-print-edition .cs-head {
-  gap: 3pt;
-  margin-bottom: 8pt;
-  padding-bottom: 6pt;
+.cs-print-edition .cs-hero h1 {
+  font-size: 22pt;
 }
 
-.cs-print-edition .cs-head h1 {
-  font-size: 24pt;
-}
-
-.cs-print-edition .cs-head .cs-hook {
-  font-size: 9pt;
-}
-
-.cs-print-edition .cs-columns {
+.cs-print-edition .cs-masonry {
   columns: 5;
-  column-gap: 11pt;
+  column-gap: 8pt;
+  column-fill: balance;
 }
 
 .cs-print-edition .cs-card {
-  margin-bottom: 6pt;
-  padding-top: 3pt;
+  position: static;
+  break-inside: auto;
+  box-shadow: none;
 }
 
-.cs-print-edition .cs-card h2 {
-  font-size: 8.4pt;
+.cs-print-edition .cs-tab,
+.cs-print-edition .cs-t tr,
+.cs-print-edition .math-display,
+.cs-print-edition .cs-mini-sigs {
+  break-inside: avoid;
+  break-after: avoid;
+}
+
+.cs-print-edition .cs-cardbody {
+  padding: 4px 8px 7px;
+}
+
+.cs-print-edition .cs-hero {
+  gap: 10px;
+  padding: 0 0 6px;
+}
+
+.cs-print-edition .cs-glyph {
+  box-shadow: none;
 }
 
 .cs-print-edition .cs-mini-math {

@@ -70,8 +70,98 @@
     });
   }
 
+  function bindCopy() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-copy]'), function (button) {
+      button.addEventListener('click', function () {
+        var code = button.parentNode.querySelector('code');
+        if (!code || !navigator.clipboard) return;
+        navigator.clipboard.writeText(code.textContent).then(function () {
+          button.textContent = 'Copied';
+          setTimeout(function () { button.textContent = 'Copy'; }, 1400);
+        }, function () {});
+      });
+    });
+  }
+
+  function element(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text != null) node.textContent = text;
+    return node;
+  }
+
+  function bindSearch() {
+    var input = document.getElementById('cs-q');
+    if (!input) return;
+    var list = document.querySelector('.cs-results');
+    var count = document.querySelector('.cs-search-count');
+    var entries = null;
+    var loading = null;
+
+    function load() {
+      if (!loading) {
+        loading = fetch(input.getAttribute('data-index')).then(function (response) {
+          return response.json();
+        }).then(function (phases) {
+          entries = [];
+          phases.forEach(function (phase) {
+            entries.push({ phase: phase, title: phase.t, href: phase.u, meta: 'Phase ' + phase.n + ' sheet', text: (phase.t + ' phase ' + phase.n).toLowerCase() });
+            phase.l.forEach(function (lesson) {
+              entries.push({ phase: phase, title: lesson[1], href: phase.u + '/' + lesson[2], meta: 'Phase ' + phase.n + ' · Lesson ' + lesson[0] + (lesson[3] ? ' · ' + lesson[3] : ''), text: (lesson[1] + ' ' + lesson[3] + ' ' + phase.t).toLowerCase() });
+            });
+          });
+          return entries;
+        }).catch(function () {
+          loading = null;
+          return [];
+        });
+      }
+      return loading;
+    }
+
+    function render() {
+      var words = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+      while (list.firstChild) list.removeChild(list.firstChild);
+      if (!words.length || !entries) {
+        list.hidden = true;
+        count.textContent = '';
+        return;
+      }
+      var found = entries.filter(function (entry) {
+        return words.every(function (word) { return entry.text.indexOf(word) >= 0; });
+      });
+      found.slice(0, 40).forEach(function (entry) {
+        var item = element('li');
+        var link = element('a');
+        link.href = entry.href;
+        var glyph = element('span', 'cs-glyph', entry.phase.g);
+        glyph.style.setProperty('--h', entry.phase.h);
+        link.style.setProperty('--h', entry.phase.h);
+        link.appendChild(glyph);
+        link.appendChild(element('b', '', entry.title));
+        link.appendChild(element('small', '', entry.meta));
+        item.appendChild(link);
+        list.appendChild(item);
+      });
+      list.hidden = !found.length;
+      count.textContent = found.length ? found.length + (found.length === 1 ? ' match' : ' matches') + (found.length > 40 ? ', first 40 shown' : '') : 'No match. Try a shorter word.';
+    }
+
+    input.addEventListener('focus', load);
+    input.addEventListener('input', function () {
+      load().then(render);
+    });
+    input.addEventListener('keydown', function (event) {
+      if (event.key !== 'Enter') return;
+      var first = list.querySelector('a');
+      if (first) window.location.href = first.href;
+    });
+  }
+
   function start() {
     bindPrint();
+    bindCopy();
+    bindSearch();
     renderMath();
   }
 

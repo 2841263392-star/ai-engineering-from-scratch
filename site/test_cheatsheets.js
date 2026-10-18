@@ -205,3 +205,26 @@ test('one-line defs, method snippets and bullet key terms parse cleanly', () => 
   const card = sheets.extractLesson('# T\n\n> H.\n\n## Key Terms\n\n- **Resource:** Content that a server exposes.\n- **Prompt.** A message template.\n', {});
   assert.deepEqual(card.terms, [{ term: 'Resource', means: 'Content that a server exposes.' }, { term: 'Prompt', means: 'A message template.' }]);
 });
+
+test('sheets use anchored cards, copy buttons and a static search index', () => {
+  const built = sheets.buildCheatsheets({ edition: '2026-01-01' });
+  const lesson = built.pages.find(page => page.href === '/cheatsheets/math-foundations/01-linear-algebra-intuition').html;
+  assert.match(lesson, /<section class="cs-section" aria-labelledby="start-here">/);
+  assert.match(lesson, /<section class="cs-card[^"]*" id="summary"><header class="cs-tab"><h3>Summary<\/h3><a class="cs-anchor" href="#summary"/);
+  assert.match(lesson, /<button type="button" class="cs-copy" data-copy/);
+  const ids = [...lesson.matchAll(/ id="([^"]+)"/g)].map(match => match[1]);
+  assert.equal(new Set(ids).size, ids.length);
+  const index = JSON.parse(built.search);
+  assert.equal(index.length, built.phases.length);
+  assert.equal(index.reduce((sum, phase) => sum + phase.l.length, 0), built.phases.reduce((sum, phase) => sum + phase.lessons.length, 0));
+  for (const phase of index) for (const lesson of phase.l) assert.ok(built.pages.some(page => page.href === `${phase.u}/${lesson[2]}`));
+  assert.ok(built.images.every(image => fs.existsSync(image.file)));
+  assert.doesNotMatch(built.pages.map(page => page.html).join(''), /&amp;#39;|&#<span/);
+});
+
+test('Build It steps carry their lead sentence and code', () => {
+  const card = sheets.extractLesson(LESSON, {});
+  assert.equal(card.steps.length, 1);
+  assert.equal(card.steps[0].heading, 'Step 1: Scores');
+  assert.match(card.steps[0].code, /^class Attention:/);
+});
