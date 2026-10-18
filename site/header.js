@@ -272,6 +272,7 @@
     ensureNavigationLink(nav, 'how-to-learn.html', 'How to Learn', '');
     ensureNavigationLink(nav, 'projects.html', 'Projects', '');
     ensureNavigationLink(nav, 'manuals.html', 'Manuals', '');
+    ensureNavigationLink(nav, '/cheatsheets', 'Cheat Sheets', '');
     ensureNavigationLink(nav, 'skills.html', 'Skills', '');
     ensureNavigationLink(nav, '/blogs', 'Blogs & Guides', '');
     ensureNavigationLink(nav, 'certifications.html', 'Certifications', 'header-mobile-only');
