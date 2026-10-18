@@ -5,7 +5,7 @@ const { representation } = require('../lib/agent-http');
 const { lessonDocumentSeo, seoTitleFor } = require('../lib/lesson-document');
 const { cardTags, cardUrl, lessonCard } = require('../lib/og-cards');
 const { readTranslation: readTranslationFromSource, TRANSLATION_LANGUAGES, isIndexedLanguage, translationsOf, lessonUrl, NATIVE_NAMES, RTL_LANGUAGES, OG_LOCALES } = require('../lib/lesson-translations');
-const { phaseHubPath, phaseLabel } = require('../lib/hub-routes');
+const { phaseHubPath, cheatsheetPath, phaseLabel } = require('../lib/hub-routes');
 
 const REPO_ROOT = path.join(__dirname, '..');
 const ORIGIN = 'https://aiengineeringfromscratch.com';
@@ -343,6 +343,13 @@ function lessonFallback(entry, lessonPath, contextParams, page, body) {
   ].filter(Boolean).join('\n');
 }
 
+function sheetLinks(lessonPath) {
+  const lesson = cheatsheetPath(lessonPath);
+  if (!lesson || lesson.split('/').length !== 4) return '';
+  const phase = lesson.slice(0, lesson.lastIndexOf('/'));
+  return `        <p class="lesson-hub-terms"><span>Cheat sheets:</span> <a href="${escapeHtml(lesson)}">this lesson</a>, <a href="${escapeHtml(phase)}">this phase</a></p>`;
+}
+
 function lessonHubLinks(entry, page, lessonTerms) {
   if (!page.hub || page.lang !== 'en') return '';
   const terms = lessonTerms && Object.prototype.hasOwnProperty.call(lessonTerms, entry.path) && Array.isArray(lessonTerms[entry.path])
@@ -355,6 +362,7 @@ function lessonHubLinks(entry, page, lessonTerms) {
     '      <nav class="lesson-hub-links" aria-label="Phase and glossary links">',
     `        <ol class="lesson-hub-trail"><li><a href="/">Home</a></li><li><a href="${escapeHtml(page.hub)}">${escapeHtml(contextLabel(entry.context))}</a></li><li aria-current="page">${escapeHtml(page.heading)}</li></ol>`,
     links.length ? `        <p class="lesson-hub-terms"><span>Terms in this lesson:</span> ${links.join(', ')}</p>` : '',
+    sheetLinks(entry.path),
     '      </nav>',
   ].filter(Boolean).join('\n');
 }

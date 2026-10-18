@@ -164,6 +164,18 @@
       "destination": "/hubs/phase/:page.html"
     },
     {
+      "source": "/cheatsheets",
+      "destination": "/cheatsheets/index.html"
+    },
+    {
+      "source": "/cheatsheets/:phase([a-z0-9-]+)",
+      "destination": "/cheatsheets/:phase/index.html"
+    },
+    {
+      "source": "/cheatsheets/:phase([a-z0-9-]+)/:lesson([a-z0-9-]+)",
+      "destination": "/cheatsheets/:phase/:lesson.html"
+    },
+    {
       "source": "/roadmap",
       "has": [
         {
@@ -439,6 +451,15 @@
       ]
     },
     {
+      "source": "/cheatsheets/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
       "source": "/(glossary|phase)/([a-z0-9-]+)",
       "headers": [
         {
@@ -584,6 +605,16 @@
     {
       "source": "/hubs/phase/:page([a-z0-9-]+).html",
       "destination": "/phase/:page",
+      "permanent": true
+    },
+    {
+      "source": "/cheatsheets/:phase([a-z0-9-]+)/index.html",
+      "destination": "/cheatsheets/:phase",
+      "permanent": true
+    },
+    {
+      "source": "/cheatsheets/:phase([a-z0-9-]+)/:lesson([a-z0-9-]+).html",
+      "destination": "/cheatsheets/:phase/:lesson",
       "permanent": true
     },
     {

@@ -610,6 +610,9 @@
     extractMath: extractMath,
     splitInlineMath: splitInlineMath,
     slugify: slugify,
-    escapeAttr: escapeAttr
+    escapeAttr: escapeAttr,
+    inlineFormat: inlineFormat,
+    splitTableRow: splitTableRow,
+    highlightSyntax: highlightSyntax
   };
 }));

@@ -1,0 +1,723 @@
+.cs-body {
+  --cs-ink: var(--ink);
+  --cs-soft: var(--ink-soft);
+  --cs-mute: var(--ink-mute);
+  --cs-line: var(--rule-soft);
+  --cs-accent: var(--blueprint);
+  --cs-tint: var(--blueprint-tint);
+  --cs-code: var(--code-bg);
+  --cs-string: #8a5a00;
+  background: var(--bg);
+}
+
+[data-theme="dark"] .cs-body,
+.cs-body[data-theme="dark"] {
+  --cs-string: #d4a83d;
+}
+
+.cs-page :where(p) {
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+.cs-page {
+  min-height: 100vh;
+  padding: 104px 20px 72px;
+}
+
+.cs-sheet {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 32px 22px;
+  border: 1.5px solid var(--cs-ink);
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--paper-rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--paper-rule) 1px, transparent 1px);
+  background-size: 24px 24px;
+  box-shadow: var(--shadow-hard-lg);
+}
+
+.cs-lesson-page .cs-sheet {
+  max-width: 1040px;
+}
+
+.cs-head {
+  display: grid;
+  gap: 10px;
+  padding-bottom: 18px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--cs-ink);
+}
+
+.cs-kicker,
+.cs-label,
+.cs-meta,
+.cs-stats,
+.cs-actions,
+.cs-num,
+.cs-note,
+.cs-foot,
+.cs-formulas dt {
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+}
+
+.cs-kicker {
+  margin: 0;
+  color: var(--cs-accent);
+  font-size: 0.72em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.cs-head h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 3.8rem);
+  font-weight: 400;
+  line-height: 0.92;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.cs-hook {
+  margin: 0;
+  max-width: 64ch;
+  color: var(--cs-soft);
+  font-family: var(--font-body);
+  font-size: 1.05em;
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.cs-meta,
+.cs-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.7em;
+}
+
+.cs-meta li,
+.cs-stats li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 3px 8px;
+  border: 1px solid var(--cs-line);
+  background: var(--bg);
+  color: var(--cs-ink);
+}
+
+.cs-meta span {
+  color: var(--cs-mute);
+  text-transform: uppercase;
+  font-size: 0.88em;
+}
+
+.cs-stats strong {
+  color: var(--cs-accent);
+}
+
+.cs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 0;
+  font-size: 0.72em;
+  text-transform: uppercase;
+}
+
+.cs-actions a,
+.cs-print {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--cs-ink);
+  background: var(--bg);
+  color: var(--cs-ink);
+  font: inherit;
+  letter-spacing: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--motion-press) var(--ease-out), background-color var(--motion-feedback) var(--ease-out);
+}
+
+.cs-actions a:hover,
+.cs-print:hover {
+  background: var(--cs-tint);
+}
+
+.cs-actions a:active,
+.cs-print:active {
+  transform: translate(1px, 1px);
+}
+
+.cs-actions a:first-child {
+  border-color: var(--cs-accent);
+  background: var(--cs-accent);
+  color: #fff;
+}
+
+.cs-grid {
+  columns: 2 330px;
+  column-gap: 28px;
+  column-rule: 1px solid var(--cs-line);
+}
+
+.cs-panel {
+  break-inside: avoid;
+  margin: 0 0 18px;
+  padding-top: 8px;
+  border-top: 1.5px solid var(--cs-ink);
+}
+
+.cs-wide {
+  column-span: all;
+}
+
+.cs-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  color: var(--cs-ink);
+  font-size: 0.68em;
+  font-weight: 700;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.cs-label::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background: var(--cs-accent);
+}
+
+.cs-note {
+  margin: 0 0 6px;
+  color: var(--cs-mute);
+  font-size: 0.66em;
+}
+
+.cs-note code {
+  font-size: 1em;
+}
+
+.cs-page code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  overflow-wrap: anywhere;
+}
+
+.cs-terms,
+.cs-formulas {
+  margin: 0;
+}
+
+.cs-terms > div {
+  display: grid;
+  grid-template-columns: minmax(6.5em, 34%) 1fr;
+  gap: 10px;
+  padding: 5px 0;
+  border-bottom: 1px dotted var(--cs-line);
+}
+
+.cs-terms > div:last-child {
+  border-bottom: 0;
+}
+
+.cs-terms dt {
+  font-family: var(--font-body);
+  font-size: 0.86em;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.cs-terms dd {
+  margin: 0;
+  color: var(--cs-soft);
+  font-size: 0.84em;
+  line-height: 1.38;
+}
+
+.cs-formulas > div {
+  padding: 6px 0 8px;
+  border-bottom: 1px dotted var(--cs-line);
+}
+
+.cs-formulas > div:last-child {
+  border-bottom: 0;
+}
+
+.cs-formulas dt {
+  margin-bottom: 4px;
+  color: var(--cs-mute);
+  font-size: 0.64em;
+  text-transform: uppercase;
+}
+
+.cs-formulas dd {
+  margin: 0;
+  font-size: 0.92em;
+}
+
+.cs-page .math-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 0;
+  text-align: left;
+}
+
+.cs-page .math-display:not([data-math-rendered]),
+.cs-page .math-inline:not([data-math-rendered]) {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  white-space: pre-wrap;
+}
+
+.cs-page .katex-display {
+  margin: 0;
+  text-align: left;
+}
+
+.cs-page .katex-display > .katex {
+  text-align: left;
+}
+
+.cs-page .katex {
+  font-size: 1.02em;
+  color: inherit;
+}
+
+.cs-sigs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 0.76em;
+  line-height: 1.4;
+}
+
+.cs-sigs li {
+  padding: 4px 0 4px 10px;
+  border-left: 2px solid var(--cs-accent);
+  margin-bottom: 4px;
+}
+
+.cs-sigs code {
+  font-size: 1em;
+  background: none;
+  color: var(--cs-ink);
+}
+
+.cs-methods {
+  display: block;
+  color: var(--cs-mute);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+}
+
+.cs-code {
+  margin: 0;
+  padding: 9px 11px;
+  overflow-x: auto;
+  border-left: 2px solid var(--cs-accent);
+  background: var(--cs-code);
+  font-size: 0.74em;
+  line-height: 1.45;
+}
+
+.cs-code code {
+  display: block;
+  background: none;
+  color: var(--cs-ink);
+  font-size: 1em;
+  white-space: pre;
+  overflow-wrap: normal;
+}
+
+.cs-page .syn-keyword { color: var(--cs-accent); font-weight: 500; }
+.cs-page .syn-string { color: var(--cs-string); }
+.cs-page .syn-number { color: var(--cs-string); }
+.cs-page .syn-comment { color: var(--cs-mute); font-style: italic; }
+
+.cs-list {
+  margin: 0;
+  padding-left: 1.1em;
+  font-size: 0.86em;
+  line-height: 1.42;
+}
+
+.cs-list li {
+  margin-bottom: 4px;
+}
+
+.cs-list li::marker {
+  color: var(--cs-accent);
+}
+
+.cs-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cs-files code {
+  display: inline-block;
+  padding: 2px 6px;
+  border: 1px solid var(--cs-line);
+  font-size: 0.72em;
+}
+
+.cs-p-summary table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86em;
+}
+
+.cs-p-summary th,
+.cs-p-summary td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--cs-line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.cs-p-summary th {
+  font-family: var(--font-mono);
+  font-size: 0.66em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cs-mute);
+}
+
+.cs-p-summary p,
+.cs-p-summary ul {
+  margin: 0 0 8px;
+  font-size: 0.88em;
+}
+
+.cs-p-summary .table-wrap,
+.cs-p-summary .table-scroll {
+  overflow-x: auto;
+}
+
+.cs-columns {
+  columns: 280px;
+  column-gap: 22px;
+  column-rule: 1px solid var(--cs-line);
+}
+
+.cs-card {
+  break-inside: avoid;
+  margin: 0 0 14px;
+  padding-top: 8px;
+  border-top: 1.5px solid var(--cs-ink);
+}
+
+.cs-card h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 4px;
+  font-family: var(--font-body);
+  font-size: 0.98em;
+  font-weight: 700;
+  line-height: 1.22;
+}
+
+.cs-card h2 a {
+  color: var(--cs-ink);
+  text-decoration: none;
+}
+
+.cs-card h2 a:hover {
+  color: var(--cs-accent);
+  text-decoration: underline;
+}
+
+.cs-num {
+  flex: none;
+  min-width: 2.2em;
+  padding: 1px 4px;
+  background: var(--cs-accent);
+  color: #fff;
+  font-size: 0.66em;
+  font-weight: 700;
+  text-align: center;
+}
+
+.cs-card .cs-hook {
+  margin-bottom: 6px;
+  font-size: 0.82em;
+  line-height: 1.35;
+}
+
+.cs-card .cs-terms > div {
+  grid-template-columns: minmax(5.5em, 36%) 1fr;
+  gap: 8px;
+  padding: 3px 0;
+}
+
+.cs-card .cs-terms dt {
+  font-size: 0.76em;
+}
+
+.cs-card .cs-terms dd {
+  font-size: 0.74em;
+  line-height: 1.32;
+}
+
+.cs-card .cs-list {
+  font-size: 0.78em;
+}
+
+.cs-mini-math {
+  display: grid;
+  gap: 2px;
+  margin: 4px 0 6px;
+  padding: 4px 8px;
+  overflow: hidden;
+  background: var(--cs-tint);
+  font-size: 0.78em;
+}
+
+.cs-mini-sigs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 6px 0 0;
+}
+
+.cs-mini-sigs code {
+  padding: 1px 5px;
+  border: 1px solid var(--cs-line);
+  background: var(--bg);
+  font-size: 0.66em;
+  line-height: 1.5;
+}
+
+.cs-index {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 8px 18px;
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
+}
+
+.cs-index a,
+.cs-index li > span:first-child {
+  text-decoration: none;
+}
+
+.cs-index a,
+.cs-print-edition .cs-index li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--cs-line);
+  color: var(--cs-ink);
+}
+
+.cs-index a:hover .cs-index-name {
+  color: var(--cs-accent);
+  text-decoration: underline;
+}
+
+.cs-index-name {
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.cs-index-count {
+  color: var(--cs-mute);
+  font-family: var(--font-mono);
+  font-size: 0.68em;
+}
+
+.cs-empty {
+  color: var(--cs-mute);
+}
+
+.cs-foot {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 2px solid var(--cs-ink);
+  font-size: 0.68em;
+}
+
+.cs-pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.cs-pager a {
+  color: var(--cs-accent);
+}
+
+.cs-stamp {
+  font-family: var(--font-mono);
+  font-size: inherit;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin: 0;
+  color: var(--cs-mute);
+  text-transform: uppercase;
+}
+
+.cs-stamp span:first-child {
+  color: var(--cs-accent);
+}
+
+@media (max-width: 640px) {
+  .cs-page {
+    padding: 88px 12px 48px;
+  }
+
+  .cs-sheet {
+    padding: 18px 16px 16px;
+    box-shadow: var(--shadow-hard);
+  }
+
+  .cs-terms > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
+
+@media print {
+  .cs-body {
+    --bg: #ffffff;
+    --ink: #111111;
+    --ink-soft: #333333;
+    --ink-mute: #666666;
+    --rule-soft: rgba(0, 0, 0, 0.18);
+    --paper-rule: transparent;
+    --blueprint: #2f49e0;
+    --blueprint-tint: rgba(47, 73, 224, 0.07);
+    --code-bg: #f3f2ec;
+    --cs-string: #7a4f00;
+    background: #fff;
+    color: #111;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  @page {
+    margin: 10mm;
+  }
+
+  @page phase {
+    size: landscape;
+    margin: 8mm;
+  }
+
+  .cs-phase-page {
+    page: phase;
+  }
+
+  .site-header,
+  .skip-link,
+  .cs-actions,
+  .cs-pager,
+  .cs-index-page .cs-wide {
+    display: none !important;
+  }
+
+  .cs-page {
+    min-height: 0;
+    padding: 0;
+  }
+
+  .cs-sheet {
+    max-width: none;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    background: none;
+  }
+
+  .cs-head {
+    gap: 4px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+  }
+
+  .cs-head h1 {
+    font-size: 26pt;
+  }
+
+  .cs-hook {
+    font-size: 9.5pt;
+  }
+
+  .cs-lesson-page {
+    font-size: 8.6pt;
+  }
+
+  .cs-lesson-page .cs-grid {
+    column-gap: 16px;
+  }
+
+  .cs-phase-page {
+    font-size: 7.4pt;
+  }
+
+  .cs-phase-page .cs-columns {
+    columns: 5;
+    column-gap: 12px;
+  }
+
+  .cs-card {
+    margin-bottom: 7px;
+    padding-top: 4px;
+  }
+
+  .cs-card h2 {
+    font-size: 8.6pt;
+  }
+
+  .cs-panel {
+    margin-bottom: 10px;
+  }
+
+  .cs-code {
+    font-size: 7.2pt;
+    white-space: pre-wrap;
+  }
+
+  .cs-code code {
+    white-space: pre-wrap;
+  }
+
+  .cs-page .math-display {
+    overflow: visible;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
