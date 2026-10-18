@@ -837,6 +837,7 @@ function blockFacts(block) {
 
 function checkTopic(topic, root = REPO_ROOT, cache = new Map()) {
   const problems = topic.errors.map(error => `${topic.file}: ${error}`);
+  if (problems.length) return problems;
   for (const source of topic.sources) {
     if (!fs.existsSync(path.join(root, source))) problems.push(`${topic.file}: source ${source} does not exist`);
   }
@@ -981,6 +982,10 @@ function main(argv) {
     const topic = parseTopic(fs.readFileSync(file, 'utf8'), file);
     topic.file = path.relative(REPO_ROOT, file);
     const problems = checkTopic(topic);
+    if (topic.errors.length) {
+      for (const problem of problems) console.error(`  ${problem}`);
+      return 1;
+    }
     const { pages, used } = layout(topic);
     console.log(`${topic.file}: ${topic.blocks.length} blocks on ${pages} page(s). Height used per page: ${used.map((value, index) => `${value} of ${PAGE_BUDGETS[index] || PAGE_BUDGETS[PAGE_BUDGETS.length - 1]}px`).join(', ')}.`);
     for (const problem of problems) console.error(`  ${problem}`);
