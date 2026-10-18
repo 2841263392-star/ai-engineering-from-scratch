@@ -15,13 +15,14 @@ Paths are relative to /private/tmp/aiefs-cheatsheets/manuals/sglang-101/. S = se
 - fixed request rate --request-rate (default inf): S/5-1:42
 - docker stop sends SIGTERM to main process: S/7-1:118
 
-## Start and benchmark (annotated-code, 13 lines, plain commands with backslash continuation)
+## Start the server (terminal 1) (annotated-code, 5 lines)
 - sglang serve --model-path --port 30000 --enable-cache-report --enable-metrics --mem-fraction-static 0.4: O/server-default.command.txt:1
 - cache report and metrics meaning: S/r-1:35,57. fraction meaning: S/3-2:55
+
+## Benchmark it (terminal 2) (annotated-code, 5 lines)
 - benchmark --backend sglang --port 30000 --dataset-name random --random-input-len 512 --random-output-len 128 --random-range-ratio 1.0: C/run.py:23,26, S/5-1:27-29
 - default range ratio 0.0 halves prompts: S/5-1:40,45
 - --num-prompts 32 --max-concurrency 8: C/run.py:34. 255.63 tok/s: O/bench-random-c8.txt:23
-- --request-rate default inf: S/5-1:42
 
 ## Key flags (command-table, 8)
 - --mem-fraction-static: S/3-2:55
