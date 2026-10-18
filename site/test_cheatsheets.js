@@ -201,6 +201,8 @@ test('the print edition carries the attribution and renders math ahead of time',
   assert.match(html, /<meta name="subject" content="[^"]+edition 2026-10-01">/);
   assert.match(html, /<meta name="keywords" content="[^"]+">/);
   assert.match(html, /class="cs-cover-copy">© 2026 Rohit Ghumare · MIT license</);
+  const printer = fs.readFileSync(path.join(__dirname, '..', 'scripts', 'print_cheatsheets.js'), 'utf8');
+  assert.match(printer, /querySelector\('\.cs-cover-copy'\)/);
   assert.match(html, /Keep this page and the copyright line with them/);
   const fake = { renderToString: (tex, options) => `<span class="katex">${options.displayMode ? 'D' : 'I'}:${tex}</span>` };
   const rendered = sheets.prerenderMath('<head></head><span class="math-inline" data-math="inline">a &lt; b</span>', fake);

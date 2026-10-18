@@ -26,7 +26,7 @@ async function printPdf(input, output, chrome) {
       title: document.title,
       subject: (document.querySelector('meta[name="subject"]') || {}).content || '',
       keywords: (document.querySelector('meta[name="keywords"]') || {}).content || '',
-      copy: (document.querySelector('.cs-copy') || {}).textContent || '',
+      copy: (document.querySelector('.cs-cover-copy') || {}).textContent || '',
     }));
     const pdf = await page.pdf({
       preferCSSPageSize: true,
