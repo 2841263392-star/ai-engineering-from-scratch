@@ -1,6 +1,7 @@
 ---
 id: pytorch-essentials
 title: PyTorch Essentials
+code: PT
 subtitle: Tensors, autograd, nn.Module, the training loop, DataLoader and devices, from the lessons.
 hue: 60
 sources: phases/03-deep-learning-core/11-intro-to-pytorch, phases/03-deep-learning-core/13-debugging-neural-networks, phases/00-setup-and-tooling/03-gpu-setup-and-cloud, phases/00-setup-and-tooling/12-debugging-and-profiling

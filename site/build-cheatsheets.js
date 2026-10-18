@@ -1008,6 +1008,8 @@ function main(argv) {
     for (const topic of first.topics) problems.push(...checkTopic(topic, REPO_ROOT, cache));
     const ids = first.topics.map(topic => topic.id);
     if (new Set(ids).size !== ids.length) problems.push('two topics share an id');
+    const codes = first.topics.map(topic => topic.code);
+    if (new Set(codes).size !== codes.length) problems.push('two topics share a code');
     for (const item of checkLinks(first)) problems.push(`broken link on ${item.page}: ${item.href}`);
     console.log(`Checked ${first.topics.length} cheat sheet topics (${first.topics.reduce((sum, topic) => sum + topic.blocks.length, 0)} blocks).`);
     for (const problem of problems) console.error(`  ${problem}`);

@@ -25,7 +25,7 @@ from: manuals/sglang-101/sections/2-1-sglang-serve-and-the-three-processes.md
     ```
 ```
 
-The front matter has five keys. `id`, `title` and `subtitle` are text. The subtitle has a limit of 120 characters, so that it fits on one line. `hue` is a number from 0 to 359. It sets the colour of the poster. `sources` lists the lessons and manuals that the topic covers. Lesson pages link to the sheet from these paths.
+The front matter has five keys. `id`, `title` and `subtitle` are text. The subtitle has a limit of 120 characters, so that it fits on one line. `hue` is a number from 0 to 359. It sets the colour of the poster. `sources` lists the lessons and manuals that the topic covers. Lesson pages link to the sheet from these paths. The optional key `code` sets the two letters on the tile. The default is the initials of the title. Each topic needs a different code.
 
 Each block starts with a `## ` heading. The heading is the label on the coloured bar. Lines of `key: value` follow the heading. A blank line ends them. The body comes after the blank line.
 
