@@ -1,0 +1,134 @@
+@page {
+  size: letter landscape;
+  margin: 0.42in 0.42in 0.55in;
+}
+
+.cs-print-edition {
+  --bg: #ffffff;
+  --ink: #111111;
+  --ink-soft: #333333;
+  --ink-mute: #666666;
+  --rule-soft: rgba(0, 0, 0, 0.18);
+  --paper-rule: transparent;
+  --blueprint: #2f49e0;
+  --blueprint-tint: rgba(47, 73, 224, 0.07);
+  --code-bg: #f3f2ec;
+  --cs-string: #7a4f00;
+  margin: 0;
+  background: #ffffff;
+  color: #111111;
+}
+
+.cs-print-edition .cs-page {
+  min-height: 0;
+  padding: 0;
+  font-size: 7.3pt;
+}
+
+.cs-print-edition .cs-cover {
+  break-after: page;
+  padding-top: 0.2in;
+  font-size: 10pt;
+}
+
+.cs-cover-stamp {
+  display: flex;
+  justify-content: space-between;
+  gap: 16pt;
+  padding-bottom: 6pt;
+  border-bottom: 1.5pt solid #111111;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7pt;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cs-print-edition .cs-cover h1 {
+  margin: 24pt 0 8pt;
+  font-family: var(--font-display);
+  font-size: 72pt;
+  font-weight: 400;
+  line-height: 0.9;
+  color: #2f49e0;
+}
+
+.cs-print-edition .cs-cover .cs-hook {
+  margin-bottom: 18pt;
+  font-size: 13pt;
+}
+
+.cs-print-edition .cs-cover .cs-index {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.cs-cover-edition {
+  margin-top: 18pt;
+  padding-top: 6pt;
+  border-top: 0.8pt solid #2f49e0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7.5pt;
+  letter-spacing: 0.06em;
+}
+
+.cs-cover-edition p {
+  margin: 0 0 4pt;
+}
+
+.cs-cover-edition a,
+.cs-colophon a {
+  color: #2f49e0;
+  text-decoration: none;
+}
+
+.cs-print-phase {
+  break-before: page;
+}
+
+.cs-print-edition .cs-head {
+  gap: 3pt;
+  margin-bottom: 8pt;
+  padding-bottom: 6pt;
+}
+
+.cs-print-edition .cs-head h1 {
+  font-size: 24pt;
+}
+
+.cs-print-edition .cs-head .cs-hook {
+  font-size: 9pt;
+}
+
+.cs-print-edition .cs-columns {
+  columns: 5;
+  column-gap: 11pt;
+}
+
+.cs-print-edition .cs-card {
+  margin-bottom: 6pt;
+  padding-top: 3pt;
+}
+
+.cs-print-edition .cs-card h2 {
+  font-size: 8.4pt;
+}
+
+.cs-print-edition .cs-mini-math {
+  overflow: hidden;
+}
+
+.cs-print-edition a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cs-print-edition .cs-colophon {
+  break-before: page;
+  max-width: 40em;
+  padding-top: 1.4in;
+  font-size: 9.5pt;
+  line-height: 1.5;
+}
+
+.cs-print-edition .cs-colophon p {
+  margin: 0 0 8pt;
+}
