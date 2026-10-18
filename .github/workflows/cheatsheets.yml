@@ -43,7 +43,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag to attach the PDF to, for example v2026.10.2. Leave empty to upload an artifact only.'
+        description: 'Release tag to attach the PDF to, for example v2026.11 or v2026.11.1. The tag must contain the cheatsheets folder. Leave empty to upload an artifact only.'
         required: false
         default: ''
 
@@ -63,11 +63,16 @@ jobs:
         if: inputs.tag != ''
         env:
           TAG: ${{ inputs.tag }}
-        run: '[[ "$TAG" =~ ^v[0-9]{4}\.[0-9]{2}\.[0-9]+$ ]] || { echo "invalid tag: $TAG"; exit 1; }'
+        run: '[[ "$TAG" =~ ^v[0-9]{4}\.[0-9]{2}(\.[0-9]+)?$ ]] || { echo "invalid tag: $TAG"; exit 1; }'
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
           persist-credentials: false
           ref: ${{ inputs.tag }}
+      - name: Check that the tag contains the cheat sheet tools
+        if: inputs.tag != ''
+        env:
+          TAG: ${{ inputs.tag }}
+        run: '[[ -f cheatsheets/AUTHORING.md && -f scripts/print_cheatsheets.js ]] || { echo "$TAG was released before the cheat sheet tools. Pick a newer tag."; exit 1; }'
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
