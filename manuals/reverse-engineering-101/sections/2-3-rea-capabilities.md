@@ -14,10 +14,11 @@ When you finish this section, you can read a capability group, name the seven ef
 title: the head of the status record
 source: capture/out/02-capabilities.json
 lang: json
-note: Cut to the first group of the first provider block and the first fields of the ghidra candidate. The other three groups of that block, the other three target-free blocks, and the other two candidates are cut.
+note: Cut to the first group of the first provider block and the first fields of the ghidra candidate. The other three groups of that block, the other three target-free blocks, and the other three candidates are cut.
 ---
 {
   "open": false,
+  "cleanup_pending": false,
   "capabilities": [
     {
       "provider": {
@@ -60,7 +61,9 @@ note: Cut to the first group of the first provider block and the first fields of
 …
 ```
 
-The record has eight top-level fields in the capture: `open`, `capabilities`, `analysis_provider_binding`, `analysis_provider_candidates`, `analysis_run`, `analysis_activity`, `provider_operation_health`, and `server_identity`. `capabilities` holds the 19 operations that need no bound provider, in four provider blocks: `native-macos`, `rea-artifact-graph`, `rea-dotnet-static`, and `sqlite`. Examples are `inspect_artifact`, `inspect_macho`, and the managed .NET readers. `analysis_provider_candidates` holds the three deep providers with their availability and their own provider blocks. `analysis_provider_binding` is `null` because no target is open, and every candidate reports `target_support.status: "unknown"` with the reason `No target is open.`.
+The record has nine top-level fields in the capture: `open`, `cleanup_pending`, `capabilities`, `analysis_provider_binding`, `analysis_provider_candidates`, `analysis_run`, `analysis_activity`, `provider_operation_health`, and `server_identity`. `capabilities` holds the 19 operations that need no bound provider, in four provider blocks: `native-macos`, `rea-artifact-graph`, `rea-dotnet-static`, and `sqlite`. Examples are `inspect_artifact`, `inspect_macho`, and the managed .NET readers. `analysis_provider_candidates` holds the four deep providers with their availability and their own provider blocks. `analysis_provider_binding` is `null` because no target is open, and every candidate reports `target_support.status: "unknown"` with the reason `No target is open.`.
+
+`cleanup_pending` is false in the capture. It turns true while the session holds a provider process or a file that it could not clean up. It can be true with `open: false` {{mcp Identity and discovery}}. Read it before you open the next target, because a closed target does not prove that its resources were released.
 
 One target-free operation is not available on the capture Mac. `inspect_sqlite_database` has `available: false` and the code `unsupported_version`. Its reason says that it needs Node.js 24.15 or a later 24.x release, or Node.js 26 or later. The capture Mac runs Node 22.22.0.
 
@@ -81,10 +84,10 @@ The `effects` list of a group names flags from a fixed set of seven. A flag that
 | Flag | Meaning | True in the capture for |
 |---|---|---|
 | `mutates_artifact` | the operation edits the analysis database: names or comments | 3 Ghidra operations, 6 Hopper operations |
-| `launches_process` | the operation starts a program, here the Ghidra JVM or a macOS tool | every Ghidra and Hopper operation, 12 target-free ones |
+| `launches_process` | the operation starts a program, here the Ghidra JVM or a macOS tool | every Ghidra, Hopper, and Kuna operation, 12 target-free ones |
 | `may_show_ui` | a window can open | every Hopper operation, 4 IDA operations, 2 target-free ones |
 | `may_access_network` | the operation can open a connection | every IDA adapter operation, 2 target-free ones |
-| `may_write_filesystem` | the operation writes files, here the runtime root and the project | every Ghidra operation, 6 Hopper operations, 6 target-free ones |
+| `may_write_filesystem` | the operation writes files, here the runtime root and the project | every Ghidra and Kuna operation, 6 Hopper operations, 6 target-free ones |
 | `changes_permissions` | the operation changes file or process permissions | nothing |
 | `requires_root` | the operation needs root | nothing |
 
@@ -100,13 +103,13 @@ claim: Every Ghidra operation declares launches_process and may_write_filesystem
 caption: Read one column per provider and one row per flag, and each cell counts the operations that declare the flag. Counted from capture/out/02-capabilities.json.
 ```
 
-## Three candidates, one bound
+## Four candidates, one bound
 
 ```listing
-title: the two candidates that are not available
+title: the three candidates that are not available
 source: capture/out/02-capabilities.json
 lang: json
-note: Cut to the provider and availability of hopper and ida. Their target support and their provider blocks are cut.
+note: Cut to the provider and availability of hopper, ida, and kuna. Their diagnostics, their target support, and their provider blocks are cut.
 ---
     {
       "provider": {
@@ -130,9 +133,22 @@ note: Cut to the provider and availability of hopper and ida. Their target suppo
         "code": "not_configured",
         "reason": "Set REA_IDA_MCP_CONFIG to an upstream IDA MCP JSON registration; see docs/ida-provider.md.",
 …
+    {
+      "provider": {
+        "id": "kuna",
+        "name": "Kuna",
+        "version": null
+      },
+      "availability": {
+        "status": "unavailable",
+        "code": "not_configured",
+        "reason": "Set REA_KUNA_COMMAND to the absolute path of a caller-supplied kuna executable (verified with 1.833). REA does not download, install or update Kuna.",
+…
 ```
 
-The `ghidra` candidate is `available`, and its `diagnostics` repeat the eight checks of [section 2.2](#s-rea-doctor-and-the-ghidra-provider) with the same paths. `hopper` is unavailable with the code `executable_missing`, and `ida` with `not_configured`. Each unavailable candidate still lists its operations, 37 for Hopper and 13 for IDA. All of them have `available: true` except Hopper's `search_bytes`, which has `available: false` and the reason "Masked byte search has not been verified for Hopper.".
+The `ghidra` candidate is `available`, and its `diagnostics` repeat the eight checks of [section 2.2](#s-rea-doctor-and-the-ghidra-provider) with the same paths. Its block has 22 groups and 30 operations. One group is `read_binary_inventory_summary`, the operation behind the counts of [section 3.4](#s-analyze-overview). `hopper` is unavailable with the code `executable_missing`, and `ida` and `kuna` with `not_configured`.
+
+Each unavailable candidate still lists its operations, 37 for Hopper, 13 for IDA, and 13 for Kuna. The Hopper and IDA groups have `available: true` except Hopper's `search_bytes`, which has `available: false` and the reason "Masked byte search has not been verified for Hopper.". Every Kuna group has `available: false` with the code `not_configured` and the reason of the candidate. Kuna was not run for this manual, because its recorded coverage is on Linux only and the capture host is a Mac.
 
 Availability of the engine and availability of an operation are two different facts. The docs put the rule in one sentence: "These commands describe binary-session providers and auxiliary capabilities." {{cli Choose a provider}}. With `--provider ghidra` or `provider_id: "ghidra"`, only the Ghidra block applies.
 
@@ -159,9 +175,9 @@ note: Cut to the catalog. The digests are cut to eight hex digits, and the other
         "mcp_prompts": 6
       },
       "digests": {
-        "tools_sha256": "805433f1…",
+        "tools_sha256": "af39310c…",
         "prompts_sha256": "7152916a…",
-        "combined_sha256": "405725e7…"
+        "combined_sha256": "96d8f6e6…"
       }
     },
 ```
@@ -196,4 +212,4 @@ In the source, `xrefs` has `mutatesSession: true`, because each answer goes into
 - Read the shared limitations and each group's `limitations` before you read an empty result as absence.
 ```
 
-Sources: cli Choose a provider (rea docs/cli.md); design Define the contract (rea docs/tool-design.md); rea at 3b79af2: src/cli/utilityCommands.ts, src/application/binary/BinarySessionStatus.ts, src/contracts/toolOutputSchemaPrimitives.ts, src/contracts/toolEffects.ts, src/serverIdentity.ts, src/catalogIdentity.ts, src/domain/relationshipCoverage.ts, bridge/ghidra/ReaGhidraBridge.java; capture/out/02-capabilities.json, 06-function-percent-change.json, 10-mcp-02-tools-list.json
+Sources: cli Choose a provider (rea docs/cli.md); mcp Identity and discovery (rea docs/mcp-contracts.md); design Define the contract (rea docs/tool-design.md); rea at 27dc42d: src/cli/utilityCommands.ts, src/application/binary/BinarySessionStatus.ts, src/contracts/toolOutputSchemaPrimitives.ts, src/contracts/toolEffects.ts, src/serverIdentity.ts, src/catalogIdentity.ts, src/domain/relationshipCoverage.ts, src/ghidra/GhidraProviderCapabilities.ts, src/kuna/KunaProvider.ts, docs/kuna-provider.md, bridge/ghidra/ReaGhidraBridge.java; capture/out/02-capabilities.json, 06-function-percent-change.json, 10-mcp-02-tools-list.json

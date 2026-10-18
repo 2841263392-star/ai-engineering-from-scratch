@@ -35,7 +35,7 @@ Every term is defined once, in the section the last column names, with the sourc
 | Jump table | A table of code addresses that an indirect jump indexes | [4.4](#s-xrefs-and-the-jump-table) |
 | Load command | One record after the Mach-O header, with a `cmd` type and a `cmdsize` | [3.2](#s-inspect-binary-layout-and-the-load-image) |
 | Procedure | The function identity in a dossier: address, body ranges, signature, and classification | [1.2](#s-rea-function-end-to-end) |
-| Provider | An analysis engine behind one interface, `hopper`, `ghidra`, or `ida` at 6.5.0 | [1.1](#s-rea-providers-and-evidence) |
+| Provider | An analysis engine behind one interface. The binary session has four candidates at 6.7.0: `hopper`, `ghidra`, `ida`, and `kuna` | [1.1](#s-rea-providers-and-evidence) |
 | Query id | `query_` and the SHA-256 of the target identity, the binding, the operation, and the parameters of one cached answer | [5.3](#s-snapshots-and-the-answer-cache) |
 | References | The incoming and outgoing edges of a dossier, each with a Ghidra reference type | [1.2](#s-rea-function-end-to-end) |
 | Relocation masking | Zeroing every relocation field in both functions before comparing bytes, then comparing the records and reading the bytes they point at | [7.2](#s-a-proof-harness-outside-rea) |
@@ -52,4 +52,4 @@ Every term is defined once, in the section the last column names, with the sourc
 | Value table | A table of data that a load indexes, so one instruction returns one of several values | [4.4](#s-xrefs-and-the-jump-table) |
 | Virtual address | The position of a byte in memory after the loader maps the segment that contains it | [3.3](#s-address-to-file-offset) |
 
-Sources: the definition paragraphs of every file under sections/; rea at 3b79af2: src/domain/evidence.ts, src/domain/evidenceBundle.ts, src/domain/residualUnknown.ts, src/domain/reconstructionVerification.ts, src/config/providerStartupTimeout.ts, src/contracts/toolOutputSchemaPrimitives.ts; rea docs/mcp-contracts.md
+Sources: the definition paragraphs of every file under sections/; rea at 27dc42d: src/domain/evidence.ts, src/domain/evidenceBundle.ts, src/domain/residualUnknown.ts, src/domain/reconstructionVerification.ts, src/config/providerStartupTimeout.ts, src/contracts/toolOutputSchemaPrimitives.ts; capture/out/02-capabilities.json; rea docs/mcp-contracts.md

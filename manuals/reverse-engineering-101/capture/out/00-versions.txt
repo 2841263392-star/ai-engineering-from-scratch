@@ -1,5 +1,5 @@
 $ rea --version
-6.5.0
+6.7.0
 [exit 0]
 
 $ $HOME/.local/bin/node --version

@@ -20,8 +20,8 @@ note: One of the eight dimension objects. The counts are characters of provider 
               "left_count": 161,
               "right_count": 161,
               "evidence_links": [
-                "ev_172d39ff…",
-                "ev_1f3bca22…"
+                "ev_b492c85e…",
+                "ev_142cc943…"
               ],
               "limitations": [
                 "Exact provider text is compared without address or generated-name normalization; layout-only differences do not establish a behavior change.",
@@ -32,7 +32,7 @@ note: One of the eight dimension objects. The counts are characters of provider 
 
 For `total` the same comparison reported `changed` in five dimensions (capture/out/10-mcp-21-compare-functions-total.json). The pseudocode grew from 300 to 2,904 characters and the assembly from 336 to 1,866. The two records came from one source line compiled at `-O1` and `-O2`. A text comparison therefore says nothing about behaviour in either direction. The same function can print as different text, and a wrong function can print as the same text.
 
-rea 6.5.0 has no compiler replay and no relocation-aware byte comparison. The two legs below are the part rea leaves to you.
+rea 6.7.0 has no compiler replay and no relocation-aware byte comparison. The two legs below are the part rea leaves to you.
 
 ## Leg one: execute and compare
 
@@ -251,4 +251,4 @@ The lesson adds a third source for the constant check. The rea evidence pages de
 - Record the host and the compiler with every proof, because the trap cell and the bytes depend on both.
 ```
 
-Sources: capture/out/17-harness-grid.json, 17-harness-execute-plausible.json, 17-harness-execute-equal.json, 17-harness-bytes.json, 17-harness.txt, 10-mcp-20-compare-functions-percent-change.json, 10-mcp-21-compare-functions-total.json, 00-versions.txt; capture/README.md; phases/13-tools-and-protocols/36-rebuild-and-prove-equal/code/main.py, driver.c, fixtures/candidates/; rea at rea-agents-6.5.0 (3b79af2): src/domain/functionComparisonDimensions.ts (Liu, Raff, Micinski, arXiv 2609.05370, 2026); Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 2, IDIV; Arm Architecture Reference Manual for A-profile, DDI 0487, SDIV
+Sources: capture/out/17-harness-grid.json, 17-harness-execute-plausible.json, 17-harness-execute-equal.json, 17-harness-bytes.json, 17-harness.txt, 10-mcp-20-compare-functions-percent-change.json, 10-mcp-21-compare-functions-total.json, 00-versions.txt; capture/README.md; phases/13-tools-and-protocols/36-rebuild-and-prove-equal/code/main.py, driver.c, fixtures/candidates/; rea at rea-agents-6.7.0 (27dc42d): src/domain/functionComparisonDimensions.ts (Liu, Raff, Micinski, arXiv 2609.05370, 2026); Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 2, IDIV; Arm Architecture Reference Manual for A-profile, DDI 0487, SDIV

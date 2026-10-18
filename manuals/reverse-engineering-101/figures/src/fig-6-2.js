@@ -13,7 +13,7 @@ function block(f, x, y, w, hue, head, lines) {
 module.exports = figure('fig-6-2', {
   height: 416,
   title: 'inspect_wasm_artifact on ledger.wasm',
-  desc: 'Top row: two entry points, the CLI command rea inspect-wasm-artifact and the MCP call tools/call inspect_wasm_artifact. Both reach the wabt-artifact provider, which reads REA_WABT_BIN_DIRECTORY=/opt/homebrew/bin and copies ledger.wasm, 290 bytes, SHA-256 699f6ff7, to a read-only module.wasm in a private workspace. Third row: three WABT 1.0.42 programs run on the copy, wasm-validate --enable-all, wasm-objdump -h -x, and wasm2wat --enable-all. Bottom: one Evidence record ev_b50c217f, observed, with validation valid, seven sections, an interface of one import and five exports, the decoded WAT with SHA-256 37eab56a, a tool profile, and five limitations. runtime_execution and network_fetch are not-performed. The CLI prints the record, and MCP returns the same record as structuredContent with the untrusted-content marker.',
+  desc: 'Top row: two entry points, the CLI command rea inspect-wasm-artifact and the MCP call tools/call inspect_wasm_artifact. Both reach the wabt-artifact provider, which reads REA_WABT_BIN_DIRECTORY=/opt/homebrew/bin and copies ledger.wasm, 290 bytes, SHA-256 699f6ff7, to a read-only module.wasm in a private workspace. Third row: three WABT 1.0.42 programs run on the copy, wasm-validate --enable-all, wasm-objdump -h -x, and wasm2wat --enable-all. Bottom: one Evidence record ev_3a09e4b0, observed, with validation valid, seven sections, an interface of one import and five exports, the decoded WAT with SHA-256 37eab56a, a tool profile, and five limitations. runtime_execution and network_fetch are not-performed. The CLI prints the record, and MCP returns the same record as structuredContent with the untrusted-content marker.',
 }, f => {
   const cli = f.box({ x: 20, y: 28, w: 290, h: 48, hue: 'blue', title: 'rea inspect-wasm-artifact', sub: 'CLI, exit 0 after 1.5 s' });
   const mcp = f.box({ x: 330, y: 28, w: 290, h: 48, hue: 'indigo', title: 'tools/call inspect_wasm_artifact', sub: 'MCP step 24, ok after 404 ms' });
@@ -32,7 +32,7 @@ module.exports = figure('fig-6-2', {
     return box;
   });
 
-  const record = block(f, 20, 294, 600, 'teal', 'Evidence ev_b50c217f, confidence observed', [
+  const record = block(f, 20, 294, 600, 'teal', 'Evidence ev_3a09e4b0, confidence observed', [
     'sections: Type, Import, Function, Memory, Export, Code, Data',
     'interface: 1 import env.log, 5 exports with typed signatures',
     'wat: decoded-wat, sha256 37eab56a, tool_profile: 3 commands',

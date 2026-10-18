@@ -7,11 +7,11 @@
       "name": "compare_functions",
       "arguments": {
         "left": {
-          "evidence_id": "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
+          "evidence_id": "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
           "record": "<cut by run.py: the complete analyze_function record, see 10-mcp-09-analyze-function-percent-change-O1.json>"
         },
         "right": {
-          "evidence_id": "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f",
+          "evidence_id": "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259",
           "record": "<cut by run.py: the complete analyze_function record, see 10-mcp-17-analyze-function-percent-change-O2.json>"
         }
       }
@@ -28,11 +28,11 @@
       "content": [
         {
           "type": "text",
-          "text": "<cut by run.py: the text copy of structuredContent, 13781 bytes>"
+          "text": "<cut by run.py: the text copy of structuredContent, 14635 bytes>"
         }
       ],
       "structuredContent": {
-        "evidence_id": "ev_ef3ad879183fe7cef5c2ebfb618cd300c3d3fb1d074992cf35c4785285e9e17d",
+        "evidence_id": "ev_2161e17a5ff6c19322e6f6ac34cb2de1a12c22fa75b51ba7fddf2bdfd73fdc48",
         "subject": null,
         "provider": {
           "id": "rea-function-comparison",
@@ -43,12 +43,12 @@
         "predicate_type": "rea.function-comparison",
         "operation": "compare_functions",
         "parameters": {
-          "left_evidence_id": "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-          "right_evidence_id": "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f"
+          "left_evidence_id": "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+          "right_evidence_id": "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
         },
         "raw_result": null,
         "normalized_result": {
-          "status": "unchanged",
+          "status": "unknown",
           "function_match": {
             "status": "matched",
             "method": "symbol",
@@ -58,9 +58,9 @@
           "left_subject_sha256": "01b5d08b08fb94678be5919d0e753d44b505a53107c95b94634f0e5d41c9e375",
           "right_subject_sha256": "8bbbaa5866c3fc9f6f598943350b55b5c11669dd1d5e41005efdfe44241915b3",
           "summary": {
-            "unchanged": 8,
+            "unchanged": 7,
             "changed": 0,
-            "unknown": 0
+            "unknown": 1
           },
           "dimensions": [
             {
@@ -68,8 +68,8 @@
               "left_count": null,
               "right_count": null,
               "evidence_links": [
-                "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-                "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f"
+                "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+                "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
               ],
               "limitations": [],
               "status": "unchanged",
@@ -83,8 +83,8 @@
               "left_count": 272,
               "right_count": 272,
               "evidence_links": [
-                "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-                "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f"
+                "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+                "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
               ],
               "limitations": [
                 "Exact provider text is compared without address or generated-name normalization; layout-only differences do not establish a behavior change."
@@ -104,8 +104,8 @@
               "left_count": 161,
               "right_count": 161,
               "evidence_links": [
-                "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-                "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f"
+                "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+                "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
               ],
               "limitations": [
                 "Exact provider text is compared without address or generated-name normalization; layout-only differences do not establish a behavior change.",
@@ -126,8 +126,8 @@
               "left_count": 0,
               "right_count": 0,
               "evidence_links": [
-                "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-                "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f"
+                "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+                "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
               ],
               "limitations": [],
               "status": "unchanged",
@@ -141,10 +141,13 @@
               "left_count": 1,
               "right_count": 1,
               "evidence_links": [
-                "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-                "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f"
+                "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+                "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
               ],
-              "limitations": [],
+              "limitations": [
+                "Left: Only resolved Ghidra call references are returned; unresolved computed or indirect calls remain unknown, while function classifications distinguish thunks and externals.",
+                "Right: Only resolved Ghidra call references are returned; unresolved computed or indirect calls remain unknown, while function classifications distinguish thunks and externals."
+              ],
               "status": "unchanged",
               "left_digest": "23babb4dc7f36a55cdf3d697a4e2525b13eca24673f9fdd6f917690d2f729005",
               "right_digest": "23babb4dc7f36a55cdf3d697a4e2525b13eca24673f9fdd6f917690d2f729005",
@@ -156,23 +159,25 @@
               "left_count": 3,
               "right_count": 3,
               "evidence_links": [
-                "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-                "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f"
+                "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+                "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
               ],
-              "limitations": [],
-              "status": "unchanged",
-              "left_digest": "8b7a4008c1eef6288da8a8f41aac6e2f016693b02f9d6d93ea592bba78eea324",
-              "right_digest": "8b7a4008c1eef6288da8a8f41aac6e2f016693b02f9d6d93ea592bba78eea324",
+              "limitations": [
+                "Unnamed reference endpoints have no stable identity across different artifacts, so equal named endpoints do not establish equal references."
+              ],
+              "status": "unknown",
+              "left_digest": null,
+              "right_digest": null,
               "text_delta": null,
-              "conclusion_kind": "derived_relationship"
+              "conclusion_kind": "unresolved_branch"
             },
             {
               "dimension": "strings_names",
               "left_count": 1,
               "right_count": 1,
               "evidence_links": [
-                "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-                "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f"
+                "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+                "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
               ],
               "limitations": [],
               "status": "unchanged",
@@ -186,8 +191,8 @@
               "left_count": 3,
               "right_count": 3,
               "evidence_links": [
-                "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-                "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f"
+                "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+                "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
               ],
               "limitations": [],
               "status": "unchanged",
@@ -197,7 +202,25 @@
               "conclusion_kind": "derived_relationship"
             }
           ],
-          "changes": [],
+          "changes": [
+            {
+              "dimension": "references",
+              "left_count": 3,
+              "right_count": 3,
+              "evidence_links": [
+                "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+                "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
+              ],
+              "limitations": [
+                "Unnamed reference endpoints have no stable identity across different artifacts, so equal named endpoints do not establish equal references."
+              ],
+              "status": "unknown",
+              "left_digest": null,
+              "right_digest": null,
+              "text_delta": null,
+              "conclusion_kind": "unresolved_branch"
+            }
+          ],
           "limitations": [
             "Left: Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
             "Left: Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
@@ -262,8 +285,8 @@
         "relationship_coverage": null,
         "locations": [],
         "evidence_links": [
-          "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-          "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f"
+          "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+          "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
         ]
       }
     },

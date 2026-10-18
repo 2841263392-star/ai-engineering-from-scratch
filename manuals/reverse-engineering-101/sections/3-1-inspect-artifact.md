@@ -29,7 +29,7 @@ lang: json
 note: The substeps array and everything after it are cut. The capture kit masks local_path.
 ---
 {
-  "evidence_id": "ev_3823d30d…",
+  "evidence_id": "ev_0e878985…",
   "subject": {
     "name": "ledger-arm64-O1",
     "digest": {
@@ -114,7 +114,7 @@ note: The hypotheses and contradictions arrays are empty and are cut with the co
 ---
 "unexplored_branches": [
   {
-    "branch_id": "aib_38d39810…",
+    "branch_id": "aib_ff20889e…",
     "reason": "format-specific-analysis-required",
     "detail": "open_binary was not run by provider-neutral artifact inspection.",
     "next_probe": {
@@ -156,4 +156,4 @@ The record is not a format parse. It holds no load commands, no sections, no sym
 - Carry the subject `sha256` into every later record about the same file.
 ```
 
-Sources: capture/out/00-commands.txt, capture/out/00-fixtures.txt, capture/out/03-inspect-artifact.json; rea 6.5.0 at 3b79af2: src/application/InvestigationProviders.ts, src/domain/artifactInspection.ts, src/artifacts/inventory/reader.ts
+Sources: capture/out/00-commands.txt, capture/out/00-fixtures.txt, capture/out/03-inspect-artifact.json; rea 6.7.0 at 27dc42d: src/application/InvestigationProviders.ts, src/domain/artifactInspection.ts, src/artifacts/inventory/reader.ts

@@ -45,13 +45,13 @@ const column = (f, x, w, hue, lines) => {
 module.exports = figure('plate-rea-investigation', {
   height: 472,
   title: 'One function, four views',
-  desc: 'The recorded run of rea function on ledger-arm64-O1 for _percent_change with the Ghidra provider. At the top, you call rea 6.5.0, which hands the question to the BinarySession bound to ghidra, which calls the GhidraClient over bridge.sock, which launches Ghidra 12.1.4 as a headless JVM to import and analyze the artifact ledger-arm64-O1, a mach-o arm64 executable of 33872 bytes. Three columns show the same function: the C you wrote in ledger.c, the six instructions clang -O1 made from cbz w0 at 0x100000500 to ret at 0x100000514, and the pseudocode Ghidra decompiled with a second zero check the source never had. The Evidence record ev_172d39ff at the bottom names the operation analyze_function, the provider ghidra 12.1.4, the profile digest, confidence observed, the authority of a static read, ten limitations, and the subject sha256.',
+  desc: 'The recorded run of rea function on ledger-arm64-O1 for _percent_change with the Ghidra provider. At the top, you call rea 6.7.0, which hands the question to the BinarySession bound to ghidra, which calls the GhidraClient over bridge.sock, which launches Ghidra 12.1.4 as a headless JVM to import and analyze the artifact ledger-arm64-O1, a mach-o arm64 executable of 33872 bytes. Three columns show the same function: the C you wrote in ledger.c, the six instructions clang -O1 made from cbz w0 at 0x100000500 to ret at 0x100000514, and the pseudocode Ghidra decompiled with a second zero check the source never had. The Evidence record ev_b492c85e at the bottom names the operation analyze_function, the provider ghidra 12.1.4, the profile digest, confidence observed, the authority of a static read, ten limitations, and the subject sha256.',
 }, f => {
   f.kicker(20, 18, 'four views');
   f.text(620, 18, 'rea function ledger-arm64-O1 _percent_change --provider ghidra', { size: 11, anchor: 'end', hue: 'ink-soft' });
 
   const you = f.box({ x: 20, y: 30, w: 70, h: 40, hue: 'grey', title: 'you', sub: 'ledger.c', titleSize: 11.5, pad: 6 });
-  const rea = f.box({ x: 150, y: 30, w: 100, h: 40, hue: 'blue', title: 'rea 6.5.0', sub: 'the CLI', titleSize: 11.5 });
+  const rea = f.box({ x: 150, y: 30, w: 100, h: 40, hue: 'blue', title: 'rea 6.7.0', sub: 'the CLI', titleSize: 11.5 });
   const session = f.box({ x: 310, y: 30, w: 115, h: 40, hue: 'blue', title: 'BinarySession', sub: 'ghidra bound', titleSize: 11.5, pad: 8 });
   const client = f.box({ x: 500, y: 30, w: 120, h: 40, hue: 'violet', title: 'GhidraClient', sub: 'bridge.sock', titleSize: 11.5, pad: 8 });
   f.arrow(you.right(), [rea.x - 1, you.cy], { style: 'call', label: 'function' });
@@ -72,7 +72,7 @@ module.exports = figure('plate-rea-investigation', {
   f.arrow([517, bottom], [517, 365], { style: 'write', label: 'recorded' });
   f.box({
     x: 20, y: 366, w: 600, h: 92, hue: 'teal', titleSize: 12,
-    title: 'Evidence ev_172d39ff for _percent_change',
+    title: 'Evidence ev_b492c85e for _percent_change',
     sub: [
       'operation analyze_function · provider ghidra 12.1.4',
       'confidence observed · 10 limitations',

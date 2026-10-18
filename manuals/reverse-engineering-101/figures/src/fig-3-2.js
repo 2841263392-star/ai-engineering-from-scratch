@@ -18,7 +18,7 @@ module.exports = figure('fig-3-2', {
   const right = [
     { hue: 'blue', title: 'rea inspect-macho', sub: 'fixtures/ledger-arm64-O1' },
     { hue: 'grey', title: 'otool nm dyld_info dwarfdump', sub: 'and lipo, vtool, found through xcrun' },
-    { hue: 'green', title: 'Evidence ev_73d56781', sub: '17 load commands · 4 segments · exit 0' },
+    { hue: 'green', title: 'Evidence ev_497834aa', sub: '17 load commands · 4 segments · exit 0' },
   ];
   [[left, 20, ['call', 'fail']], [right, 336, ['call', 'reply']]].forEach(([column, x, styles]) => {
     column.forEach((item, index) => {

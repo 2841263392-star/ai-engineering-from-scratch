@@ -1,5 +1,5 @@
 {
-  "evidence_id": "ev_a47a3daa395bf58d91f4f809fb48df06cd26191aa8089c3e5c890f26131cc8ca",
+  "evidence_id": "ev_4fbc9fa4bf566dd550b31995a58e80e879fc3c39d0287e5f6759c730e2952b51",
   "subject": {
     "name": "js-app",
     "digest": {
@@ -18,7 +18,7 @@
   "predicate_type": "rea.analysis-view",
   "operation": "inspect_analysis_view",
   "parameters": {
-    "parent_evidence_id": "ev_9151392a390762f97690351a62f08e71a5b717dfd27891c47aa517ae6be55117",
+    "parent_evidence_id": "ev_14bd1d1e46ab803844822f975a9cbf59208285bb9afdd376fb3209539d2c8046",
     "view": {
       "kind": "summary"
     }
@@ -29,10 +29,10 @@
     "view": {
       "kind": "summary"
     },
-    "parent_evidence_id": "ev_9151392a390762f97690351a62f08e71a5b717dfd27891c47aa517ae6be55117",
+    "parent_evidence_id": "ev_14bd1d1e46ab803844822f975a9cbf59208285bb9afdd376fb3209539d2c8046",
     "parent_operation": "analyze_javascript_application",
-    "parent_digest": "9151392a390762f97690351a62f08e71a5b717dfd27891c47aa517ae6be55117",
-    "view_digest": "8e4e6a63a4b10137cbbf612a3f53620ef556d0a9e8de96d61be630df7115f07a",
+    "parent_digest": "14bd1d1e46ab803844822f975a9cbf59208285bb9afdd376fb3209539d2c8046",
+    "view_digest": "75abe91bb5886b082e03f5a7a46f129214d5064f4d5aa6eb45a17585b6013c78",
     "artifact": {
       "path": "$CAPTURE/fixtures/js-app",
       "sha256": "bb9f726c3aafe026e6cc871b8de16cd81db9f03b4c2bab05f494307f8ebb42a2"
@@ -96,6 +96,7 @@
         "text_bytes_read": 2888,
         "invalid_utf8_files": 0,
         "parsed_javascript_files": 4,
+        "skipped_javascript_files": 0,
         "visited_ast_nodes": 424,
         "findings": 25,
         "modules": 0,
@@ -261,6 +262,6 @@
     }
   ],
   "evidence_links": [
-    "ev_9151392a390762f97690351a62f08e71a5b717dfd27891c47aa517ae6be55117"
+    "ev_14bd1d1e46ab803844822f975a9cbf59208285bb9afdd376fb3209539d2c8046"
   ]
 }

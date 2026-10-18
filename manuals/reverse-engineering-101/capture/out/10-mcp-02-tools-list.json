@@ -212,20 +212,11 @@
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "properties": {
               "document": {
-                "$ref": "#/$defs/__schema0",
-                "description": "The active target's provider document name; use open_binary to switch targets"
-              }
-            },
-            "additionalProperties": false,
-            "$defs": {
-              "__schema0": {
                 "description": "The active target's provider document name; use open_binary to switch targets",
-                "$ref": "#/$defs/__schema1"
-              },
-              "__schema1": {
                 "type": "string"
               }
             },
+            "additionalProperties": false,
             "examples": [
               {}
             ]
@@ -283,10 +274,10 @@
                 "$ref": "#/$defs/__schema18"
               },
               "locations": {
-                "$ref": "#/$defs/__schema27"
+                "$ref": "#/$defs/__schema30"
               },
               "evidence_links": {
-                "$ref": "#/$defs/__schema28"
+                "$ref": "#/$defs/__schema31"
               }
             },
             "required": [
@@ -372,7 +363,8 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -418,7 +410,9 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "m68k",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -738,7 +732,6 @@
                 }
               },
               "__schema18": {
-                "default": null,
                 "anyOf": [
                   {
                     "oneOf": [
@@ -840,16 +833,9 @@
                         "$ref": "#/$defs/__schema23"
                       }
                     ],
-                    "minItems": 1,
-                    "maxItems": 1
-                  },
-                  {
-                    "type": "array",
-                    "prefixItems": [
-                      {
-                        "$ref": "#/$defs/__schema24"
-                      }
-                    ],
+                    "items": {
+                      "$ref": "#/$defs/__schema24"
+                    },
                     "minItems": 1,
                     "maxItems": 1
                   },
@@ -858,11 +844,27 @@
                     "prefixItems": [
                       {
                         "$ref": "#/$defs/__schema25"
-                      },
-                      {
-                        "$ref": "#/$defs/__schema26"
                       }
                     ],
+                    "items": {
+                      "$ref": "#/$defs/__schema26"
+                    },
+                    "minItems": 1,
+                    "maxItems": 1
+                  },
+                  {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "$ref": "#/$defs/__schema27"
+                      },
+                      {
+                        "$ref": "#/$defs/__schema28"
+                      }
+                    ],
+                    "items": {
+                      "$ref": "#/$defs/__schema29"
+                    },
                     "minItems": 2,
                     "maxItems": 2
                   }
@@ -873,18 +875,42 @@
                 "const": "callers"
               },
               "__schema24": {
-                "type": "string",
-                "const": "callees"
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema23"
+                  }
+                ]
               },
               "__schema25": {
                 "type": "string",
-                "const": "callers"
+                "const": "callees"
               },
               "__schema26": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema25"
+                  }
+                ]
+              },
+              "__schema27": {
+                "type": "string",
+                "const": "callers"
+              },
+              "__schema28": {
                 "type": "string",
                 "const": "callees"
               },
-              "__schema27": {
+              "__schema29": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema27"
+                  },
+                  {
+                    "$ref": "#/$defs/__schema28"
+                  }
+                ]
+              },
+              "__schema30": {
                 "type": "array",
                 "items": {
                   "oneOf": [
@@ -994,7 +1020,7 @@
                   ]
                 }
               },
-              "__schema28": {
+              "__schema31": {
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -1002,7 +1028,7 @@
                 }
               }
             },
-            "$id": "urn:rea:tool-output:sha256:df97c1b7282bacfdad5fd76eaac19fb997370016fed41262aef2abfb657220c1"
+            "$id": "urn:rea:tool-output:sha256:a36067d5dd0aaf134c64d7563672e322c3ff188fe65d8c6edc985cfd96c0d447"
           }
         },
         {
@@ -1021,34 +1047,21 @@
         {
           "name": "list_strings",
           "title": "List Strings",
-          "description": "List every provider-defined string object, or filter to one address, as address/value pairs with encoding, terminator status, and byte length when available. Hopper reads complete typed objects and retains its original display text as provider_value; long literals may span adjacent unterminated objects.",
+          "description": "List every provider-reported string object or candidate, or filter to one address, as address/value pairs with encoding, terminator status, and byte length when available. Hopper reads complete typed objects and retains its original display text as provider_value; long literals may span adjacent unterminated objects. Kuna scans mapped printable sequences of at least five characters, including unterminated fragments; references are not computed.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "properties": {
               "document": {
-                "$ref": "#/$defs/__schema0",
-                "description": "The active target's provider document name; use open_binary to switch targets"
-              },
-              "address": {
-                "$ref": "#/$defs/__schema2",
-                "description": "A provider-normalized address; default memory uses 0x-prefixed hexadecimal"
-              }
-            },
-            "additionalProperties": false,
-            "$defs": {
-              "__schema0": {
                 "description": "The active target's provider document name; use open_binary to switch targets",
-                "$ref": "#/$defs/__schema1"
-              },
-              "__schema1": {
                 "type": "string"
               },
-              "__schema2": {
+              "address": {
                 "type": "string",
                 "description": "A provider-normalized address; default memory uses 0x-prefixed hexadecimal"
               }
             },
+            "additionalProperties": false,
             "examples": [
               {}
             ]
@@ -1106,10 +1119,10 @@
                 "$ref": "#/$defs/__schema21"
               },
               "locations": {
-                "$ref": "#/$defs/__schema30"
+                "$ref": "#/$defs/__schema33"
               },
               "evidence_links": {
-                "$ref": "#/$defs/__schema31"
+                "$ref": "#/$defs/__schema34"
               }
             },
             "required": [
@@ -1195,7 +1208,8 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -1241,7 +1255,9 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "m68k",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -1539,7 +1555,6 @@
                 }
               },
               "__schema21": {
-                "default": null,
                 "anyOf": [
                   {
                     "oneOf": [
@@ -1641,16 +1656,9 @@
                         "$ref": "#/$defs/__schema26"
                       }
                     ],
-                    "minItems": 1,
-                    "maxItems": 1
-                  },
-                  {
-                    "type": "array",
-                    "prefixItems": [
-                      {
-                        "$ref": "#/$defs/__schema27"
-                      }
-                    ],
+                    "items": {
+                      "$ref": "#/$defs/__schema27"
+                    },
                     "minItems": 1,
                     "maxItems": 1
                   },
@@ -1659,11 +1667,27 @@
                     "prefixItems": [
                       {
                         "$ref": "#/$defs/__schema28"
-                      },
-                      {
-                        "$ref": "#/$defs/__schema29"
                       }
                     ],
+                    "items": {
+                      "$ref": "#/$defs/__schema29"
+                    },
+                    "minItems": 1,
+                    "maxItems": 1
+                  },
+                  {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "$ref": "#/$defs/__schema30"
+                      },
+                      {
+                        "$ref": "#/$defs/__schema31"
+                      }
+                    ],
+                    "items": {
+                      "$ref": "#/$defs/__schema32"
+                    },
                     "minItems": 2,
                     "maxItems": 2
                   }
@@ -1674,18 +1698,42 @@
                 "const": "callers"
               },
               "__schema27": {
-                "type": "string",
-                "const": "callees"
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema26"
+                  }
+                ]
               },
               "__schema28": {
                 "type": "string",
-                "const": "callers"
+                "const": "callees"
               },
               "__schema29": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema28"
+                  }
+                ]
+              },
+              "__schema30": {
+                "type": "string",
+                "const": "callers"
+              },
+              "__schema31": {
                 "type": "string",
                 "const": "callees"
               },
-              "__schema30": {
+              "__schema32": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema30"
+                  },
+                  {
+                    "$ref": "#/$defs/__schema31"
+                  }
+                ]
+              },
+              "__schema33": {
                 "type": "array",
                 "items": {
                   "oneOf": [
@@ -1795,7 +1843,7 @@
                   ]
                 }
               },
-              "__schema31": {
+              "__schema34": {
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -1803,7 +1851,7 @@
                 }
               }
             },
-            "$id": "urn:rea:tool-output:sha256:25c2dc2e80b528e810d26bc6c667c5f40cdd8eb2c2916e290e9fae1681b17c39"
+            "$id": "urn:rea:tool-output:sha256:19b6b7d573c731198f840701a9a5779a253e2cf722a15ec3a19f20547aa9ffd9"
           }
         },
         {
@@ -1854,31 +1902,18 @@
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "properties": {
               "procedure": {
-                "$ref": "#/$defs/__schema0",
+                "type": "string",
                 "description": "The procedure name or address"
               },
               "document": {
-                "$ref": "#/$defs/__schema1",
-                "description": "The active target's provider document name; use open_binary to switch targets"
+                "description": "The active target's provider document name; use open_binary to switch targets",
+                "type": "string"
               }
             },
             "required": [
               "procedure"
             ],
             "additionalProperties": false,
-            "$defs": {
-              "__schema0": {
-                "type": "string",
-                "description": "The procedure name or address"
-              },
-              "__schema1": {
-                "description": "The active target's provider document name; use open_binary to switch targets",
-                "$ref": "#/$defs/__schema2"
-              },
-              "__schema2": {
-                "type": "string"
-              }
-            },
             "examples": [
               {
                 "procedure": "main"
@@ -1938,10 +1973,10 @@
                 "$ref": "#/$defs/__schema18"
               },
               "locations": {
-                "$ref": "#/$defs/__schema27"
+                "$ref": "#/$defs/__schema30"
               },
               "evidence_links": {
-                "$ref": "#/$defs/__schema28"
+                "$ref": "#/$defs/__schema31"
               }
             },
             "required": [
@@ -2027,7 +2062,8 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -2073,7 +2109,9 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "m68k",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -2289,7 +2327,6 @@
                 }
               },
               "__schema18": {
-                "default": null,
                 "anyOf": [
                   {
                     "oneOf": [
@@ -2391,16 +2428,9 @@
                         "$ref": "#/$defs/__schema23"
                       }
                     ],
-                    "minItems": 1,
-                    "maxItems": 1
-                  },
-                  {
-                    "type": "array",
-                    "prefixItems": [
-                      {
-                        "$ref": "#/$defs/__schema24"
-                      }
-                    ],
+                    "items": {
+                      "$ref": "#/$defs/__schema24"
+                    },
                     "minItems": 1,
                     "maxItems": 1
                   },
@@ -2409,11 +2439,27 @@
                     "prefixItems": [
                       {
                         "$ref": "#/$defs/__schema25"
-                      },
-                      {
-                        "$ref": "#/$defs/__schema26"
                       }
                     ],
+                    "items": {
+                      "$ref": "#/$defs/__schema26"
+                    },
+                    "minItems": 1,
+                    "maxItems": 1
+                  },
+                  {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "$ref": "#/$defs/__schema27"
+                      },
+                      {
+                        "$ref": "#/$defs/__schema28"
+                      }
+                    ],
+                    "items": {
+                      "$ref": "#/$defs/__schema29"
+                    },
                     "minItems": 2,
                     "maxItems": 2
                   }
@@ -2424,18 +2470,42 @@
                 "const": "callers"
               },
               "__schema24": {
-                "type": "string",
-                "const": "callees"
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema23"
+                  }
+                ]
               },
               "__schema25": {
                 "type": "string",
-                "const": "callers"
+                "const": "callees"
               },
               "__schema26": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema25"
+                  }
+                ]
+              },
+              "__schema27": {
+                "type": "string",
+                "const": "callers"
+              },
+              "__schema28": {
                 "type": "string",
                 "const": "callees"
               },
-              "__schema27": {
+              "__schema29": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema27"
+                  },
+                  {
+                    "$ref": "#/$defs/__schema28"
+                  }
+                ]
+              },
+              "__schema30": {
                 "type": "array",
                 "items": {
                   "oneOf": [
@@ -2545,7 +2615,7 @@
                   ]
                 }
               },
-              "__schema28": {
+              "__schema31": {
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -2553,7 +2623,7 @@
                 }
               }
             },
-            "$id": "urn:rea:tool-output:sha256:1415fa93b5a9d01d75c797fb5198c1c2d18d9330be689f7317083613a447b5bb"
+            "$id": "urn:rea:tool-output:sha256:bf436034ad884fe02b996273e4346eefe76da80f9f52e5ce35173517317ef115"
           }
         },
         {
@@ -2702,7 +2772,7 @@
         {
           "name": "search_strings",
           "title": "Search Strings",
-          "description": "Search every provider-defined string object using literal matching by default or regex when requested. Results are deterministic and complete over those defined objects, not every text sequence in artifact bytes. Ghidra may omit packed or undefined literals, including Rust strings; an empty result does not prove text is absent. If an address is known, read_bytes and xrefs inspect its bytes and references. Hopper retains typed byte decoding, native display, and explicit decoding unknowns. Adjacent long-literal fragments match independently. Hopper regex mode uses ECMAScript Unicode syntax in a cancellable worker; a matching deadline leaves its API usable.",
+          "description": "Search every provider-reported string object or candidate using literal matching by default or regex when requested. Results are deterministic and complete over that provider inventory, not every text sequence in artifact bytes. Kuna scans mapped sequences of at least five characters, including unterminated fragments, without computing references. Ghidra may omit packed or undefined literals, including Rust strings; an empty result does not prove text is absent. If an address is known, read_bytes and xrefs inspect its bytes and references. Hopper retains typed byte decoding, native display, and explicit decoding unknowns. Adjacent long-literal fragments match independently. Hopper regex mode uses ECMAScript Unicode syntax in a cancellable worker; a matching deadline leaves its API usable.",
           "inputSchema": "<cut by run.py: schemas are kept only for the tools this session calls>",
           "annotations": {
             "readOnlyHint": false,
@@ -2799,28 +2869,15 @@
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "properties": {
               "document": {
-                "$ref": "#/$defs/__schema0",
-                "description": "The active target's provider document name; use open_binary to switch targets"
-              },
-              "address": {
-                "$ref": "#/$defs/__schema2",
-                "description": "A provider-normalized address; default memory uses 0x-prefixed hexadecimal"
-              }
-            },
-            "additionalProperties": false,
-            "$defs": {
-              "__schema0": {
                 "description": "The active target's provider document name; use open_binary to switch targets",
-                "$ref": "#/$defs/__schema1"
-              },
-              "__schema1": {
                 "type": "string"
               },
-              "__schema2": {
+              "address": {
                 "type": "string",
                 "description": "A provider-normalized address; default memory uses 0x-prefixed hexadecimal"
               }
             },
+            "additionalProperties": false,
             "examples": [
               {}
             ]
@@ -2878,10 +2935,10 @@
                 "$ref": "#/$defs/__schema18"
               },
               "locations": {
-                "$ref": "#/$defs/__schema27"
+                "$ref": "#/$defs/__schema30"
               },
               "evidence_links": {
-                "$ref": "#/$defs/__schema28"
+                "$ref": "#/$defs/__schema31"
               }
             },
             "required": [
@@ -2967,7 +3024,8 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -3013,7 +3071,9 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "m68k",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -3232,7 +3292,6 @@
                 }
               },
               "__schema18": {
-                "default": null,
                 "anyOf": [
                   {
                     "oneOf": [
@@ -3334,16 +3393,9 @@
                         "$ref": "#/$defs/__schema23"
                       }
                     ],
-                    "minItems": 1,
-                    "maxItems": 1
-                  },
-                  {
-                    "type": "array",
-                    "prefixItems": [
-                      {
-                        "$ref": "#/$defs/__schema24"
-                      }
-                    ],
+                    "items": {
+                      "$ref": "#/$defs/__schema24"
+                    },
                     "minItems": 1,
                     "maxItems": 1
                   },
@@ -3352,11 +3404,27 @@
                     "prefixItems": [
                       {
                         "$ref": "#/$defs/__schema25"
-                      },
-                      {
-                        "$ref": "#/$defs/__schema26"
                       }
                     ],
+                    "items": {
+                      "$ref": "#/$defs/__schema26"
+                    },
+                    "minItems": 1,
+                    "maxItems": 1
+                  },
+                  {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "$ref": "#/$defs/__schema27"
+                      },
+                      {
+                        "$ref": "#/$defs/__schema28"
+                      }
+                    ],
+                    "items": {
+                      "$ref": "#/$defs/__schema29"
+                    },
                     "minItems": 2,
                     "maxItems": 2
                   }
@@ -3367,18 +3435,42 @@
                 "const": "callers"
               },
               "__schema24": {
-                "type": "string",
-                "const": "callees"
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema23"
+                  }
+                ]
               },
               "__schema25": {
                 "type": "string",
-                "const": "callers"
+                "const": "callees"
               },
               "__schema26": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema25"
+                  }
+                ]
+              },
+              "__schema27": {
+                "type": "string",
+                "const": "callers"
+              },
+              "__schema28": {
                 "type": "string",
                 "const": "callees"
               },
-              "__schema27": {
+              "__schema29": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema27"
+                  },
+                  {
+                    "$ref": "#/$defs/__schema28"
+                  }
+                ]
+              },
+              "__schema30": {
                 "type": "array",
                 "items": {
                   "oneOf": [
@@ -3488,7 +3580,7 @@
                   ]
                 }
               },
-              "__schema28": {
+              "__schema31": {
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -3496,7 +3588,7 @@
                 }
               }
             },
-            "$id": "urn:rea:tool-output:sha256:46783b46bd3f05cdba82462b6eb802b7a3e524e85d176156be22390b7e6f0c3c"
+            "$id": "urn:rea:tool-output:sha256:03b7578ff975b43dacabdb7c4db081769358d354bcad91aaa8b9960a0b1d4f5f"
           }
         },
         {
@@ -3625,7 +3717,7 @@
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "properties": {
               "procedure": {
-                "$ref": "#/$defs/__schema0",
+                "type": "string",
                 "description": "A procedure name or address"
               }
             },
@@ -3633,12 +3725,6 @@
               "procedure"
             ],
             "additionalProperties": false,
-            "$defs": {
-              "__schema0": {
-                "type": "string",
-                "description": "A procedure name or address"
-              }
-            },
             "examples": [
               {
                 "procedure": "main"
@@ -3683,25 +3769,25 @@
                 "$ref": "#/$defs/__schema13"
               },
               "confidence": {
-                "$ref": "#/$defs/__schema51"
-              },
-              "authority": {
-                "$ref": "#/$defs/__schema52"
-              },
-              "environment": {
-                "$ref": "#/$defs/__schema53"
-              },
-              "limitations": {
-                "$ref": "#/$defs/__schema54"
-              },
-              "relationship_coverage": {
                 "$ref": "#/$defs/__schema55"
               },
+              "authority": {
+                "$ref": "#/$defs/__schema56"
+              },
+              "environment": {
+                "$ref": "#/$defs/__schema57"
+              },
+              "limitations": {
+                "$ref": "#/$defs/__schema58"
+              },
+              "relationship_coverage": {
+                "$ref": "#/$defs/__schema59"
+              },
               "locations": {
-                "$ref": "#/$defs/__schema64"
+                "$ref": "#/$defs/__schema71"
               },
               "evidence_links": {
-                "$ref": "#/$defs/__schema65"
+                "$ref": "#/$defs/__schema72"
               }
             },
             "required": [
@@ -3787,7 +3873,8 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -3833,7 +3920,9 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "m68k",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -4224,7 +4313,7 @@
                   },
                   "swift_string_literal_omissions": {
                     "description": "Literal candidates omitted for capacity or unresolved control flow. Present exactly when swift_string_literals is present; empty when all examined use sites were classified.",
-                    "$ref": "#/$defs/__schema38"
+                    "$ref": "#/$defs/__schema42"
                   },
                   "basic_blocks": {
                     "type": "array",
@@ -4271,7 +4360,7 @@
                                 "minItems": 1,
                                 "type": "array",
                                 "items": {
-                                  "$ref": "#/$defs/__schema41"
+                                  "$ref": "#/$defs/__schema45"
                                 }
                               }
                             },
@@ -4311,22 +4400,22 @@
                                     "type": "null"
                                   },
                                   "data_type": {
-                                    "$ref": "#/$defs/__schema42"
-                                  },
-                                  "size_bytes": {
-                                    "$ref": "#/$defs/__schema43"
-                                  },
-                                  "storage": {
-                                    "$ref": "#/$defs/__schema44"
-                                  },
-                                  "confidence": {
-                                    "$ref": "#/$defs/__schema45"
-                                  },
-                                  "evidence": {
                                     "$ref": "#/$defs/__schema46"
                                   },
-                                  "decompiler_artifacts": {
+                                  "size_bytes": {
+                                    "$ref": "#/$defs/__schema47"
+                                  },
+                                  "storage": {
                                     "$ref": "#/$defs/__schema48"
+                                  },
+                                  "confidence": {
+                                    "$ref": "#/$defs/__schema49"
+                                  },
+                                  "evidence": {
+                                    "$ref": "#/$defs/__schema50"
+                                  },
+                                  "decompiler_artifacts": {
+                                    "$ref": "#/$defs/__schema52"
                                   },
                                   "role": {
                                     "type": "string",
@@ -4368,22 +4457,22 @@
                                       ]
                                     },
                                     "data_type": {
-                                      "$ref": "#/$defs/__schema42"
-                                    },
-                                    "size_bytes": {
-                                      "$ref": "#/$defs/__schema43"
-                                    },
-                                    "storage": {
-                                      "$ref": "#/$defs/__schema44"
-                                    },
-                                    "confidence": {
-                                      "$ref": "#/$defs/__schema45"
-                                    },
-                                    "evidence": {
                                       "$ref": "#/$defs/__schema46"
                                     },
-                                    "decompiler_artifacts": {
+                                    "size_bytes": {
+                                      "$ref": "#/$defs/__schema47"
+                                    },
+                                    "storage": {
                                       "$ref": "#/$defs/__schema48"
+                                    },
+                                    "confidence": {
+                                      "$ref": "#/$defs/__schema49"
+                                    },
+                                    "evidence": {
+                                      "$ref": "#/$defs/__schema50"
+                                    },
+                                    "decompiler_artifacts": {
+                                      "$ref": "#/$defs/__schema52"
                                     },
                                     "role": {
                                       "type": "string",
@@ -4456,13 +4545,13 @@
                                             ]
                                           },
                                           "confidence": {
-                                            "$ref": "#/$defs/__schema45"
+                                            "$ref": "#/$defs/__schema49"
                                           },
                                           "evidence": {
                                             "minItems": 1,
                                             "type": "array",
                                             "items": {
-                                              "$ref": "#/$defs/__schema47"
+                                              "$ref": "#/$defs/__schema51"
                                             }
                                           }
                                         },
@@ -4499,13 +4588,13 @@
                                             "minLength": 1
                                           },
                                           "confidence": {
-                                            "$ref": "#/$defs/__schema45"
+                                            "$ref": "#/$defs/__schema49"
                                           },
                                           "evidence": {
                                             "minItems": 1,
                                             "type": "array",
                                             "items": {
-                                              "$ref": "#/$defs/__schema47"
+                                              "$ref": "#/$defs/__schema51"
                                             }
                                           }
                                         },
@@ -4528,13 +4617,13 @@
                                             "minLength": 1
                                           },
                                           "confidence": {
-                                            "$ref": "#/$defs/__schema45"
+                                            "$ref": "#/$defs/__schema49"
                                           },
                                           "evidence": {
                                             "minItems": 1,
                                             "type": "array",
                                             "items": {
-                                              "$ref": "#/$defs/__schema47"
+                                              "$ref": "#/$defs/__schema51"
                                             }
                                           }
                                         },
@@ -4673,13 +4762,13 @@
                                     "inputs": {
                                       "type": "array",
                                       "items": {
-                                        "$ref": "#/$defs/__schema49"
+                                        "$ref": "#/$defs/__schema53"
                                       }
                                     },
                                     "output": {
                                       "anyOf": [
                                         {
-                                          "$ref": "#/$defs/__schema49"
+                                          "$ref": "#/$defs/__schema53"
                                         },
                                         {
                                           "type": "null"
@@ -4912,28 +5001,28 @@
                     "type": "object",
                     "properties": {
                       "pseudocode": {
-                        "$ref": "#/$defs/__schema50"
+                        "$ref": "#/$defs/__schema54"
                       },
                       "assembly": {
-                        "$ref": "#/$defs/__schema50"
+                        "$ref": "#/$defs/__schema54"
                       },
                       "comments": {
-                        "$ref": "#/$defs/__schema50"
+                        "$ref": "#/$defs/__schema54"
                       },
                       "callers": {
-                        "$ref": "#/$defs/__schema50"
+                        "$ref": "#/$defs/__schema54"
                       },
                       "callees": {
-                        "$ref": "#/$defs/__schema50"
+                        "$ref": "#/$defs/__schema54"
                       },
                       "references": {
-                        "$ref": "#/$defs/__schema50"
+                        "$ref": "#/$defs/__schema54"
                       },
                       "strings_names": {
-                        "$ref": "#/$defs/__schema50"
+                        "$ref": "#/$defs/__schema54"
                       },
                       "cfg": {
-                        "$ref": "#/$defs/__schema50"
+                        "$ref": "#/$defs/__schema54"
                       }
                     },
                     "additionalProperties": false
@@ -5332,7 +5421,7 @@
                           "$ref": "#/$defs/__schema34"
                         },
                         "words": {
-                          "$ref": "#/$defs/__schema35"
+                          "$ref": "#/$defs/__schema38"
                         },
                         "representation": {
                           "type": "string",
@@ -5367,7 +5456,7 @@
                           "$ref": "#/$defs/__schema34"
                         },
                         "words": {
-                          "$ref": "#/$defs/__schema35"
+                          "$ref": "#/$defs/__schema38"
                         },
                         "representation": {
                           "type": "string",
@@ -5404,32 +5493,68 @@
                 "type": "array",
                 "prefixItems": [
                   {
-                    "type": "string"
+                    "$ref": "#/$defs/__schema35"
                   },
-                  {
-                    "type": "string"
-                  }
-                ]
-              },
-              "__schema35": {
-                "type": "array",
-                "prefixItems": [
                   {
                     "$ref": "#/$defs/__schema36"
-                  },
-                  {
-                    "$ref": "#/$defs/__schema37"
                   }
                 ],
-                "description": "Observed constant register values, in register order."
+                "items": {
+                  "$ref": "#/$defs/__schema37"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "__schema35": {
+                "type": "string"
               },
               "__schema36": {
                 "type": "string"
               },
               "__schema37": {
-                "type": "string"
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema35"
+                  },
+                  {
+                    "$ref": "#/$defs/__schema36"
+                  }
+                ]
               },
               "__schema38": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "$ref": "#/$defs/__schema39"
+                  },
+                  {
+                    "$ref": "#/$defs/__schema40"
+                  }
+                ],
+                "items": {
+                  "$ref": "#/$defs/__schema41"
+                },
+                "minItems": 2,
+                "maxItems": 2,
+                "description": "Observed constant register values, in register order."
+              },
+              "__schema39": {
+                "type": "string"
+              },
+              "__schema40": {
+                "type": "string"
+              },
+              "__schema41": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema39"
+                  },
+                  {
+                    "$ref": "#/$defs/__schema40"
+                  }
+                ]
+              },
+              "__schema42": {
                 "type": "array",
                 "items": {
                   "oneOf": [
@@ -5440,16 +5565,16 @@
                           "$ref": "#/$defs/__schema32"
                         },
                         "byte_length": {
-                          "$ref": "#/$defs/__schema39"
+                          "$ref": "#/$defs/__schema43"
                         },
                         "reason": {
-                          "$ref": "#/$defs/__schema40"
+                          "$ref": "#/$defs/__schema44"
                         },
                         "registers": {
                           "$ref": "#/$defs/__schema34"
                         },
                         "words": {
-                          "$ref": "#/$defs/__schema35"
+                          "$ref": "#/$defs/__schema38"
                         },
                         "representation": {
                           "type": "string",
@@ -5477,16 +5602,16 @@
                           "$ref": "#/$defs/__schema32"
                         },
                         "byte_length": {
-                          "$ref": "#/$defs/__schema39"
+                          "$ref": "#/$defs/__schema43"
                         },
                         "reason": {
-                          "$ref": "#/$defs/__schema40"
+                          "$ref": "#/$defs/__schema44"
                         },
                         "registers": {
                           "$ref": "#/$defs/__schema34"
                         },
                         "words": {
-                          "$ref": "#/$defs/__schema35"
+                          "$ref": "#/$defs/__schema38"
                         },
                         "representation": {
                           "type": "string",
@@ -5511,12 +5636,12 @@
                   ]
                 }
               },
-              "__schema39": {
+              "__schema43": {
                 "type": "integer",
                 "minimum": 0,
                 "maximum": 9007199254740991
               },
-              "__schema40": {
+              "__schema44": {
                 "type": "string",
                 "enum": [
                   "capacity",
@@ -5524,15 +5649,15 @@
                 ],
                 "description": "Why this candidate is omitted: capacity stopped decoding, or an unresolved jump left its use unknown."
               },
-              "__schema41": {
+              "__schema45": {
                 "type": "string",
                 "minLength": 1
               },
-              "__schema42": {
+              "__schema46": {
                 "type": "string",
                 "minLength": 1
               },
-              "__schema43": {
+              "__schema47": {
                 "anyOf": [
                   {
                     "type": "integer",
@@ -5544,7 +5669,7 @@
                   }
                 ]
               },
-              "__schema44": {
+              "__schema48": {
                 "anyOf": [
                   {
                     "type": "string",
@@ -5555,7 +5680,7 @@
                   }
                 ]
               },
-              "__schema45": {
+              "__schema49": {
                 "type": "string",
                 "enum": [
                   "low",
@@ -5563,14 +5688,14 @@
                   "high"
                 ]
               },
-              "__schema46": {
+              "__schema50": {
                 "minItems": 1,
                 "type": "array",
                 "items": {
-                  "$ref": "#/$defs/__schema47"
+                  "$ref": "#/$defs/__schema51"
                 }
               },
-              "__schema47": {
+              "__schema51": {
                 "type": "object",
                 "properties": {
                   "kind": {
@@ -5599,7 +5724,7 @@
                 ],
                 "additionalProperties": false
               },
-              "__schema48": {
+              "__schema52": {
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -5610,7 +5735,7 @@
                   ]
                 }
               },
-              "__schema49": {
+              "__schema53": {
                 "type": "object",
                 "properties": {
                   "kind": {
@@ -5658,7 +5783,7 @@
                 ],
                 "additionalProperties": false
               },
-              "__schema50": {
+              "__schema54": {
                 "oneOf": [
                   {
                     "type": "object",
@@ -5693,7 +5818,7 @@
                   }
                 ]
               },
-              "__schema51": {
+              "__schema55": {
                 "type": "string",
                 "enum": [
                   "observed",
@@ -5701,7 +5826,7 @@
                   "inferred"
                 ]
               },
-              "__schema52": {
+              "__schema56": {
                 "type": "string",
                 "enum": [
                   "shipped-artifact",
@@ -5711,7 +5836,7 @@
                   "analyst-inference"
                 ]
               },
-              "__schema53": {
+              "__schema57": {
                 "anyOf": [
                   {
                     "type": "object",
@@ -5751,14 +5876,13 @@
                   }
                 ]
               },
-              "__schema54": {
+              "__schema58": {
                 "type": "array",
                 "items": {
                   "type": "string"
                 }
               },
-              "__schema55": {
-                "default": null,
+              "__schema59": {
                 "anyOf": [
                   {
                     "oneOf": [
@@ -5770,7 +5894,7 @@
                             "const": "complete"
                           },
                           "diagnostics": {
-                            "$ref": "#/$defs/__schema56"
+                            "$ref": "#/$defs/__schema60"
                           }
                         },
                         "required": [
@@ -5789,14 +5913,14 @@
                             "minItems": 1,
                             "type": "array",
                             "items": {
-                              "$ref": "#/$defs/__schema58"
+                              "$ref": "#/$defs/__schema62"
                             }
                           },
                           "limited_directions": {
-                            "$ref": "#/$defs/__schema59"
+                            "$ref": "#/$defs/__schema63"
                           },
                           "diagnostics": {
-                            "$ref": "#/$defs/__schema56"
+                            "$ref": "#/$defs/__schema60"
                           }
                         },
                         "required": [
@@ -5817,10 +5941,10 @@
                             "minLength": 1
                           },
                           "limited_directions": {
-                            "$ref": "#/$defs/__schema59"
+                            "$ref": "#/$defs/__schema63"
                           },
                           "diagnostics": {
-                            "$ref": "#/$defs/__schema56"
+                            "$ref": "#/$defs/__schema60"
                           }
                         },
                         "required": [
@@ -5836,30 +5960,33 @@
                   }
                 ]
               },
-              "__schema56": {
+              "__schema60": {
                 "minItems": 1,
                 "type": "array",
                 "items": {
-                  "$ref": "#/$defs/__schema57"
+                  "$ref": "#/$defs/__schema61"
                 }
               },
-              "__schema57": {
+              "__schema61": {
                 "type": "string",
                 "minLength": 1
               },
-              "__schema58": {
+              "__schema62": {
                 "type": "string",
                 "minLength": 1
               },
-              "__schema59": {
+              "__schema63": {
                 "anyOf": [
                   {
                     "type": "array",
                     "prefixItems": [
                       {
-                        "$ref": "#/$defs/__schema60"
+                        "$ref": "#/$defs/__schema64"
                       }
                     ],
+                    "items": {
+                      "$ref": "#/$defs/__schema65"
+                    },
                     "minItems": 1,
                     "maxItems": 1
                   },
@@ -5867,9 +5994,12 @@
                     "type": "array",
                     "prefixItems": [
                       {
-                        "$ref": "#/$defs/__schema61"
+                        "$ref": "#/$defs/__schema66"
                       }
                     ],
+                    "items": {
+                      "$ref": "#/$defs/__schema67"
+                    },
                     "minItems": 1,
                     "maxItems": 1
                   },
@@ -5877,34 +6007,61 @@
                     "type": "array",
                     "prefixItems": [
                       {
-                        "$ref": "#/$defs/__schema62"
+                        "$ref": "#/$defs/__schema68"
                       },
                       {
-                        "$ref": "#/$defs/__schema63"
+                        "$ref": "#/$defs/__schema69"
                       }
                     ],
+                    "items": {
+                      "$ref": "#/$defs/__schema70"
+                    },
                     "minItems": 2,
                     "maxItems": 2
                   }
                 ]
               },
-              "__schema60": {
-                "type": "string",
-                "const": "callers"
-              },
-              "__schema61": {
-                "type": "string",
-                "const": "callees"
-              },
-              "__schema62": {
-                "type": "string",
-                "const": "callers"
-              },
-              "__schema63": {
-                "type": "string",
-                "const": "callees"
-              },
               "__schema64": {
+                "type": "string",
+                "const": "callers"
+              },
+              "__schema65": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema64"
+                  }
+                ]
+              },
+              "__schema66": {
+                "type": "string",
+                "const": "callees"
+              },
+              "__schema67": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema66"
+                  }
+                ]
+              },
+              "__schema68": {
+                "type": "string",
+                "const": "callers"
+              },
+              "__schema69": {
+                "type": "string",
+                "const": "callees"
+              },
+              "__schema70": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema68"
+                  },
+                  {
+                    "$ref": "#/$defs/__schema69"
+                  }
+                ]
+              },
+              "__schema71": {
                 "type": "array",
                 "items": {
                   "oneOf": [
@@ -6014,7 +6171,7 @@
                   ]
                 }
               },
-              "__schema65": {
+              "__schema72": {
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -6022,7 +6179,7 @@
                 }
               }
             },
-            "$id": "urn:rea:tool-output:sha256:ef762a362d2af497225ad6277db1395e3e6114966385ce5307f2ebcd11175e1d"
+            "$id": "urn:rea:tool-output:sha256:afeea164c031cd1b97d8cd434b2877dfabbd297df07e082f6ce0f077e772a3b7"
           }
         },
         {
@@ -6301,7 +6458,7 @@
         {
           "name": "compare_managed_members",
           "title": "Compare Managed Members",
-          "description": "Compare two authenticated inspect_managed_members Evidence records using unique-only tiers: exact declared type, name, and CIL/signature; exact declared type, name, and raw signature (decoded or not); exact declared type, name, and decoded structural method shape; then exact CIL/signature or decoded structural method shape alone, which never takes a member whose own declared type and name remain unpaired on the other side or whose declaring type is unresolved. Names alone are never a matching basis; a member whose signature was not decoded, or whose same-named counterpart's was not, stays unknown rather than added or removed. Metadata tokens remain build-local coordinates bound to each artifact SHA-256 and MVID, and the tuple digest does not itself remap them.",
+          "description": "Compare two authenticated inspect_managed_members Evidence records using unique-only tiers: exact declared type, name, and CIL/signature; exact declared type, name, and signature (decoded or not); exact declared type, name, and decoded structural method shape; then exact CIL/signature or decoded structural method shape alone, which never takes a member whose own declared type and name remain unpaired on the other side or whose declaring type is unresolved. Signatures compare type operands by name, not by build-local metadata row. Names alone are never a matching basis; a member whose signature was not decoded, or whose same-named counterpart's was not, stays unknown rather than added or removed. Metadata tokens remain build-local coordinates bound to each artifact SHA-256 and MVID, and the tuple digest does not itself remap them.",
           "inputSchema": "<cut by run.py: schemas are kept only for the tools this session calls>",
           "annotations": {
             "readOnlyHint": false,
@@ -6460,7 +6617,7 @@
           "description": "Return observed Frida session state and queued script messages. Message history is bounded by the provider capture budget and reports truncation.",
           "inputSchema": "<cut by run.py: schemas are kept only for the tools this session calls>",
           "annotations": {
-            "readOnlyHint": true,
+            "readOnlyHint": false,
             "destructiveHint": false,
             "idempotentHint": true,
             "openWorldHint": false
@@ -6691,7 +6848,7 @@
         {
           "name": "search_android_classes",
           "title": "Search Android Classes",
-          "description": "Search complete decompiler class-name rows in an explicit local APK by case-sensitive substring. Empty query inventories all rows. Repeated names remain repeated and appear in duplicate_names; the provider accepts only class names for lookup, so these rows do not identify which same-name class node a later lookup selects. Retains artifact and engine identity; no APK execution.",
+          "description": "Search complete top-level decompiler class-name rows in an explicit local APK by case-sensitive substring. Empty query inventories all rows. Repeated names remain repeated and appear in duplicate_names; the provider accepts only class names for lookup, so these rows do not identify which same-name class node a later lookup selects. Retains artifact and engine identity; no APK execution.",
           "inputSchema": "<cut by run.py: schemas are kept only for the tools this session calls>",
           "annotations": {
             "readOnlyHint": false,
@@ -6808,7 +6965,7 @@
         {
           "name": "inspect_analysis_view",
           "title": "Inspect Analysis View",
-          "description": "Inspect selected views of completed binary-layout, JavaScript application, native analyze_function, inspect_artifact, inventory_artifact, inspect_wasm_artifact, inspect_macho, decode_interface_builder, inspect_evm_interface, inspect_managed_artifact, inspect_managed_members, inspect_android_package, inspect_dart_aot or inspect_web_network_capture Evidence without repeating analysis. Historical capture summaries return identity and counts without bodies or archive inventories. Capture views page retained records: view {kind: \"capture\", detail: \"preview\" | \"complete\", offset: 0, limit: 20}; preview selects recorded headline fields and binary descriptors, complete returns exact records with all sidecars. Offsets follow the selected parent record order, preserving original producer ordinals. Paging never reopens the source or reruns the decoder. For inspect_pcap_capture parents, kind pcap pages endpoints, dns-queries, tls-sni, protocols, http-uris or unattributed-addresses. Select an exact query for dns-addresses, or a tshark/capinfos stream for UTF-16 diagnostics text. Page totals count retained facts; source coverage remains explicit. Qlog summaries keep profile/scope and counts; kind qlog pages traces, streams, loss-declarations, incomplete-records, contributions, ranges or final-sizes. Except traces, select trace_index; stream-specific facets also require exact stream_id and direction. Facts retain all-recorded-events-before-selection scope, and interval overlap or endpoint loss declarations do not prove retransmission or network loss. The api-surface view groups retained HAR requests by method, origin and format-rule path template; templated segments are inferences. It reads no headers or bodies and reports no query values. For a retained record use source: {kind: \"retained-evidence\", evidence_id: \"<parent_evidence_id>\"}. Use normalized_result.parent_evidence_id from a summary receipt. Source kind is required. Portable source uses {kind: \"inline\", evidence: <complete Evidence>}. For layout, JavaScript, inventory, WASM, Mach-O, Interface Builder, EVM, managed artifact, Android package and Dart AOT sources, request a summary with view: {kind: \"summary\"}; summary is a view kind and has no facet. The WASM summary gives validation, counts, WAT digest/length, tool profile and execution/network states without reading WAT text. Select a layout mitigations/linkage facet, one section/symbol/module, or a stable page. Module pages include assets, bundled and source modules; use node_id for ambiguous or unavailable paths. Inventory uses view: {kind: \"inventory\", collection: \"occurrences\", logical_paths: [\"package.json\"], offset: 0, limit: 64}. Inventory views page nodes, occurrences, edges or integrity contradictions; occurrence logical_paths matches exact recorded strings (omitted means all available, [] means none). source_complete distinguishes complete inventories from partial source records; page exhaustion does not prove absence in a partial source. WASM views use kind wasm and facet sections/imports/exports/candidates/glue/wat/headers/details/tool_profile; text facets use UTF-16 code units and source forms remain exact. Mach-O views use kind macho and facet entrypoints/architectures/build_metadata/load_commands/dependencies/imports/exports/segments/provenance; source_exhaustive false means unreturned rows may exist. Interface Builder views use kind interface-builder and collection documents/nodes/edges/coverage; nodes and edges accept an exact document relative_path. EVM summary returns all inferred interface candidates, carrier/decoded identities and explicit unknowns without hex or duplicate stdout. EVM views use kind evm and facet functions/bytecode_hex/stdout/stderr; function pages preserve the original candidate rows, and text offsets/limits count UTF-16 code units (hex has two characters per decoded byte). Exhausting candidate pages does not establish global interface completeness. Managed artifact summaries preserve complete identity/classification, metadata status, module/MVID, frameworks, coverage and limitations without unrelated inventories. Managed pages use kind managed and collection references/resources/attributes, retaining source coverage and build-local token scope; page exhaustion does not establish complete metadata. Managed member summaries keep identity, selection with unmatched names, coverage and per-collection counts; managed-members pages use collection types/exported_types/fields/methods/member_refs/call_edges/field_accesses/user_strings and carry the source selection and coverage. Android package summaries retain all declarations, engine identity and counts without decoded manifest text. Android manifest pages use kind android, facet manifest, offset and limit in UTF-16 code units; source_status preserves partial decoded coverage even when the retained text page is exhausted. Dart AOT summary preserves target/ABI/library identity, snapshot headers and pool lower bounds. String pages use kind dart-aot, collection package_uris/dart_uris/class_like_tokens; source coverage remains partial when the producer says partial. Native function Evidence requires kind native: view: {kind: \"native\", facet: \"procedure\"}. Facets select procedure, pseudocode, assembly, basic blocks, comments, callers/callees, references, unresolved calls, referenced strings/names, native API and high-pcode. Use nonnegative offset and a positive caller-selected limit (defaults 0 and 64); pseudocode uses UTF-16 code units, other native pages use rows. Returns artifact identity, parent Evidence ID, a distinct view digest, coverage, limitations and unknowns. Actual serialized size determines MCP transport admission; choose a smaller page or export the complete retained Evidence if needed.",
+          "description": "Inspect selected views of completed binary-layout, JavaScript application, native analyze_function, inspect_artifact, inventory_artifact, inspect_wasm_artifact, inspect_macho, decode_interface_builder, inspect_evm_interface, inspect_managed_artifact, inspect_managed_members, inspect_android_package, inspect_dart_aot or inspect_web_network_capture Evidence without repeating analysis. Historical capture summaries return identity and counts without bodies or archive inventories. Capture views page retained records: view {kind: \"capture\", detail: \"preview\" | \"complete\", offset: 0, limit: 20}; preview selects recorded headline fields and binary descriptors, complete returns exact records with all sidecars. Offsets follow the selected parent record order, preserving original producer ordinals. Paging never reopens the source or reruns the decoder. For inspect_pcap_capture parents, kind pcap pages endpoints, dns-queries, tls-sni, protocols, http-uris or unattributed-addresses. Select an exact query for dns-addresses, or a tshark/capinfos stream for UTF-16 diagnostics text. Page totals count retained facts; source coverage remains explicit. Qlog summaries keep profile/scope and counts; kind qlog pages traces, streams, loss-declarations, incomplete-records, contributions, ranges or final-sizes. Except traces, select trace_index; stream-specific facets also require exact stream_id and direction. Facts retain all-recorded-events-before-selection scope, and interval overlap or endpoint loss declarations do not prove retransmission or network loss. The api-surface view groups retained HAR requests by method, origin and format-rule path template; templated segments are inferences. It reads no headers or bodies and reports no query values. For a retained record use source: {kind: \"retained-evidence\", evidence_id: \"<parent_evidence_id>\"}. Use normalized_result.parent_evidence_id from a summary receipt. Source kind is required. Portable source uses {kind: \"inline\", evidence: <complete Evidence>}. For layout, JavaScript, inventory, WASM, Mach-O, Interface Builder, EVM, managed artifact, Android package and Dart AOT sources, request a summary with view: {kind: \"summary\"}; summary is a view kind and has no facet. The WASM summary gives validation, counts, WAT digest/length, tool profile and execution/network states without reading WAT text. Select a layout mitigations/linkage facet, one section/symbol/module, or a stable page. Module pages include assets, bundled and source modules; use node_id for ambiguous or unavailable paths. Typed module references use view {kind: \"javascript\", collection: \"modules\", projection: \"references\", where: {path: \"main.js\", kind: \"javascript-module\"}, offset: 0, limit: 64}; where matches exact retained strings (null selects unavailable paths). Rows include canonical identity, retained source-range count and observation support states. Source coverage and selection remain explicit; exhausting matching rows does not prove runtime loading or complete analysis. For exact file/native facts and processing gaps, use view {kind: \"javascript-facts\", where: {paths: [\"package.json\"]}, property_keys: [\"name\", \"operation\", \"analysis_status\"]}. Rows page original observations with canonical identities and Evidence; missing properties remain omitted. Paths match recorded artifact-path/source-range locations; optional kinds filter nodes. To discover field names without values, opt into include_available_property_keys: true with property_keys: []. Canonical identity and Evidence are separate from properties; keep each node_id/observation_id pair together when composing results. Inventory uses view: {kind: \"inventory\", collection: \"occurrences\", logical_paths: [\"package.json\"], offset: 0, limit: 64}. Inventory views page nodes, occurrences, edges or integrity contradictions; occurrence logical_paths matches exact recorded strings (omitted means all available, [] means none). source_complete distinguishes complete inventories from partial source records; page exhaustion does not prove absence in a partial source. WASM views use kind wasm and facet sections/imports/exports/candidates/glue/wat/headers/details/tool_profile; text facets use UTF-16 code units and source forms remain exact. Mach-O views use kind macho and facet entrypoints/architectures/build_metadata/load_commands/dependencies/imports/exports/segments/provenance; source_exhaustive false means unreturned rows may exist. Interface Builder views use kind interface-builder and collection documents/nodes/edges/coverage; nodes and edges accept an exact document relative_path. EVM summary returns all inferred interface candidates, carrier/decoded identities and explicit unknowns without hex or duplicate stdout. EVM views use kind evm and facet functions/bytecode_hex/stdout/stderr; function pages preserve the original candidate rows, and text offsets/limits count UTF-16 code units (hex has two characters per decoded byte). Exhausting candidate pages does not establish global interface completeness. Managed artifact summaries preserve complete identity/classification, metadata status, module/MVID, frameworks, coverage and limitations without unrelated inventories. Managed pages use kind managed and collection references/resources/attributes, retaining source coverage and build-local token scope; page exhaustion does not establish complete metadata. Managed member summaries keep identity, selection with unmatched names, coverage and per-collection counts; managed-members pages use collection types/exported_types/fields/methods/member_refs/call_edges/field_accesses/user_strings and carry the source selection and coverage. Android package summaries retain all declarations, engine identity and counts without decoded manifest text. Android manifest pages use kind android, facet manifest, offset and limit in UTF-16 code units; source_status preserves partial decoded coverage even when the retained text page is exhausted. Dart AOT summary preserves target/ABI/library identity, snapshot headers and pool lower bounds. String pages use kind dart-aot, collection package_uris/dart_uris/class_like_tokens; source coverage remains partial when the producer says partial. Native function Evidence requires kind native: view: {kind: \"native\", facet: \"procedure\"}. Facets select procedure, pseudocode, assembly, basic blocks, comments, callers/callees, references, unresolved calls, referenced strings/names, native API and high-pcode. Use nonnegative offset and a positive caller-selected limit (defaults 0 and 64); pseudocode uses UTF-16 code units, other native pages use rows. Returns artifact identity, parent Evidence ID, a distinct view digest, coverage, limitations and unknowns. Actual serialized size determines MCP transport admission; choose a smaller page or export the complete retained Evidence if needed.",
           "inputSchema": "<cut by run.py: schemas are kept only for the tools this session calls>",
           "annotations": {
             "readOnlyHint": false,
@@ -7224,7 +7381,7 @@
         {
           "name": "inspect_adb_window",
           "title": "Inspect Adb Window",
-          "description": "Report the window manager's current focus declarations (mCurrentFocus and mFocusedApp from `dumpsys window windows`, or from `dumpsys window displays` when the windows section declares neither, as on Android 16) — what is on screen at read time without any interaction. Read-only.",
+          "description": "Report the window manager's focus declarations with display context, original lines and explicit summary status. Reads `dumpsys window windows`, falling back to `displays` only when no focus field is declared. Singular fields are unknown for multiple contexts or repeated declarations; inspect focus_contexts for every observation. Read-only; no interaction occurs.",
           "inputSchema": "<cut by run.py: schemas are kept only for the tools this session calls>",
           "annotations": {
             "readOnlyHint": false,
@@ -7289,7 +7446,7 @@
         {
           "name": "uninstall_adb_package",
           "title": "Uninstall Adb Package",
-          "description": "Uninstall one package from the device (`adb uninstall`), removing its data for user 0. A device-mutating tool; absent packages report the device's own refusal reason.",
+          "description": "Request package removal for user 0 (`adb shell pm uninstall --user 0`) without data retention. A device-mutating tool; absent packages report the device's own refusal reason.",
           "inputSchema": "<cut by run.py: schemas are kept only for the tools this session calls>",
           "annotations": {
             "readOnlyHint": false,
@@ -7406,7 +7563,7 @@
         {
           "name": "decode_android_resources",
           "title": "Decode Android Resources",
-          "description": "Decode one local APK's resources with `apktool d --no-src` in a provider-owned workspace that is removed after projection: the readable AndroidManifest.xml, apktool.yml version and SDK facts, the app's string resources (default or one locale, bounded to 2000 entries), available string locales, and the decoded file count. The target APK is digest with SHA-256 before decoding; smali is skipped because Java-source recovery belongs to the JADX family.",
+          "description": "Decode one local APK's resources with `apktool d --no-src` in a provider-owned workspace that is removed after projection: the readable AndroidManifest.xml, apktool.yml version and SDK facts, the app's string resources (default or selected locales, bounded to 2000 entries per table), selectable string locales, and the decoded file count. The target APK is digest with SHA-256 before decoding; smali is skipped because Java-source recovery belongs to the JADX family.",
           "inputSchema": "<cut by run.py: schemas are kept only for the tools this session calls>",
           "annotations": {
             "readOnlyHint": false,
@@ -7536,7 +7693,7 @@
         {
           "name": "capture_browser_scenario",
           "title": "Capture Browser Scenario",
-          "description": "Run a controlled browser scenario when passive observation cannot exercise the application. Launch the selected executable or connect to a loopback CDP target, provide a start URL and actions, and select storage or artifacts when needed. Environment, empty storage, and a URL-only final capture are defaults. capture.network selects request_body, response_body, and header_values independently; selected content is returned inline with transaction and event references, byte digests, and explicit unavailable states. Credentials and declared secrets are redacted. Agents can run their own local fixture servers to control application responses. Actions run until completion or cancellation unless timeout_ms is set. Results are returned inline.",
+          "description": "Run a controlled browser scenario when passive observation cannot exercise the application. Launch the selected executable or connect to a loopback CDP target, provide a start URL and actions, and select storage or artifacts when needed. Environment, empty storage, a URL-only final capture, and measured event-retention budgets are defaults. capture.network selects request_body, response_body, and header_values independently; capture.limits lets callers raise or lower the event count, retained-allocation estimates, network transaction count, and network content budgets. Selected content is returned inline with transaction and event references, byte digests, and explicit unavailable states. Budget omissions identify affected event kinds and network transactions. Credentials and declared secrets are redacted. Agents can run their own local fixture servers to control application responses. Actions run until completion or cancellation unless timeout_ms is set. Results are returned inline.",
           "inputSchema": "<cut by run.py: schemas are kept only for the tools this session calls>",
           "annotations": {
             "readOnlyHint": false,
@@ -7594,7 +7751,7 @@
             "readOnlyHint": false,
             "destructiveHint": false,
             "idempotentHint": true,
-            "openWorldHint": false
+            "openWorldHint": true
           },
           "outputSchema": "<cut by run.py: schemas are kept only for the tools this session calls>"
         },
@@ -7783,87 +7940,43 @@
         {
           "name": "open_binary",
           "title": "Open Binary",
-          "description": "Open a local executable, application bundle, archive, JavaScript, source map, plist, or analysis database after validation. format=dos-com explicitly interprets 1..65280 headerless bytes as a DOS COM analysis image. format=raw-binary interprets headerless bytes with a required architecture and entry_point; file offset 0 maps at that address. Omission preserves header-based detection. provider_id selects one deep provider or deterministic auto selection; the binding remains stable until close or an explicit switch, with no failure fallback. Reopening the same target and profile retains its active database and metadata edits. An optional analysis snapshot is imported atomically and must match the binary identity, concrete provider, and canonical analysis profile exactly; importing into a session with metadata mutations requires closing and reopening it first.",
+          "description": "Open a local executable, application bundle, archive, JavaScript, source map, plist, or analysis database after validation. format=dos-com explicitly interprets 1..65280 headerless bytes as a DOS COM analysis image. format=raw-binary interprets headerless bytes with a required architecture and entry_point; file offset 0 maps at that address. Omission preserves header-based detection. provider_id selects one deep provider or deterministic auto selection; the binding remains stable until close or an explicit switch, with no failure fallback. Reopening the same target and profile retains its active database and metadata edits. An optional analysis snapshot is imported atomically and must match the binary identity, concrete provider, and canonical analysis profile exactly; importing into a session with metadata mutations requires closing and reopening it first. Call close_binary when the investigation is finished.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "properties": {
               "path": {
-                "$ref": "#/$defs/__schema0",
-                "description": "Absolute local filesystem path for the analysis target; relative paths are rejected."
-              },
-              "format": {
-                "$ref": "#/$defs/__schema2",
-                "description": "Explicit headerless interpretation: dos-com or raw-binary. Omission preserves header-based detection."
-              },
-              "architecture": {
-                "$ref": "#/$defs/__schema4",
-                "description": "Caller-supplied CPU family. Required with format=raw-binary; rejected otherwise."
-              },
-              "entry_point": {
-                "$ref": "#/$defs/__schema6",
-                "description": "Caller-supplied load and entry address (0xhex). File offset 0 is mapped here. Required with format=raw-binary; rejected otherwise."
-              },
-              "provider_id": {
-                "$ref": "#/$defs/__schema8",
-                "description": "Exact deep-analysis provider ID, or automatic selection when omitted."
-              },
-              "snapshot_path": {
-                "$ref": "#/$defs/__schema9",
-                "description": "Absolute local filesystem path for the analysis snapshot; relative paths are rejected."
-              }
-            },
-            "required": [
-              "path"
-            ],
-            "additionalProperties": false,
-            "$defs": {
-              "__schema0": {
                 "type": "string",
                 "minLength": 1,
                 "pattern": "^[^\\x00]*$",
-                "description": "Absolute local filesystem path for the analysis target; relative paths are rejected.",
-                "$ref": "#/$defs/__schema1"
+                "description": "Absolute local filesystem path for the analysis target; relative paths are rejected."
               },
-              "__schema1": {
-                "type": "string",
-                "minLength": 1,
-                "pattern": "^[^\\x00]*$"
-              },
-              "__schema2": {
+              "format": {
                 "description": "Explicit headerless interpretation: dos-com or raw-binary. Omission preserves header-based detection.",
-                "$ref": "#/$defs/__schema3"
-              },
-              "__schema3": {
                 "type": "string",
                 "enum": [
                   "dos-com",
                   "raw-binary"
                 ]
               },
-              "__schema4": {
+              "architecture": {
                 "description": "Caller-supplied CPU family. Required with format=raw-binary; rejected otherwise.",
-                "$ref": "#/$defs/__schema5"
-              },
-              "__schema5": {
                 "type": "string",
                 "enum": [
                   "6502",
                   "x86",
                   "x86_64",
                   "arm",
-                  "arm64"
+                  "arm64",
+                  "m68k"
                 ]
               },
-              "__schema6": {
+              "entry_point": {
                 "description": "Caller-supplied load and entry address (0xhex). File offset 0 is mapped here. Required with format=raw-binary; rejected otherwise.",
-                "$ref": "#/$defs/__schema7"
-              },
-              "__schema7": {
                 "type": "string",
                 "pattern": "^0x[0-9A-Fa-f]{1,16}$"
               },
-              "__schema8": {
+              "provider_id": {
                 "anyOf": [
                   {
                     "type": "string",
@@ -7874,16 +7987,20 @@
                     "minLength": 1,
                     "pattern": "^[a-z][a-z0-9\\x2d]*$"
                   }
-                ]
+                ],
+                "description": "Exact deep-analysis provider ID, or automatic selection when omitted."
               },
-              "__schema9": {
+              "snapshot_path": {
                 "type": "string",
                 "minLength": 1,
                 "pattern": "^[^\\x00]*$",
-                "description": "Absolute local filesystem path for the analysis snapshot; relative paths are rejected.",
-                "$ref": "#/$defs/__schema1"
+                "description": "Absolute local filesystem path for the analysis snapshot; relative paths are rejected."
               }
             },
+            "required": [
+              "path"
+            ],
+            "additionalProperties": false,
             "examples": [
               {
                 "path": "/tmp/fixture"
@@ -7967,7 +8084,8 @@
                               "arm64",
                               "mips",
                               "riscv",
-                              "powerpc"
+                              "powerpc",
+                              "hexagon"
                             ]
                           },
                           {
@@ -8009,7 +8127,8 @@
                           "x86",
                           "x86_64",
                           "arm",
-                          "arm64"
+                          "arm64",
+                          "m68k"
                         ]
                       },
                       "entry_point": {
@@ -8038,39 +8157,30 @@
                 "pattern": "^[a-f0-9]{64}$"
               }
             },
-            "$id": "urn:rea:tool-output:sha256:5fdef6e3da54e6db64f32aece2806c2266d24c1ce9c19a9cd3811e8343753169"
+            "$id": "urn:rea:tool-output:sha256:932e3fed203fdb706c19e72f8f08cddd1a06816c5d49ccd7301d845621fad825"
           }
         },
         {
           "name": "close_binary",
           "title": "Close Binary",
-          "description": "Drain earlier provider requests, optionally write a provider-neutral analysis snapshot atomically to the caller-supplied path, then close the active target and every provider resource started for it. Later provider requests wait until this lifecycle operation finishes. Existing files require explicit overwrite; a failed save leaves the session open so cached analysis is not lost. Metadata edits prevent immutable snapshot saves until the session is recreated; export_evidence_bundle preserves mutable observations before closing without a snapshot.",
+          "description": "When the investigation is finished, drain earlier provider requests, optionally write a provider-neutral analysis snapshot atomically to the caller-supplied path, then close the active target and every provider resource started for it. Later provider requests wait until this lifecycle operation finishes. Existing files require explicit overwrite; a failed save leaves the session open so cached analysis is not lost. Metadata edits prevent immutable snapshot saves until the session is recreated; export_evidence_bundle preserves mutable observations before closing without a snapshot.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "properties": {
               "snapshot_path": {
-                "$ref": "#/$defs/__schema0",
-                "description": "Absolute local filesystem path for the analysis snapshot; relative paths are rejected."
-              },
-              "overwrite": {
-                "$ref": "#/$defs/__schema1",
-                "description": "Whether an existing destination may be replaced."
-              }
-            },
-            "additionalProperties": false,
-            "$defs": {
-              "__schema0": {
                 "type": "string",
                 "minLength": 1,
                 "pattern": "^[^\\x00]*$",
                 "description": "Absolute local filesystem path for the analysis snapshot; relative paths are rejected."
               },
-              "__schema1": {
+              "overwrite": {
                 "default": false,
-                "type": "boolean"
+                "type": "boolean",
+                "description": "Whether an existing destination may be replaced."
               }
             },
+            "additionalProperties": false,
             "examples": [
               {
                 "overwrite": false
@@ -8155,35 +8265,23 @@
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "properties": {
               "expected_package_version": {
-                "$ref": "#/$defs/__schema0",
+                "type": "string",
+                "minLength": 1,
                 "description": "Expected package version used to reject stale or mismatched input."
               },
               "expected_catalog_digest": {
-                "$ref": "#/$defs/__schema1",
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$",
                 "description": "Expected catalog digest used to reject stale or mismatched input."
               },
               "expected_server_path": {
-                "$ref": "#/$defs/__schema2",
-                "description": "Absolute local filesystem path expected for the running server; relative paths are rejected."
-              }
-            },
-            "additionalProperties": false,
-            "$defs": {
-              "__schema0": {
-                "type": "string",
-                "minLength": 1
-              },
-              "__schema1": {
-                "type": "string",
-                "pattern": "^[a-f0-9]{64}$"
-              },
-              "__schema2": {
                 "type": "string",
                 "minLength": 1,
                 "pattern": "^[^\\x00]*$",
                 "description": "Absolute local filesystem path expected for the running server; relative paths are rejected."
               }
             },
+            "additionalProperties": false,
             "examples": [
               {}
             ]
@@ -8212,32 +8310,35 @@
                   {
                     "type": "object",
                     "properties": {
-                      "capabilities": {
+                      "cleanup_pending": {
                         "$ref": "#/$defs/__schema1"
                       },
+                      "capabilities": {
+                        "$ref": "#/$defs/__schema2"
+                      },
                       "analysis_run": {
-                        "$ref": "#/$defs/__schema8"
+                        "$ref": "#/$defs/__schema9"
                       },
                       "analysis_activity": {
-                        "$ref": "#/$defs/__schema11"
-                      },
-                      "provider_operation_health": {
                         "$ref": "#/$defs/__schema12"
                       },
-                      "analysis_provider_binding": {
+                      "provider_operation_health": {
                         "$ref": "#/$defs/__schema13"
                       },
+                      "analysis_provider_binding": {
+                        "$ref": "#/$defs/__schema14"
+                      },
                       "analysis_provider_candidates": {
-                        "$ref": "#/$defs/__schema17"
+                        "$ref": "#/$defs/__schema18"
                       },
                       "tool_availability": {
-                        "$ref": "#/$defs/__schema19"
+                        "$ref": "#/$defs/__schema20"
                       },
                       "client_features": {
-                        "$ref": "#/$defs/__schema32"
+                        "$ref": "#/$defs/__schema33"
                       },
                       "server_identity": {
-                        "$ref": "#/$defs/__schema33"
+                        "$ref": "#/$defs/__schema34"
                       },
                       "open": {
                         "type": "boolean",
@@ -8245,6 +8346,7 @@
                       }
                     },
                     "required": [
+                      "cleanup_pending",
                       "capabilities",
                       "analysis_run",
                       "analysis_activity",
@@ -8257,45 +8359,48 @@
                       "open"
                     ],
                     "additionalProperties": {
-                      "$ref": "#/$defs/__schema34"
+                      "$ref": "#/$defs/__schema35"
                     }
                   },
                   {
                     "type": "object",
                     "properties": {
-                      "capabilities": {
+                      "cleanup_pending": {
                         "$ref": "#/$defs/__schema1"
                       },
+                      "capabilities": {
+                        "$ref": "#/$defs/__schema2"
+                      },
                       "analysis_run": {
-                        "$ref": "#/$defs/__schema8"
+                        "$ref": "#/$defs/__schema9"
                       },
                       "analysis_activity": {
-                        "$ref": "#/$defs/__schema11"
-                      },
-                      "provider_operation_health": {
                         "$ref": "#/$defs/__schema12"
                       },
-                      "analysis_provider_binding": {
+                      "provider_operation_health": {
                         "$ref": "#/$defs/__schema13"
                       },
+                      "analysis_provider_binding": {
+                        "$ref": "#/$defs/__schema14"
+                      },
                       "analysis_provider_candidates": {
-                        "$ref": "#/$defs/__schema17"
+                        "$ref": "#/$defs/__schema18"
                       },
                       "tool_availability": {
-                        "$ref": "#/$defs/__schema19"
+                        "$ref": "#/$defs/__schema20"
                       },
                       "client_features": {
-                        "$ref": "#/$defs/__schema32"
+                        "$ref": "#/$defs/__schema33"
                       },
                       "server_identity": {
-                        "$ref": "#/$defs/__schema33"
+                        "$ref": "#/$defs/__schema34"
                       },
                       "open": {
                         "type": "boolean",
                         "const": true
                       },
                       "path": {
-                        "$ref": "#/$defs/__schema35"
+                        "$ref": "#/$defs/__schema36"
                       },
                       "kind": {
                         "type": "string",
@@ -8307,7 +8412,7 @@
                         ]
                       },
                       "sha256": {
-                        "$ref": "#/$defs/__schema36"
+                        "$ref": "#/$defs/__schema37"
                       },
                       "format": {
                         "type": "string",
@@ -8347,7 +8452,8 @@
                               "arm64",
                               "mips",
                               "riscv",
-                              "powerpc"
+                              "powerpc",
+                              "hexagon"
                             ]
                           },
                           {
@@ -8357,6 +8463,7 @@
                       }
                     },
                     "required": [
+                      "cleanup_pending",
                       "capabilities",
                       "analysis_run",
                       "analysis_activity",
@@ -8374,52 +8481,55 @@
                       "architecture"
                     ],
                     "additionalProperties": {
-                      "$ref": "#/$defs/__schema34"
+                      "$ref": "#/$defs/__schema35"
                     }
                   },
                   {
                     "type": "object",
                     "properties": {
-                      "capabilities": {
+                      "cleanup_pending": {
                         "$ref": "#/$defs/__schema1"
                       },
+                      "capabilities": {
+                        "$ref": "#/$defs/__schema2"
+                      },
                       "analysis_run": {
-                        "$ref": "#/$defs/__schema8"
+                        "$ref": "#/$defs/__schema9"
                       },
                       "analysis_activity": {
-                        "$ref": "#/$defs/__schema11"
-                      },
-                      "provider_operation_health": {
                         "$ref": "#/$defs/__schema12"
                       },
-                      "analysis_provider_binding": {
+                      "provider_operation_health": {
                         "$ref": "#/$defs/__schema13"
                       },
+                      "analysis_provider_binding": {
+                        "$ref": "#/$defs/__schema14"
+                      },
                       "analysis_provider_candidates": {
-                        "$ref": "#/$defs/__schema17"
+                        "$ref": "#/$defs/__schema18"
                       },
                       "tool_availability": {
-                        "$ref": "#/$defs/__schema19"
+                        "$ref": "#/$defs/__schema20"
                       },
                       "client_features": {
-                        "$ref": "#/$defs/__schema32"
+                        "$ref": "#/$defs/__schema33"
                       },
                       "server_identity": {
-                        "$ref": "#/$defs/__schema33"
+                        "$ref": "#/$defs/__schema34"
                       },
                       "open": {
                         "type": "boolean",
                         "const": true
                       },
                       "path": {
-                        "$ref": "#/$defs/__schema35"
+                        "$ref": "#/$defs/__schema36"
                       },
                       "kind": {
                         "type": "string",
                         "const": "executable"
                       },
                       "sha256": {
-                        "$ref": "#/$defs/__schema36"
+                        "$ref": "#/$defs/__schema37"
                       },
                       "format": {
                         "type": "string",
@@ -8432,7 +8542,8 @@
                           "x86",
                           "x86_64",
                           "arm",
-                          "arm64"
+                          "arm64",
+                          "m68k"
                         ]
                       },
                       "entry_point": {
@@ -8442,6 +8553,7 @@
                       }
                     },
                     "required": [
+                      "cleanup_pending",
                       "capabilities",
                       "analysis_run",
                       "analysis_activity",
@@ -8460,22 +8572,25 @@
                       "entry_point"
                     ],
                     "additionalProperties": {
-                      "$ref": "#/$defs/__schema34"
+                      "$ref": "#/$defs/__schema35"
                     }
                   }
                 ]
               },
               "__schema1": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/$defs/__schema2"
-                }
+                "type": "boolean"
               },
               "__schema2": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/__schema3"
+                }
+              },
+              "__schema3": {
                 "type": "object",
                 "properties": {
                   "provider": {
-                    "$ref": "#/$defs/__schema3"
+                    "$ref": "#/$defs/__schema4"
                   },
                   "shared_limitations": {
                     "type": "array",
@@ -8491,13 +8606,13 @@
                           "type": "object",
                           "properties": {
                             "operations": {
-                              "$ref": "#/$defs/__schema4"
+                              "$ref": "#/$defs/__schema5"
                             },
                             "effects": {
-                              "$ref": "#/$defs/__schema6"
+                              "$ref": "#/$defs/__schema7"
                             },
                             "limitations": {
-                              "$ref": "#/$defs/__schema7"
+                              "$ref": "#/$defs/__schema8"
                             },
                             "available": {
                               "type": "boolean",
@@ -8524,13 +8639,13 @@
                           "type": "object",
                           "properties": {
                             "operations": {
-                              "$ref": "#/$defs/__schema4"
+                              "$ref": "#/$defs/__schema5"
                             },
                             "effects": {
-                              "$ref": "#/$defs/__schema6"
+                              "$ref": "#/$defs/__schema7"
                             },
                             "limitations": {
-                              "$ref": "#/$defs/__schema7"
+                              "$ref": "#/$defs/__schema8"
                             },
                             "available": {
                               "type": "boolean",
@@ -8593,7 +8708,7 @@
                 ],
                 "additionalProperties": false
               },
-              "__schema3": {
+              "__schema4": {
                 "type": "object",
                 "properties": {
                   "id": {
@@ -8620,18 +8735,18 @@
                 ],
                 "additionalProperties": false
               },
-              "__schema4": {
+              "__schema5": {
                 "minItems": 1,
                 "type": "array",
                 "items": {
-                  "$ref": "#/$defs/__schema5"
+                  "$ref": "#/$defs/__schema6"
                 }
               },
-              "__schema5": {
+              "__schema6": {
                 "type": "string",
                 "minLength": 1
               },
-              "__schema6": {
+              "__schema7": {
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -8646,13 +8761,13 @@
                   ]
                 }
               },
-              "__schema7": {
+              "__schema8": {
                 "type": "array",
                 "items": {
                   "type": "string"
                 }
               },
-              "__schema8": {
+              "__schema9": {
                 "anyOf": [
                   {
                     "type": "object",
@@ -8690,7 +8805,7 @@
                                   "type": "object",
                                   "properties": {
                                     "provider": {
-                                      "$ref": "#/$defs/__schema3"
+                                      "$ref": "#/$defs/__schema4"
                                     },
                                     "observation": {
                                       "oneOf": [
@@ -8707,10 +8822,10 @@
                                               "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
                                             },
                                             "launcher_pid": {
-                                              "$ref": "#/$defs/__schema9"
+                                              "$ref": "#/$defs/__schema10"
                                             },
                                             "process_group_id": {
-                                              "$ref": "#/$defs/__schema10"
+                                              "$ref": "#/$defs/__schema11"
                                             },
                                             "reason": {
                                               "type": "string",
@@ -8739,10 +8854,10 @@
                                               "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z))$"
                                             },
                                             "launcher_pid": {
-                                              "$ref": "#/$defs/__schema9"
+                                              "$ref": "#/$defs/__schema10"
                                             },
                                             "process_group_id": {
-                                              "$ref": "#/$defs/__schema10"
+                                              "$ref": "#/$defs/__schema11"
                                             },
                                             "launcher_parent_pid": {
                                               "type": "integer",
@@ -8820,17 +8935,17 @@
                   }
                 ]
               },
-              "__schema9": {
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 9007199254740991
-              },
               "__schema10": {
                 "type": "integer",
                 "minimum": 1,
                 "maximum": 9007199254740991
               },
               "__schema11": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "__schema12": {
                 "type": "object",
                 "properties": {
                   "status": {
@@ -8847,7 +8962,7 @@
                       "type": "object",
                       "properties": {
                         "provider": {
-                          "$ref": "#/$defs/__schema3"
+                          "$ref": "#/$defs/__schema4"
                         },
                         "active": {
                           "anyOf": [
@@ -8910,7 +9025,7 @@
                 ],
                 "additionalProperties": false
               },
-              "__schema12": {
+              "__schema13": {
                 "anyOf": [
                   {
                     "type": "object",
@@ -9019,13 +9134,13 @@
                   }
                 ]
               },
-              "__schema13": {
+              "__schema14": {
                 "anyOf": [
                   {
                     "type": "object",
                     "properties": {
                       "provider": {
-                        "$ref": "#/$defs/__schema3"
+                        "$ref": "#/$defs/__schema4"
                       },
                       "selection_source": {
                         "type": "string",
@@ -9039,13 +9154,13 @@
                         "type": "object",
                         "properties": {
                           "provider": {
-                            "$ref": "#/$defs/__schema14"
-                          },
-                          "parameters": {
                             "$ref": "#/$defs/__schema15"
                           },
-                          "digest": {
+                          "parameters": {
                             "$ref": "#/$defs/__schema16"
+                          },
+                          "digest": {
+                            "$ref": "#/$defs/__schema17"
                           }
                         },
                         "required": [
@@ -9068,7 +9183,7 @@
                   }
                 ]
               },
-              "__schema14": {
+              "__schema15": {
                 "type": "object",
                 "properties": {
                   "id": {
@@ -9091,24 +9206,50 @@
                 ],
                 "additionalProperties": false
               },
-              "__schema15": {
+              "__schema16": {
                 "type": "object",
                 "additionalProperties": {}
               },
-              "__schema16": {
+              "__schema17": {
                 "type": "string",
                 "pattern": "^[a-f0-9]{64}$"
               },
-              "__schema17": {
+              "__schema18": {
                 "type": "array",
                 "items": {
                   "type": "object",
                   "properties": {
                     "provider": {
-                      "$ref": "#/$defs/__schema3"
+                      "$ref": "#/$defs/__schema4"
                     },
                     "availability": {
                       "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "const": "unknown"
+                            },
+                            "code": {
+                              "type": "null"
+                            },
+                            "reason": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "diagnostics": {
+                              "$ref": "#/$defs/__schema19"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "code",
+                            "reason",
+                            "diagnostics"
+                          ],
+                          "additionalProperties": false
+                        },
                         {
                           "type": "object",
                           "properties": {
@@ -9123,7 +9264,7 @@
                               "type": "null"
                             },
                             "diagnostics": {
-                              "$ref": "#/$defs/__schema18"
+                              "$ref": "#/$defs/__schema19"
                             }
                           },
                           "required": [
@@ -9164,7 +9305,7 @@
                               "minLength": 1
                             },
                             "diagnostics": {
-                              "$ref": "#/$defs/__schema18"
+                              "$ref": "#/$defs/__schema19"
                             }
                           },
                           "required": [
@@ -9194,7 +9335,7 @@
                               "minLength": 1
                             },
                             "diagnostics": {
-                              "$ref": "#/$defs/__schema18"
+                              "$ref": "#/$defs/__schema19"
                             }
                           },
                           "required": [
@@ -9219,7 +9360,7 @@
                               "type": "null"
                             },
                             "diagnostics": {
-                              "$ref": "#/$defs/__schema18"
+                              "$ref": "#/$defs/__schema19"
                             }
                           },
                           "required": [
@@ -9252,7 +9393,7 @@
                               "minLength": 1
                             },
                             "diagnostics": {
-                              "$ref": "#/$defs/__schema18"
+                              "$ref": "#/$defs/__schema19"
                             }
                           },
                           "required": [
@@ -9271,7 +9412,7 @@
                     "capabilities": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/$defs/__schema2"
+                        "$ref": "#/$defs/__schema3"
                       }
                     }
                   },
@@ -9285,18 +9426,18 @@
                   "additionalProperties": false
                 }
               },
-              "__schema18": {
+              "__schema19": {
                 "type": "object",
                 "propertyNames": {
                   "type": "string"
                 },
                 "additionalProperties": {}
               },
-              "__schema19": {
+              "__schema20": {
                 "type": "object",
                 "properties": {
                   "client_requirements": {
-                    "$ref": "#/$defs/__schema20"
+                    "$ref": "#/$defs/__schema21"
                   },
                   "groups": {
                     "type": "array",
@@ -9306,25 +9447,25 @@
                           "type": "object",
                           "properties": {
                             "names": {
-                              "$ref": "#/$defs/__schema22"
+                              "$ref": "#/$defs/__schema23"
                             },
                             "surface": {
-                              "$ref": "#/$defs/__schema24"
-                            },
-                            "default_mode_available": {
                               "$ref": "#/$defs/__schema25"
                             },
-                            "modes": {
+                            "default_mode_available": {
                               "$ref": "#/$defs/__schema26"
                             },
-                            "client_requirements": {
-                              "$ref": "#/$defs/__schema29"
+                            "modes": {
+                              "$ref": "#/$defs/__schema27"
                             },
-                            "effects": {
+                            "client_requirements": {
                               "$ref": "#/$defs/__schema30"
                             },
-                            "annotations": {
+                            "effects": {
                               "$ref": "#/$defs/__schema31"
+                            },
+                            "annotations": {
+                              "$ref": "#/$defs/__schema32"
                             },
                             "available": {
                               "type": "boolean",
@@ -9353,25 +9494,25 @@
                           "type": "object",
                           "properties": {
                             "names": {
-                              "$ref": "#/$defs/__schema22"
+                              "$ref": "#/$defs/__schema23"
                             },
                             "surface": {
-                              "$ref": "#/$defs/__schema24"
-                            },
-                            "default_mode_available": {
                               "$ref": "#/$defs/__schema25"
                             },
-                            "modes": {
+                            "default_mode_available": {
                               "$ref": "#/$defs/__schema26"
                             },
-                            "client_requirements": {
-                              "$ref": "#/$defs/__schema29"
+                            "modes": {
+                              "$ref": "#/$defs/__schema27"
                             },
-                            "effects": {
+                            "client_requirements": {
                               "$ref": "#/$defs/__schema30"
                             },
-                            "annotations": {
+                            "effects": {
                               "$ref": "#/$defs/__schema31"
+                            },
+                            "annotations": {
+                              "$ref": "#/$defs/__schema32"
                             },
                             "available": {
                               "type": "boolean",
@@ -9420,31 +9561,31 @@
                 ],
                 "additionalProperties": false
               },
-              "__schema20": {
+              "__schema21": {
                 "type": "object",
                 "properties": {
                   "required": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/$defs/__schema21"
+                      "$ref": "#/$defs/__schema22"
                     }
                   },
                   "optional": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/$defs/__schema21"
+                      "$ref": "#/$defs/__schema22"
                     }
                   },
                   "missing_required": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/$defs/__schema21"
+                      "$ref": "#/$defs/__schema22"
                     }
                   },
                   "missing_optional": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/$defs/__schema21"
+                      "$ref": "#/$defs/__schema22"
                     }
                   }
                 },
@@ -9456,7 +9597,7 @@
                 ],
                 "additionalProperties": false
               },
-              "__schema21": {
+              "__schema22": {
                 "type": "string",
                 "enum": [
                   "elicitation_form",
@@ -9465,24 +9606,24 @@
                   "sampling"
                 ]
               },
-              "__schema22": {
+              "__schema23": {
                 "minItems": 1,
                 "type": "array",
                 "items": {
-                  "$ref": "#/$defs/__schema23"
+                  "$ref": "#/$defs/__schema24"
                 }
               },
-              "__schema23": {
+              "__schema24": {
                 "type": "string",
                 "minLength": 1
               },
-              "__schema24": {
+              "__schema25": {
                 "type": "string"
               },
-              "__schema25": {
+              "__schema26": {
                 "type": "boolean"
               },
-              "__schema26": {
+              "__schema27": {
                 "type": "array",
                 "items": {
                   "oneOf": [
@@ -9501,7 +9642,7 @@
                           "maxItems": 0,
                           "type": "array",
                           "items": {
-                            "$ref": "#/$defs/__schema27"
+                            "$ref": "#/$defs/__schema28"
                           }
                         },
                         "remediation": {
@@ -9530,7 +9671,7 @@
                           "minItems": 1,
                           "type": "array",
                           "items": {
-                            "$ref": "#/$defs/__schema28"
+                            "$ref": "#/$defs/__schema29"
                           }
                         },
                         "remediation": {
@@ -9555,16 +9696,16 @@
                   ]
                 }
               },
-              "__schema27": {
-                "type": "string"
-              },
               "__schema28": {
                 "type": "string"
               },
               "__schema29": {
-                "$ref": "#/$defs/__schema20"
+                "type": "string"
               },
               "__schema30": {
+                "$ref": "#/$defs/__schema21"
+              },
+              "__schema31": {
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -9582,7 +9723,7 @@
                   ]
                 }
               },
-              "__schema31": {
+              "__schema32": {
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -9594,7 +9735,7 @@
                   ]
                 }
               },
-              "__schema32": {
+              "__schema33": {
                 "type": "object",
                 "properties": {
                   "elicitation_form": {
@@ -9618,7 +9759,7 @@
                 ],
                 "additionalProperties": false
               },
-              "__schema33": {
+              "__schema34": {
                 "type": "object",
                 "properties": {
                   "package": {
@@ -9880,16 +10021,16 @@
                 ],
                 "additionalProperties": false
               },
-              "__schema34": {},
-              "__schema35": {
+              "__schema35": {},
+              "__schema36": {
                 "type": "string"
               },
-              "__schema36": {
+              "__schema37": {
                 "type": "string",
                 "pattern": "^[a-f0-9]{64}$"
               }
             },
-            "$id": "urn:rea:tool-output:sha256:fd7ca9f49782cf216d228063281ea302ca4d7796fd62f4ae468465e5f6961e1e"
+            "$id": "urn:rea:tool-output:sha256:4e8a0312f6ecec53940a575a8e7cd1d115a529cb84e1a13d75ccea62975aba21"
           }
         },
         {
@@ -9901,11 +10042,14 @@
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "properties": {
               "path": {
-                "$ref": "#/$defs/__schema0",
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[^\\x00]*$",
                 "description": "Absolute local filesystem path for the exported evidence bundle; relative paths are rejected."
               },
               "overwrite": {
-                "$ref": "#/$defs/__schema1",
+                "default": false,
+                "type": "boolean",
                 "description": "Whether an existing destination may be replaced."
               }
             },
@@ -9913,18 +10057,6 @@
               "path"
             ],
             "additionalProperties": false,
-            "$defs": {
-              "__schema0": {
-                "type": "string",
-                "minLength": 1,
-                "pattern": "^[^\\x00]*$",
-                "description": "Absolute local filesystem path for the exported evidence bundle; relative paths are rejected."
-              },
-              "__schema1": {
-                "default": false,
-                "type": "boolean"
-              }
-            },
             "examples": [
               {
                 "path": "/tmp/evidence.json",
@@ -9994,7 +10126,9 @@
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "properties": {
               "path": {
-                "$ref": "#/$defs/__schema0",
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[^\\x00]*$",
                 "description": "Absolute local filesystem path for the evidence bundle to import; relative paths are rejected."
               }
             },
@@ -10002,14 +10136,6 @@
               "path"
             ],
             "additionalProperties": false,
-            "$defs": {
-              "__schema0": {
-                "type": "string",
-                "minLength": 1,
-                "pattern": "^[^\\x00]*$",
-                "description": "Absolute local filesystem path for the evidence bundle to import; relative paths are rejected."
-              }
-            },
             "examples": [
               {
                 "path": "/tmp/evidence.json"
@@ -10107,7 +10233,7 @@
         {
           "name": "compare_artifacts",
           "title": "Compare Artifacts",
-          "description": "Compare complete artifact inventories by logical occurrence path, content identity, metadata, and graph relations. Pass the inventory Evidence nested in each inspect_artifact result as left and right. Every delta cites both inputs, and gaps yield truncated or unknown, never equivalence. Returns every change inline.",
+          "description": "Compare complete artifact inventories by logical occurrence path, content identity, metadata, and graph relations. Pass the inventory Evidence nested in each inspect_artifact result as left and right, or pass its inspect_analysis_view summary while the complete parent Evidence remains retained in this session. Summary facts are not treated as a complete inventory; comparison resolves the exact retained parent. Every delta cites both complete inputs, and gaps yield truncated or unknown, never equivalence. Returns every change inline.",
           "inputSchema": "<cut by run.py: schemas are kept only for the tools this session calls>",
           "annotations": {
             "readOnlyHint": false,
@@ -10207,7 +10333,8 @@
                                       "arm64",
                                       "mips",
                                       "riscv",
-                                      "powerpc"
+                                      "powerpc",
+                                      "hexagon"
                                     ]
                                   },
                                   {
@@ -10268,7 +10395,9 @@
                                       "arm64",
                                       "mips",
                                       "riscv",
-                                      "powerpc"
+                                      "powerpc",
+                                      "m68k",
+                                      "hexagon"
                                     ]
                                   },
                                   {
@@ -10459,7 +10588,6 @@
                     }
                   },
                   "relationship_coverage": {
-                    "default": null,
                     "anyOf": [
                       {
                         "oneOf": [
@@ -10511,6 +10639,14 @@
                                         "const": "callers"
                                       }
                                     ],
+                                    "items": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "const": "callers"
+                                        }
+                                      ]
+                                    },
                                     "minItems": 1,
                                     "maxItems": 1
                                   },
@@ -10522,6 +10658,14 @@
                                         "const": "callees"
                                       }
                                     ],
+                                    "items": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "const": "callees"
+                                        }
+                                      ]
+                                    },
                                     "minItems": 1,
                                     "maxItems": 1
                                   },
@@ -10537,6 +10681,18 @@
                                         "const": "callees"
                                       }
                                     ],
+                                    "items": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "const": "callers"
+                                        },
+                                        {
+                                          "type": "string",
+                                          "const": "callees"
+                                        }
+                                      ]
+                                    },
                                     "minItems": 2,
                                     "maxItems": 2
                                   }
@@ -10579,6 +10735,14 @@
                                         "const": "callers"
                                       }
                                     ],
+                                    "items": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "const": "callers"
+                                        }
+                                      ]
+                                    },
                                     "minItems": 1,
                                     "maxItems": 1
                                   },
@@ -10590,6 +10754,14 @@
                                         "const": "callees"
                                       }
                                     ],
+                                    "items": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "const": "callees"
+                                        }
+                                      ]
+                                    },
                                     "minItems": 1,
                                     "maxItems": 1
                                   },
@@ -10605,6 +10777,18 @@
                                         "const": "callees"
                                       }
                                     ],
+                                    "items": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "const": "callers"
+                                        },
+                                        {
+                                          "type": "string",
+                                          "const": "callees"
+                                        }
+                                      ]
+                                    },
                                     "minItems": 2,
                                     "maxItems": 2
                                   }
@@ -10765,6 +10949,7 @@
                   "authority",
                   "environment",
                   "limitations",
+                  "relationship_coverage",
                   "locations",
                   "evidence_links"
                 ],
@@ -10853,7 +11038,8 @@
                                       "arm64",
                                       "mips",
                                       "riscv",
-                                      "powerpc"
+                                      "powerpc",
+                                      "hexagon"
                                     ]
                                   },
                                   {
@@ -10914,7 +11100,9 @@
                                       "arm64",
                                       "mips",
                                       "riscv",
-                                      "powerpc"
+                                      "powerpc",
+                                      "m68k",
+                                      "hexagon"
                                     ]
                                   },
                                   {
@@ -11105,7 +11293,6 @@
                     }
                   },
                   "relationship_coverage": {
-                    "default": null,
                     "anyOf": [
                       {
                         "oneOf": [
@@ -11157,6 +11344,14 @@
                                         "const": "callers"
                                       }
                                     ],
+                                    "items": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "const": "callers"
+                                        }
+                                      ]
+                                    },
                                     "minItems": 1,
                                     "maxItems": 1
                                   },
@@ -11168,6 +11363,14 @@
                                         "const": "callees"
                                       }
                                     ],
+                                    "items": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "const": "callees"
+                                        }
+                                      ]
+                                    },
                                     "minItems": 1,
                                     "maxItems": 1
                                   },
@@ -11183,6 +11386,18 @@
                                         "const": "callees"
                                       }
                                     ],
+                                    "items": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "const": "callers"
+                                        },
+                                        {
+                                          "type": "string",
+                                          "const": "callees"
+                                        }
+                                      ]
+                                    },
                                     "minItems": 2,
                                     "maxItems": 2
                                   }
@@ -11225,6 +11440,14 @@
                                         "const": "callers"
                                       }
                                     ],
+                                    "items": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "const": "callers"
+                                        }
+                                      ]
+                                    },
                                     "minItems": 1,
                                     "maxItems": 1
                                   },
@@ -11236,6 +11459,14 @@
                                         "const": "callees"
                                       }
                                     ],
+                                    "items": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "const": "callees"
+                                        }
+                                      ]
+                                    },
                                     "minItems": 1,
                                     "maxItems": 1
                                   },
@@ -11251,6 +11482,18 @@
                                         "const": "callees"
                                       }
                                     ],
+                                    "items": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "const": "callers"
+                                        },
+                                        {
+                                          "type": "string",
+                                          "const": "callees"
+                                        }
+                                      ]
+                                    },
                                     "minItems": 2,
                                     "maxItems": 2
                                   }
@@ -11411,6 +11654,7 @@
                   "authority",
                   "environment",
                   "limitations",
+                  "relationship_coverage",
                   "locations",
                   "evidence_links"
                 ],
@@ -11477,10 +11721,10 @@
                 "$ref": "#/$defs/__schema32"
               },
               "locations": {
-                "$ref": "#/$defs/__schema41"
+                "$ref": "#/$defs/__schema44"
               },
               "evidence_links": {
-                "$ref": "#/$defs/__schema42"
+                "$ref": "#/$defs/__schema45"
               }
             },
             "required": [
@@ -11566,7 +11810,8 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -11612,7 +11857,9 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "m68k",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -12229,7 +12476,6 @@
                 }
               },
               "__schema32": {
-                "default": null,
                 "anyOf": [
                   {
                     "oneOf": [
@@ -12331,16 +12577,9 @@
                         "$ref": "#/$defs/__schema37"
                       }
                     ],
-                    "minItems": 1,
-                    "maxItems": 1
-                  },
-                  {
-                    "type": "array",
-                    "prefixItems": [
-                      {
-                        "$ref": "#/$defs/__schema38"
-                      }
-                    ],
+                    "items": {
+                      "$ref": "#/$defs/__schema38"
+                    },
                     "minItems": 1,
                     "maxItems": 1
                   },
@@ -12349,11 +12588,27 @@
                     "prefixItems": [
                       {
                         "$ref": "#/$defs/__schema39"
-                      },
-                      {
-                        "$ref": "#/$defs/__schema40"
                       }
                     ],
+                    "items": {
+                      "$ref": "#/$defs/__schema40"
+                    },
+                    "minItems": 1,
+                    "maxItems": 1
+                  },
+                  {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "$ref": "#/$defs/__schema41"
+                      },
+                      {
+                        "$ref": "#/$defs/__schema42"
+                      }
+                    ],
+                    "items": {
+                      "$ref": "#/$defs/__schema43"
+                    },
                     "minItems": 2,
                     "maxItems": 2
                   }
@@ -12364,18 +12619,42 @@
                 "const": "callers"
               },
               "__schema38": {
-                "type": "string",
-                "const": "callees"
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema37"
+                  }
+                ]
               },
               "__schema39": {
                 "type": "string",
-                "const": "callers"
+                "const": "callees"
               },
               "__schema40": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema39"
+                  }
+                ]
+              },
+              "__schema41": {
+                "type": "string",
+                "const": "callers"
+              },
+              "__schema42": {
                 "type": "string",
                 "const": "callees"
               },
-              "__schema41": {
+              "__schema43": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema41"
+                  },
+                  {
+                    "$ref": "#/$defs/__schema42"
+                  }
+                ]
+              },
+              "__schema44": {
                 "type": "array",
                 "items": {
                   "oneOf": [
@@ -12485,7 +12764,7 @@
                   ]
                 }
               },
-              "__schema42": {
+              "__schema45": {
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -12493,7 +12772,7 @@
                 }
               }
             },
-            "$id": "urn:rea:tool-output:sha256:aa5c892d812a3dcc1c68ae7956c2f65431131bffd13a7ed11b5329f7ba44a0c5"
+            "$id": "urn:rea:tool-output:sha256:38acaf16075998f0a9a7fd93443ffc404c0621a40de15fc248254f206b9e5bd8"
           }
         },
         {
@@ -12557,165 +12836,148 @@
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "properties": {
               "specification": {
-                "$ref": "#/$defs/__schema0"
-              }
-            },
-            "required": [
-              "specification"
-            ],
-            "additionalProperties": false,
-            "$defs": {
-              "__schema0": {
                 "type": "object",
                 "properties": {
                   "name": {
-                    "$ref": "#/$defs/__schema1",
+                    "type": "string",
+                    "minLength": 1,
                     "description": "Exact name used by this operation."
                   },
                   "claims": {
-                    "$ref": "#/$defs/__schema2"
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "claim_id": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z][A-Za-z0-9._\\x2d]*$"
+                            },
+                            "title": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "comparison_evidence_id": {
+                              "type": "string",
+                              "pattern": "^ev_[a-f0-9]{64}$",
+                              "description": "Exact Evidence identifier for the comparison observation."
+                            },
+                            "kind": {
+                              "type": "string",
+                              "const": "behavioral"
+                            },
+                            "dimension": {
+                              "type": "string",
+                              "enum": [
+                                "overall",
+                                "terminal",
+                                "interaction",
+                                "exit",
+                                "filesystem",
+                                "process"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "claim_id",
+                            "title",
+                            "comparison_evidence_id",
+                            "kind",
+                            "dimension"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "claim_id": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z][A-Za-z0-9._\\x2d]*$"
+                            },
+                            "title": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "comparison_evidence_id": {
+                              "type": "string",
+                              "pattern": "^ev_[a-f0-9]{64}$",
+                              "description": "Exact Evidence identifier for the comparison observation."
+                            },
+                            "kind": {
+                              "type": "string",
+                              "const": "structural-function"
+                            },
+                            "dimension": {
+                              "type": "string",
+                              "enum": [
+                                "overall",
+                                "identity",
+                                "pseudocode",
+                                "assembly",
+                                "comments",
+                                "calls",
+                                "references",
+                                "strings_names",
+                                "cfg"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "claim_id",
+                            "title",
+                            "comparison_evidence_id",
+                            "kind",
+                            "dimension"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "claim_id": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z][A-Za-z0-9._\\x2d]*$"
+                            },
+                            "title": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "comparison_evidence_id": {
+                              "type": "string",
+                              "pattern": "^ev_[a-f0-9]{64}$",
+                              "description": "Exact Evidence identifier for the comparison observation."
+                            },
+                            "kind": {
+                              "type": "string",
+                              "const": "structural-artifact"
+                            },
+                            "dimension": {
+                              "type": "string",
+                              "const": "overall"
+                            }
+                          },
+                          "required": [
+                            "claim_id",
+                            "title",
+                            "comparison_evidence_id",
+                            "kind",
+                            "dimension"
+                          ]
+                        }
+                      ]
+                    }
                   }
                 },
                 "required": [
                   "name",
                   "claims"
                 ]
-              },
-              "__schema1": {
-                "type": "string",
-                "minLength": 1
-              },
-              "__schema2": {
-                "minItems": 1,
-                "type": "array",
-                "items": {
-                  "$ref": "#/$defs/__schema3"
-                }
-              },
-              "__schema3": {
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "properties": {
-                      "claim_id": {
-                        "$ref": "#/$defs/__schema4"
-                      },
-                      "title": {
-                        "$ref": "#/$defs/__schema5"
-                      },
-                      "comparison_evidence_id": {
-                        "$ref": "#/$defs/__schema6",
-                        "description": "Exact Evidence identifier for the comparison observation."
-                      },
-                      "kind": {
-                        "type": "string",
-                        "const": "behavioral"
-                      },
-                      "dimension": {
-                        "type": "string",
-                        "enum": [
-                          "overall",
-                          "terminal",
-                          "interaction",
-                          "exit",
-                          "filesystem",
-                          "process"
-                        ]
-                      }
-                    },
-                    "required": [
-                      "claim_id",
-                      "title",
-                      "comparison_evidence_id",
-                      "kind",
-                      "dimension"
-                    ]
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "claim_id": {
-                        "$ref": "#/$defs/__schema4"
-                      },
-                      "title": {
-                        "$ref": "#/$defs/__schema5"
-                      },
-                      "comparison_evidence_id": {
-                        "$ref": "#/$defs/__schema6",
-                        "description": "Exact Evidence identifier for the comparison observation."
-                      },
-                      "kind": {
-                        "type": "string",
-                        "const": "structural-function"
-                      },
-                      "dimension": {
-                        "type": "string",
-                        "enum": [
-                          "overall",
-                          "identity",
-                          "pseudocode",
-                          "assembly",
-                          "comments",
-                          "calls",
-                          "references",
-                          "strings_names",
-                          "cfg"
-                        ]
-                      }
-                    },
-                    "required": [
-                      "claim_id",
-                      "title",
-                      "comparison_evidence_id",
-                      "kind",
-                      "dimension"
-                    ]
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "claim_id": {
-                        "$ref": "#/$defs/__schema4"
-                      },
-                      "title": {
-                        "$ref": "#/$defs/__schema5"
-                      },
-                      "comparison_evidence_id": {
-                        "$ref": "#/$defs/__schema6",
-                        "description": "Exact Evidence identifier for the comparison observation."
-                      },
-                      "kind": {
-                        "type": "string",
-                        "const": "structural-artifact"
-                      },
-                      "dimension": {
-                        "type": "string",
-                        "const": "overall"
-                      }
-                    },
-                    "required": [
-                      "claim_id",
-                      "title",
-                      "comparison_evidence_id",
-                      "kind",
-                      "dimension"
-                    ]
-                  }
-                ]
-              },
-              "__schema4": {
-                "type": "string",
-                "pattern": "^[A-Za-z][A-Za-z0-9._\\x2d]*$"
-              },
-              "__schema5": {
-                "type": "string",
-                "minLength": 1
-              },
-              "__schema6": {
-                "type": "string",
-                "pattern": "^ev_[a-f0-9]{64}$"
               }
             },
+            "required": [
+              "specification"
+            ],
+            "additionalProperties": false,
             "examples": [
               {
                 "specification": {
@@ -12724,7 +12986,7 @@
                     {
                       "claim_id": "terminal-output",
                       "title": "Terminal output remains equivalent",
-                      "comparison_evidence_id": "ev_38ed13bff29e8b0299cb7498be55b08f8fe629d9a12af1ccc4498c38b98c57d8",
+                      "comparison_evidence_id": "ev_2ee844fcb1da7bad86a3d3c4216db8c670ac03658fb681ce5cf5c5d37b68e9c4",
                       "kind": "behavioral",
                       "dimension": "terminal"
                     }
@@ -12786,10 +13048,10 @@
                 "$ref": "#/$defs/__schema27"
               },
               "locations": {
-                "$ref": "#/$defs/__schema36"
+                "$ref": "#/$defs/__schema39"
               },
               "evidence_links": {
-                "$ref": "#/$defs/__schema37"
+                "$ref": "#/$defs/__schema40"
               }
             },
             "required": [
@@ -12875,7 +13137,8 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -12921,7 +13184,9 @@
                                   "arm64",
                                   "mips",
                                   "riscv",
-                                  "powerpc"
+                                  "powerpc",
+                                  "m68k",
+                                  "hexagon"
                                 ]
                               },
                               {
@@ -13380,7 +13645,6 @@
                 }
               },
               "__schema27": {
-                "default": null,
                 "anyOf": [
                   {
                     "oneOf": [
@@ -13482,16 +13746,9 @@
                         "$ref": "#/$defs/__schema32"
                       }
                     ],
-                    "minItems": 1,
-                    "maxItems": 1
-                  },
-                  {
-                    "type": "array",
-                    "prefixItems": [
-                      {
-                        "$ref": "#/$defs/__schema33"
-                      }
-                    ],
+                    "items": {
+                      "$ref": "#/$defs/__schema33"
+                    },
                     "minItems": 1,
                     "maxItems": 1
                   },
@@ -13500,11 +13757,27 @@
                     "prefixItems": [
                       {
                         "$ref": "#/$defs/__schema34"
-                      },
-                      {
-                        "$ref": "#/$defs/__schema35"
                       }
                     ],
+                    "items": {
+                      "$ref": "#/$defs/__schema35"
+                    },
+                    "minItems": 1,
+                    "maxItems": 1
+                  },
+                  {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "$ref": "#/$defs/__schema36"
+                      },
+                      {
+                        "$ref": "#/$defs/__schema37"
+                      }
+                    ],
+                    "items": {
+                      "$ref": "#/$defs/__schema38"
+                    },
                     "minItems": 2,
                     "maxItems": 2
                   }
@@ -13515,18 +13788,42 @@
                 "const": "callers"
               },
               "__schema33": {
-                "type": "string",
-                "const": "callees"
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema32"
+                  }
+                ]
               },
               "__schema34": {
                 "type": "string",
-                "const": "callers"
+                "const": "callees"
               },
               "__schema35": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema34"
+                  }
+                ]
+              },
+              "__schema36": {
+                "type": "string",
+                "const": "callers"
+              },
+              "__schema37": {
                 "type": "string",
                 "const": "callees"
               },
-              "__schema36": {
+              "__schema38": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/__schema36"
+                  },
+                  {
+                    "$ref": "#/$defs/__schema37"
+                  }
+                ]
+              },
+              "__schema39": {
                 "type": "array",
                 "items": {
                   "oneOf": [
@@ -13636,7 +13933,7 @@
                   ]
                 }
               },
-              "__schema37": {
+              "__schema40": {
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -13644,7 +13941,7 @@
                 }
               }
             },
-            "$id": "urn:rea:tool-output:sha256:e672cece4a64f22de2ed88db5566f500bde229879ab021af0e4171aabf35c78c"
+            "$id": "urn:rea:tool-output:sha256:fef42683ceb16e115168fd5c384c021ab1142b9721c7292ac86a9784978c6218"
           }
         },
         {

@@ -22,7 +22,7 @@ OUT = os.path.join(HERE, "out")
 FIXTURES = os.path.join(HERE, "fixtures")
 HOME = os.path.realpath(os.path.expanduser("~"))
 USER = os.path.basename(HOME)
-REA_VERSION = "6.5.0"
+REA_VERSION = "6.7.0"
 GHIDRA_VERSION = "12.1.4"
 WABT_VERSION = "1.0.42"
 GHIDRA_CANDIDATES = ["/opt/homebrew/Cellar/ghidra/12.1.4/libexec", "/opt/homebrew/opt/ghidra/libexec", "/usr/local/opt/ghidra/libexec"]
@@ -517,6 +517,7 @@ class Kit:
         rows.append(f"same JSON content as the MCP export: {'yes' if same_content else 'no'}")
         self.write("12-evidence-export.txt", "\n".join(rows) + "\n")
         self.rea("13-evidence-import.json", ["evidence-import", left, "--format", "json"])
+        self.rea("13-evidence-import-rea-6.5.0.json", ["evidence-import", self.fixture("bundle-rea-6.5.0-O1.json"), "--format", "json"])
         self.rea("14-compare-bundles.json", ["compare", left, right, "--format", "json"])
 
     def step_javascript(self):
@@ -548,6 +549,28 @@ class Kit:
             self.tool([os.path.join(self.wabt, "wasm2wat"), "--enable-all", wasm]),
         ]
         self.write("16-wabt.txt", "\n".join(blocks).replace(FIXTURES + "/", "fixtures/"))
+
+    def step_setup(self):
+        rows = []
+        cases = (
+            ("18-setup-claude-jsonc.json", "claude-jsonc.json", ["--dry-run"], "status,plannedActions,remediation,doctor.identity.registrations"),
+            ("18-setup-claude-duplicate.json", "claude-duplicate.json", ["--yes"], "status,appliedActions,remediation"),
+        )
+        saved = self.env
+        try:
+            for name, source, mode, keys in cases:
+                home = os.path.join(self.work, "home-" + os.path.splitext(source)[0])
+                config_dir = os.path.join(home, ".claude")
+                os.makedirs(config_dir, exist_ok=True)
+                config = os.path.join(config_dir, ".claude.json")
+                shutil.copyfile(self.fixture(os.path.join("setup", source)), config)
+                self.env = dict(saved, HOME=home, CLAUDE_CONFIG_DIR=config_dir)
+                self.rea(name, ["setup", "--client", "claude_code", "--skill=false", *mode, "--format", "json", "--filter-output", keys])
+                with open(config, encoding="utf-8") as handle:
+                    rows.append(f"# {source} after rea setup {' '.join(mode)}\n{handle.read()}")
+        finally:
+            self.env = saved
+        self.write("18-setup-configs.txt", "\n".join(rows))
 
     def step_harness(self):
         main_py = os.path.join(LESSON36, "main.py")
@@ -654,6 +677,7 @@ def capture(out, rea, ghidra, java, wabt):
         kit.step_evidence_cli(bundles)
         kit.step_javascript()
         kit.step_wasm()
+        kit.step_setup()
         kit.step_harness()
         kit.finish()
     return kit
@@ -714,7 +738,7 @@ def build_fixtures():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Capture kit for Reverse Engineering 101: rea 6.5.0 with the Ghidra 12.1.4 provider")
+    parser = argparse.ArgumentParser(description="Capture kit for Reverse Engineering 101: rea 6.7.0 with the Ghidra 12.1.4 provider")
     parser.add_argument("--check", action="store_true", help="capture into a temporary directory and compare with out/ after masking")
     parser.add_argument("--build-fixtures", action="store_true", help="rebuild the committed fixture binaries and the WASM module, then print their SHA-256")
     args = parser.parse_args()

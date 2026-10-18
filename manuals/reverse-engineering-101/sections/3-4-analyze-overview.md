@@ -8,7 +8,7 @@ When you finish this section, you can run `rea analyze` on both builds and read 
 
 ## One CLI verb, one composed operation
 
-`analyze` and `inspect` are aliases of the MCP operation `binary_overview`. The operation is composed from three others. It calls `list_segments`, `list_procedures`, and `list_strings` on the bound provider at the same time. Then it returns the segments with their lengths and the two counts. The output schema has six fields: `document`, `image_base`, `segments`, `segment_count`, `procedure_count`, and `string_count`. Each segment can also carry `image_base` and `address_space`.
+`analyze` and `inspect` are aliases of the MCP operation `binary_overview`. With Ghidra, the operation asks the bridge one question, `read_binary_inventory_summary`, and gets the segments and both counts in one reply. A provider without that question gets the older path: `list_segments`, `list_procedures`, and `list_strings` at the same time. Either way, the result is the segments with their lengths and the two counts. The output schema has six fields: `document`, `image_base`, `segments`, `segment_count`, `procedure_count`, and `string_count`. Each segment can also carry `image_base` and `address_space`.
 
 ```listing
 title: the two overview commands
@@ -22,13 +22,13 @@ $ rea analyze fixtures/ledger-x86_64-O1.o --provider ghidra --format json
 [exit 0] (…) -> 05-analyze-x86_64-O1.json
 ```
 
-**Composed operation:** a rea operation whose result is built from other operations. Its Evidence record names the provider `rea-workflow`, carries the Ghidra profile as `upstream_analysis_profile`, and has `confidence: "derived"`. Its first limitation is "Derived by an REA composed workflow.", and the limitations of the Ghidra records follow it. A primitive operation such as `list_procedures` is `observed`.
+**Composed operation:** a rea operation whose result is built from other operations. Its Evidence record names the provider `rea-workflow`, carries the Ghidra profile as `upstream_analysis_profile`, and has `confidence: "derived"`. Its first limitation is "Derived by an REA composed workflow.". The Ghidra limitations follow it, and each one starts with the engine, its version, and the operation that made it, for example `Ghidra (ghidra 12.1.4) read_binary_inventory_summary:`. The profile parameter `source_limitations: "provider-operation-caveats-v1"` names that rule. A primitive operation such as `list_procedures` is `observed`.
 
 ```listing
 title: the provider block of a composed record
 source: capture/out/05-analyze-arm64-O1.json
 lang: json
-note: Cut to the provider and the start of the analysis profile. The remaining profile parameters are the same in every Ghidra record of this manual.
+note: Cut to the provider, the start of the analysis profile, and the two workflow parameters. The remaining profile parameters are the same in every Ghidra record of this manual.
 ---
 "provider": {
   "id": "rea-workflow",
@@ -54,7 +54,8 @@ note: Cut to the provider and the start of the analysis profile. The remaining p
       },
       …
     },
-    "workflow_revision": 3
+    "source_limitations": "provider-operation-caveats-v1",
+    "workflow_revision": 4
   },
   …
 },
@@ -66,7 +67,7 @@ note: Cut to the provider and the start of the analysis profile. The remaining p
 title: binary_overview of ledger-arm64-O1
 source: capture/out/05-analyze-arm64-O1.json
 lang: json
-note: Cut to the result. Nine of the twelve segment entries and ten of the eleven limitations are cut.
+note: Cut to the result. Nine of the twelve segment entries and eight of the nine limitations are cut.
 ---
 "normalized_result": {
   "document": "target-01b5d08b08fb.bin",
@@ -185,7 +186,7 @@ Four procedures, not 13. An object file has no `main`, no stubs, and no imports,
 | code block | `__text`, 576 bytes | `.text`, 159 bytes |
 | `procedure_count` | 13 | 4 |
 | `string_count` | 39 | 20 |
-| profile `digest` | `966e6016` and 56 more digits | `9c7f6b24` and 56 more digits |
+| profile `digest` | `3fc72c9b` and 56 more digits | `769518a8` and 56 more digits |
 
 ```figure
 id: fig-3-5
@@ -199,7 +200,9 @@ caption: Read each column top to bottom. The green box names the Ghidra document
 
 The record has no function sizes and no entry point. It reports the image base: `0x100000000` for the executable and `0x100000` for the object. For the object, that base is the placement that Ghidra chose.
 
-For sizes, use the `body` of each function in [section 4.2](#s-list-procedures-and-function-bodies). For the entry point, use `LC_MAIN` in [section 3.2](#s-inspect-binary-layout-and-the-load-image). The two profile digests differ, `966e6016` against `9c7f6b24`, because `target_format` and `architecture` are inside the profile parameters. [Section 5.3](#s-snapshots-and-the-answer-cache) shows that a cached answer replays only when the whole digest matches.
+The counts also have a limit, and the record states it: "Counts use the complete defined-string inventory and the same local/external function inventory as list_strings and list_procedures. They do not establish discovery of undefined strings or unidentified functions." A count of 13 procedures is what Ghidra identified. Code that Ghidra did not find as a function is not in the count.
+
+For sizes, use the `body` of each function in [section 4.2](#s-list-procedures-and-function-bodies). For the entry point, use `LC_MAIN` in [section 3.2](#s-inspect-binary-layout-and-the-load-image). The two profile digests differ, `3fc72c9b` against `769518a8`, because `target_format` and `architecture` are inside the profile parameters. [Section 5.3](#s-snapshots-and-the-answer-cache) shows that a cached answer replays only when the whole digest matches.
 
 ```takeaways
 - Run `rea analyze` once per build and keep the `document` name with the record.
@@ -208,4 +211,4 @@ For sizes, use the `body` of each function in [section 4.2](#s-list-procedures-a
 - Read `confidence: "derived"` as a sign that three primitive records stand behind this one.
 ```
 
-Sources: capture/out/00-commands.txt, capture/out/05-analyze-arm64-O1.json, capture/out/05-analyze-x86_64-O1.json; rea 6.5.0 at 3b79af2: src/cliCommandNames.ts, src/application/InvestigationProviders.ts, src/application/EnhancedTools.ts, src/application/WorkflowEvidence.ts, src/contracts/toolOutputSchemaGroups.ts, src/contracts/toolOutputSchemaPrimitives.ts, src/ghidra/GhidraTargetSnapshot.ts
+Sources: capture/out/00-commands.txt, capture/out/05-analyze-arm64-O1.json, capture/out/05-analyze-x86_64-O1.json; rea 6.7.0 at 27dc42d: src/cliCommandNames.ts, src/application/InvestigationProviders.ts, src/application/EnhancedTools.ts, src/application/WorkflowEvidence.ts, src/contracts/toolOutputSchemaGroups.ts, src/contracts/toolOutputSchemaPrimitives.ts, src/ghidra/GhidraTargetSnapshot.ts, src/ghidra/GhidraInventoryValues.ts, bridge/ghidra/ReaGhidraBridge.java

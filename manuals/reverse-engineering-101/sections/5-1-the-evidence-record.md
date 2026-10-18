@@ -6,7 +6,7 @@ An agent tells you that `_percent_change` returns 0 when `before` is 0. You want
 
 ## One record for every successful observation
 
-**Evidence record:** the one record type that rea returns for a successful observation. The schema is one strict object with sixteen fields. A record with an extra field is rejected. A record that omits `relationship_coverage` gets `null`, so a record written before that field existed still reads. A record that omits any other field is rejected. The MCP server returns the record as `structuredContent` and as a text copy: "Evidence-producing tools return the complete canonical Evidence record in both text and structured content." {{mcp Tool results}}
+**Evidence record:** the one record type that rea returns for a successful observation. The schema is one strict object with sixteen fields. A record with an extra field is rejected, and so is a record that omits a field. An operation without caller or callee sets still writes `relationship_coverage`, with the value `null`. The MCP server returns the record as `structuredContent` and as a text copy: "Evidence-producing tools return the complete canonical Evidence record in both text and structured content." {{mcp Tool results}}
 
 ```listing
 title: the sixteen fields of the _percent_change dossier record
@@ -14,7 +14,7 @@ source: capture/out/10-mcp-09-analyze-function-percent-change-O1.json
 lang: json
 note: The profile parameters, the raw result, the normalized result, nine of the ten limitations, and the coverage diagnostics are cut. The kit replaced the text copy of the record with a marker.
 ---
-"evidence_id": "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
+"evidence_id": "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
 "subject": {
   "name": "ledger-arm64-O1",
   "digest": {
@@ -31,7 +31,7 @@ note: The profile parameters, the raw result, the normalized result, nine of the
 },
 "analysis_profile": {
   …
-  "digest": "966e6016724421ad282356f583a9d5bf24577db4ac77a75c7099d236b88bcc28"
+  "digest": "3fc72c9b4b78498fb992b938f8f3389dc670244a293c1d40abf5e1d10162ed3b"
 },
 "predicate_type": "rea.analysis",
 "operation": "analyze_function",
@@ -61,10 +61,10 @@ note: The profile parameters, the raw result, the normalized result, nine of the
 
 | Field | In this record | What it holds |
 |---|---|---|
-| `evidence_id` | `ev_172d39ff37ab` and 52 more hex digits | `ev_` and a SHA-256 |
+| `evidence_id` | `ev_b492c85eb957` and 52 more hex digits | `ev_` and a SHA-256 |
 | `subject` | `ledger-arm64-O1`, sha256 `01b5d08b08fb`, `mach-o`, `arm64`, a path | the analysed file, or `null` |
 | `provider` | `ghidra`, Ghidra, `12.1.4` | the engine that produced the fact |
-| `analysis_profile` | digest `966e6016724` | the committed engine settings, or `null` |
+| `analysis_profile` | digest `3fc72c9b4b7` | the committed engine settings, or `null` |
 | `predicate_type` | `rea.analysis` | the kind of claim |
 | `operation` | `analyze_function` | the tool that produced the record |
 | `parameters` | `{"procedure": "_percent_change"}` | the caller input, as given |
@@ -78,7 +78,7 @@ note: The profile parameters, the raw result, the normalized result, nine of the
 | `locations` | `[]` | addresses, ranges, paths, or file offsets |
 | `evidence_links` | `[]` | the `ev_` ids this record derives from |
 
-The subject `format` is one of 28 container names, from `mach-o` and `elf` to `javascript` and `directory`. The architecture is one of `x86`, `x86_64`, `arm`, `arm64`, `mips`, `6502`, `riscv`, and `powerpc`. Only the `raw-binary` format can have the architecture `6502`. A location has one of five shapes: `address`, `address-range`, `artifact-path`, `file-offset`, or `file-offset-range`.
+The subject `format` is one of 28 container names, from `mach-o` and `elf` to `javascript` and `directory`. The architecture is one of ten families: `x86`, `x86_64`, `arm`, `arm64`, `mips`, `6502`, `riscv`, `powerpc`, `m68k`, and `hexagon`. Only the `raw-binary` format can have the architecture `6502` or `m68k`. A location has one of five shapes: `address`, `address-range`, `artifact-path`, `file-offset`, or `file-offset-range`.
 
 The MCP handler can run a preflight check before the engine starts. It builds the record after the engine answers. It calls `createEvidence` with the active target, the provider, and the operation. The same call passes the parameters, the result, the profile, the raw result, the limitations, the locations, and the links.
 
@@ -100,7 +100,7 @@ Three defaults fill in what a producer leaves out. When the producer names no co
 
 Read `observed` with care. In the dossier it means that rea recorded what Ghidra returned, with the bytes on disk as the authority. It does not mean that the pseudocode is the program's source. The provider documentation says so: "Assembly is complete Ghidra Listing text; pseudocode is Ghidra decompiler output." {{ghidra Admitted function-analysis semantics}}
 
-The `binary_overview` record is `derived`, because a rea workflow computed it from provider calls. Its first limitation says so: "Derived by an REA composed workflow." The other ten are the Ghidra limitations it inherits (`05-analyze-arm64-O1.json`). [Lesson 35](phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns) builds a ledger in plain Python with the same three words and the same five authorities.
+The `binary_overview` record is `derived`, because a rea workflow computed it from provider calls. Its first limitation says so: "Derived by an REA composed workflow." The other eight are the Ghidra limitations it inherits. Each one starts with the provider, its version, and the operation, for example "Ghidra (ghidra 12.1.4) read_binary_inventory_summary:" (`05-analyze-arm64-O1.json`). [Lesson 35](phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns) builds a ledger in plain Python with the same three words and the same five authorities.
 
 ## Limitations, locations, and links
 
@@ -122,8 +122,8 @@ note: Of the 27 limitations, the first two are shown.
 ],
 "locations": [],
 "evidence_links": [
-  "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-  "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f"
+  "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+  "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
 ]
 ```
 
@@ -135,11 +135,11 @@ A profile whose provider differs from the record's `provider` is rejected with "
 
 ## The id is a hash of the semantic content
 
-**Semantic projection:** the view of the record that the id hashes. It keeps `subject.digest`, `subject.format`, and `subject.architecture`, and it drops `subject.name` and `subject.local_path`. It also drops `relationship_coverage` when its value is `null`, so a record without coverage keeps the id it had before that field existed. Every other field enters as it is.
+**Semantic projection:** the view of the record that the id hashes. It keeps `subject.digest`, `subject.format`, and `subject.architecture`, and it drops `subject.name` and `subject.local_path`. Every other field enters as it is, `relationship_coverage` too when its value is `null`. Release 6.5.0 left a `null` coverage field out of the hash. Release 6.7.0 therefore refuses the id of such a record in a 6.5.0 bundle ([export and import](#s-evidence-bundles-export-and-import)).
 
 The id is `ev_` followed by the SHA-256 of that projection in canonical JSON. Object keys are sorted as RFC 8785 requires. `parseEvidence` recomputes the hash on every record it reads and rejects a mismatch with "Evidence semantic identifier does not match its record".
 
-You can do the same check with a few lines of Node. The script below sorts keys, serializes without spaces, drops the two display fields, drops a `null` coverage field, and hashes.
+You can do the same check with a few lines of Node. The script below sorts keys, serializes without spaces, drops the two display fields, and hashes. Give it a bundle file and a record index to check one record of a bundle.
 
 ```javascript
 import { createHash } from "node:crypto";
@@ -152,9 +152,13 @@ const canonical = (value) => {
 };
 
 const file = JSON.parse(readFileSync(process.argv[2], "utf8"));
-const record = file.response ? file.response.result.structuredContent : file;
-const { evidence_id, subject, relationship_coverage, ...rest } = record;
-if (relationship_coverage !== null && relationship_coverage !== undefined) rest.relationship_coverage = relationship_coverage;
+const pick = (value, index) => {
+  if (value.response) return value.response.result.structuredContent;
+  if (value.records) return value.records[index];
+  return value;
+};
+const record = pick(file, Number(process.argv[3] ?? 0));
+const { evidence_id, subject, ...rest } = record;
 const projection = {
   subject: subject === null ? null : { digest: subject.digest, format: subject.format, architecture: subject.architecture },
   ...rest,
@@ -163,7 +167,7 @@ const digest = createHash("sha256").update(canonical(projection)).digest("hex");
 console.log(evidence_id, evidence_id === `ev_${digest}` ? "match" : "mismatch");
 ```
 
-Run on `05-analyze-arm64-O1.json`, it prints `ev_90e65378a5b1d958b02840bda801e5758d39ceb43acd0f4ed2d1a3ad7297588d match`, the id on line 2 of that file. Run on `10-mcp-09-analyze-function-percent-change-O1.json`, it matches `ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350`. It also matches the comparison record in `10-mcp-20` and the first record inside `11-bundle-O1.json`. The masked `$CAPTURE` path in `subject.local_path` changes nothing, because that field is outside the hash.
+Run on `05-analyze-arm64-O1.json`, it prints `ev_91bddcdbd53ddd56996c6009458495bbd91fdc8c885238b33432e67691cf1f06 match`, the id on line 2 of that file. Run on `10-mcp-09-analyze-function-percent-change-O1.json`, it matches `ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a`. It also matches the comparison record in `10-mcp-20` and, with the index 0, the first record inside `11-bundle-O1.json`. The masked `$CAPTURE` path in `subject.local_path` changes nothing, because that field is outside the hash.
 
 Two files in the capture do not match, and both teach the same rule. `15-js-app.json` fails because the kit cut `graph` and `semantic_graph` out of `normalized_result` with `--filter-output`. `15-js-app-view-summary.json` fails because the kit masked the capture directory as `$CAPTURE` inside `normalized_result.summary.input_path` and inside `locations`. A path in `subject` is outside the hash. A path anywhere else is inside it, and a record that carries one gets a different id on every machine.
 
@@ -182,4 +186,4 @@ caption: Read top to bottom. Solid rows enter the hash and dashed rows are displ
 - Keep paths out of `normalized_result` and `locations` in your own records, or the id changes per machine.
 ```
 
-Sources: capture/out/10-mcp-09-analyze-function-percent-change-O1.json, capture/out/10-mcp-20-compare-functions-percent-change.json, capture/out/05-analyze-arm64-O1.json, capture/out/15-js-app.json, capture/out/15-js-app-view-summary.json, capture/out/11-bundle-O1.json; phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns; rea 6.5.0 at 3b79af2: src/domain/evidence.ts, src/domain/relationshipCoverage.ts, src/domain/canonicalDigest.ts, src/domain/analysisProfile.ts, src/domain/binaryTargetTypes.ts, src/server/registerEvidenceTools.ts, src/application/binary/BinarySession.ts, src/application/investigation/UnknownEvidence.ts; rea docs/mcp-contracts.md, rea docs/ghidra-provider.md
+Sources: capture/out/10-mcp-09-analyze-function-percent-change-O1.json, capture/out/10-mcp-20-compare-functions-percent-change.json, capture/out/05-analyze-arm64-O1.json, capture/out/15-js-app.json, capture/out/15-js-app-view-summary.json, capture/out/11-bundle-O1.json; phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns; rea 6.7.0 at 27dc42d: src/domain/evidence.ts, src/domain/relationshipCoverage.ts, src/domain/canonicalDigest.ts, src/domain/analysisProfile.ts, src/domain/binaryTargetTypes.ts, src/server/registerEvidenceTools.ts, src/application/binary/BinarySession.ts, src/application/investigation/UnknownEvidence.ts; rea docs/mcp-contracts.md, rea docs/ghidra-provider.md

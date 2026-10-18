@@ -41,7 +41,7 @@ export JAVA_HOME=/opt/homebrew/opt/openjdk@21
 rea doctor --provider ghidra --format json
 ```
 
-`--provider ghidra` narrows the report to one scope. Without it, the report also covers the Hopper, IDA, and JADX providers, the installed skill, and the agent registrations on the machine.
+`--provider ghidra` narrows the report to one scope. Without it, the report also covers the Hopper, IDA, JADX, and Kuna providers, the installed skill, and the agent registrations on the machine.
 
 ## The nine checks
 
@@ -120,7 +120,7 @@ caption: Read left to right, then down, and the two boxes at the bottom are the 
 
 The report has two verdicts. `healthy` is the verdict for the selected scope, here `explicit` with `providers: ["ghidra"]`, and `scope_checks` lists only the checks in that scope. `environment_healthy` is the verdict for the audit-wide set. It is true only when every check outside the providers passes, every configured provider passes, and at least one provider is available.
 
-On the capture Mac `healthy` is true and `environment_healthy` is false. Hopper and IDA are not configured there, so the formula ignores them, and Ghidra is configured and passes. The false verdict therefore comes from a check outside the Ghidra scope. That check is in the set the capture's `--filter-output` left out, which names this user's skill install and agent registrations (capture/README.md). The exit status follows the scope: `rea doctor` returned 0 (capture/out/00-commands.txt), because "unavailable optional providers remain informational for unrelated tasks" {{cli Output and exit status}}.
+On the capture Mac `healthy` is true and `environment_healthy` is false. Hopper, IDA, and Kuna are not configured there, so the formula ignores them, and Ghidra is configured and passes. The false verdict therefore comes from a check outside the Ghidra scope. That check is in the set the capture's `--filter-output` left out, which names this user's skill install and agent registrations (capture/README.md). The exit status follows the scope: `rea doctor` returned 0 (capture/out/00-commands.txt), because "unavailable optional providers remain informational for unrelated tasks" {{cli Output and exit status}}.
 
 ## When a check fails
 
@@ -137,4 +137,4 @@ One check has no fix in rea. Every Ghidra record on macOS carries the limitation
 - Read `environment_healthy` as a report on the whole machine, and `healthy` as the verdict for your scope.
 ```
 
-Sources: install Ghidra (rea docs/installation.md); cli Output and exit status (rea docs/cli.md); rea at 3b79af2: src/config/environment.ts, src/ghidra/GhidraInstallationPolicy.ts, src/ghidra/GhidraInstallation.ts, src/ghidra/GhidraDoctor.ts, src/application/Doctor.ts, src/application/DoctorDiagnostics.ts, src/application/DoctorProviderIds.ts, src/domain/providerSelectionError.ts, src/domain/analysisErrorProjection.ts; capture/README.md; capture/out/00-commands.txt, 00-versions.txt, 01-doctor-ghidra.json, 06-function-percent-change.json
+Sources: install Ghidra (rea docs/installation.md); cli Output and exit status (rea docs/cli.md); rea at 27dc42d: src/config/environment.ts, src/ghidra/GhidraInstallationPolicy.ts, src/ghidra/GhidraReleasePolicy.ts, src/ghidra/GhidraInstallation.ts, src/ghidra/GhidraDoctor.ts, src/application/Doctor.ts, src/application/DoctorDiagnostics.ts, src/application/DoctorProviderIds.ts, src/domain/providerSelectionError.ts, src/domain/analysisErrorProjection.ts; capture/README.md; capture/out/00-commands.txt, 00-versions.txt, 01-doctor-ghidra.json, 06-function-percent-change.json

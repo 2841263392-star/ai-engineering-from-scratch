@@ -1,8 +1,8 @@
 # inspect-wasm-artifact and the WABT provider
 
-> rea 6.5.0 runs three WABT 1.0.42 programs on a private copy of the module and returns one observed Evidence record with sections, a typed interface, and decoded WAT.
+> rea 6.7.0 runs three WABT 1.0.42 programs on a private copy of the module and returns one observed Evidence record with sections, a typed interface, and decoded WAT.
 
-You wrote `capture/fixtures/wasm/ledger.wat` by hand, with the same four functions as `ledger.c`, and assembled it to `ledger.wasm` with `wat2wasm`. You ask rea 6.5.0 to inspect the module, on the CLI and over MCP, and both entry points return the same Evidence record. When you finish this section, you can set up the WABT provider and read the record. You can also say what the record does not prove.
+You wrote `capture/fixtures/wasm/ledger.wat` by hand, with the same four functions as `ledger.c`, and assembled it to `ledger.wasm` with `wat2wasm`. You ask rea 6.7.0 to inspect the module, on the CLI and over MCP, and both entry points return the same Evidence record. When you finish this section, you can set up the WABT provider and read the record. You can also say what the record does not prove.
 
 ## Setup
 
@@ -28,16 +28,16 @@ $ /opt/homebrew/bin/wasm2wat --version
 
 ## The command and the record
 
-The CLI command is `rea inspect-wasm-artifact PATH`. In the capture it exited 0 after 1.5 s and printed one Evidence record.
+The CLI command is `rea inspect-wasm-artifact PATH`. In the capture it exited 0 after about two seconds and printed one Evidence record.
 
 ```listing
 title: the CLI call
 source: capture/out/00-commands.txt
 lang: text
-note: Nothing is cut.
+note: The time is cut, because it changes with every recording.
 ---
 $ rea inspect-wasm-artifact fixtures/wasm/ledger.wasm --format json
-[exit 0] (1.5 s) -> 16-inspect-wasm-artifact.json
+[exit 0] (… s) -> 16-inspect-wasm-artifact.json
 ```
 
 ```listing
@@ -47,7 +47,7 @@ lang: json
 note: The ids and digests are cut to eight characters. The normalized_result follows.
 ---
 {
-  "evidence_id": "ev_b50c217f…",
+  "evidence_id": "ev_3a09e4b0…",
   "subject": {
     "name": "ledger.wasm",
     "digest": {
@@ -259,7 +259,7 @@ The first limitation says that the WAT is a decoded representation. The WAT does
 
 ## Over MCP
 
-Over MCP the tool is `inspect_wasm_artifact` with the same `path`. Step 24 of the session returned `ok` after 404 ms. The reply is a tool result. Its `structuredContent` is the same Evidence record, with the same id `ev_b50c217f…`. Its `_meta` carries the untrusted-content marker of [Section 8.1](#s-the-rea-mcp-server).
+Over MCP the tool is `inspect_wasm_artifact` with the same `path`. Step 24 of the session returned `ok` after 404 ms. The reply is a tool result. Its `structuredContent` is the same Evidence record, with the same id `ev_3a09e4b0…`. Its `_meta` carries the untrusted-content marker of [Section 8.1](#s-the-rea-mcp-server).
 
 ```listing
 title: the head of the MCP result
@@ -276,7 +276,7 @@ note: The text copy and the rest of the record are cut.
   },
   …
   "structuredContent": {
-    "evidence_id": "ev_b50c217f…",
+    "evidence_id": "ev_3a09e4b0…",
 ```
 
 The session retains the record, so `export_evidence_bundle` writes it to a bundle with the other records. For a large module, pass `detail: "summary"` on the first call. rea then keeps the complete record. It returns counts, the validation result, and the WAT identity, without the WAT text. You read pages of the full record with `inspect_analysis_view`.
@@ -300,4 +300,4 @@ caption: Read top to bottom. Solid arrows are calls, and dashed arrows are the p
 - Read the five limitations before you report anything from the WAT.
 ```
 
-Sources: src/cliCommandNames.ts, src/contracts/wasm/wasmToolContracts.ts, src/wasm/WabtArtifactProvider.ts, src/wasm/WabtRelease.ts, src/server/createServer.ts, src/application/BinaryTargetResolver.ts at rea-agents-6.5.0 (3b79af2); rea docs/wasm-artifacts.md (Offline WebAssembly artifacts, Compare core-module interfaces); capture/fixtures/wasm/ledger.wat, capture/fixtures/ledger.c; capture/out/16-inspect-wasm-artifact.json, 10-mcp-24-inspect-wasm-artifact.json, 10-mcp-session.txt, 16-wabt.txt, 00-commands.txt, 00-fixtures.txt, 00-versions.txt
+Sources: src/cliCommandNames.ts, src/contracts/wasm/wasmToolContracts.ts, src/wasm/WabtArtifactProvider.ts, src/wasm/WabtRelease.ts, src/server/createServer.ts, src/application/BinaryTargetResolver.ts at rea-agents-6.7.0 (27dc42d); rea docs/wasm-artifacts.md (Offline WebAssembly artifacts, Compare core-module interfaces); capture/fixtures/wasm/ledger.wat, capture/fixtures/ledger.c; capture/out/16-inspect-wasm-artifact.json, 10-mcp-24-inspect-wasm-artifact.json, 10-mcp-session.txt, 16-wabt.txt, 00-commands.txt, 00-fixtures.txt, 00-versions.txt

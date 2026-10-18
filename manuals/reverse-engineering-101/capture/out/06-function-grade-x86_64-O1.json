@@ -1,5 +1,5 @@
 {
-  "evidence_id": "ev_67b6d3f992eaf49a2e16de084b6ebfdd9884e8c5c7f75e175b7bb20f4f748ce1",
+  "evidence_id": "ev_90f5dc2224540e6a64b27fc70bc0e4af6c9603ffee0d7e38ff936f3f0071920e",
   "subject": {
     "name": "ledger-x86_64-O1.o",
     "digest": {
@@ -38,8 +38,8 @@
       "location_resolution": "explicit-address-exact-entry-symbol-first-v3",
       "procedure_file_offset_resolution": "address-first-unique-target-source-mapping-v2",
       "instruction_flow_evidence": "decoded-return-pcode-v1",
-      "instruction_references": "exact-address-incoming-v1",
-      "function_boundary_observations": "ghidra-function-boundary-limitations-v3",
+      "instruction_references": "exact-address-incoming-without-synthetic-entry-v2",
+      "function_boundary_observations": "ghidra-function-boundary-limitations-v4",
       "no_return_repair": "returning-imports-decoded-return-v2",
       "process_launch": "inspected-jvm-launch-support-v1",
       "jump_table_evidence": "typed-case-default-blocks-v1",
@@ -49,7 +49,7 @@
       "compiler_spec_id": "auto-default",
       "analyzer_preset": "ghidra-default"
     },
-    "digest": "9c7f6b24be69294e61da046e4583e3856cb9e40433b149c1bf8bb534d2fe03ef"
+    "digest": "769518a8e9b57f953dd241adbb63672f0f486bb3d66359b9deef7c5e088ca7aa"
   },
   "predicate_type": "rea.analysis",
   "operation": "analyze_function",

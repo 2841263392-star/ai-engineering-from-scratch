@@ -9,7 +9,7 @@ const lanes = [
   { x: 560, name: 'JAVA BRIDGE', hue: 'violet' },
 ];
 const rows = [
-  [0, 1, 'call', 'open_binary', 'milliseconds, no Ghidra process yet'],
+  [0, 1, 'call', 'open_binary', 'about 1.6 s of readiness checks, no import yet'],
   [1, 0, 'reply', 'mach-o executable arm64', null],
   [0, 1, 'call', 'list_procedures', null],
   [1, 2, 'call', 'start()', 'rea-ghidra-* root, bridge.sock'],
@@ -17,14 +17,14 @@ const rows = [
   [3, 2, 'reply', 'ping ok', 'analysis_complete true, token checked'],
   [2, 3, 'call', '{id, token, method, params}', 'one JSON line on the socket'],
   [3, 2, 'reply', '{id, ok true, result}', '13 functions, 4 external'],
-  [1, 0, 'reply', 'Evidence ev_231b5398', '5 to 7 s, import plus auto-analysis'],
+  [1, 0, 'reply', 'Evidence ev_3c6350b2', '5 to 7 s, import plus auto-analysis'],
   [0, 1, 'call', 'procedure_assembly _grade', 'under 100 ms on the same socket'],
 ];
 
 module.exports = figure('fig-4-1', {
   height: 486,
   title: 'One open and three questions over MCP',
-  desc: 'Four lifelines: the agent, the rea MCP server, the Ghidra client inside rea, and the Java bridge inside analyzeHeadless. open_binary returns in milliseconds with no Ghidra process. list_procedures makes the client start: a private runtime root, a Unix socket, a hashed copy of the target, then java with AnalyzeHeadless, -import, -readOnly and -deleteProject, then a ping handshake, then one JSON request line and one reply. The Evidence returns after 5 to 7 seconds. procedure_assembly on the same socket takes under 100 ms.',
+  desc: 'Four lifelines: the agent, the rea MCP server, the Ghidra client inside rea, and the Java bridge inside analyzeHeadless. open_binary returns in about 1.6 seconds after the provider readiness checks, with no headless import yet. list_procedures makes the client start: a private runtime root, a Unix socket, a hashed copy of the target, then java with AnalyzeHeadless, -import, -readOnly and -deleteProject, then a ping handshake, then one JSON request line and one reply. The Evidence returns after 5 to 7 seconds. procedure_assembly on the same socket takes under 100 ms.',
 }, f => {
   for (const lane of lanes) {
     f.box({ x: lane.x, y: 10, w: 124, h: 30, hue: lane.hue, title: lane.name, titleSize: 12, anchor: 'middle' });

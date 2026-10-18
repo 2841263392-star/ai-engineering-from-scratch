@@ -8,7 +8,7 @@ When you finish this section, you can read the sixteen facets of a dossier. You 
 
 ## The dossier
 
-`rea function` is the CLI name of `analyze_function`. The CLI run on `_grade` and the MCP call in the same session produced the same `evidence_id`, `ev_15244427` and 56 more digits. The id is a hash of the record's semantic content, and the file path and the display name are left out of it. [Section 5.1](#s-the-evidence-record) reads every field of the record. This section reads its `normalized_result`, which has sixteen facets.
+`rea function` is the CLI name of `analyze_function`. The CLI run on `_grade` and the MCP call in the same session produced the same `evidence_id`, `ev_41e8ca1c` and 56 more digits. The id is a hash of the record's semantic content, and the file path and the display name are left out of it. [Section 5.1](#s-the-evidence-record) reads every field of the record. This section reads its `normalized_result`, which has sixteen facets.
 
 ```listing
 title: the pseudocode, the blocks, and the signature facts of _grade
@@ -266,4 +266,4 @@ Read the sixteen facets in this order. Start with `procedure` for the body and `
 - Expect `invalid_request` with `retryable: true` for an unknown name, then fix the name.
 ```
 
-Sources: capture/out/06-function-grade.json, capture/out/10-mcp-10-analyze-function-grade-O1.json, capture/out/07-decompile-total.json, capture/out/07-decompile-grade-x86_64-O1.json, capture/out/10-mcp-09-analyze-function-percent-change-O1.json, capture/out/10-mcp-11-analyze-function-total-O1.json, capture/out/10-mcp-12-analyze-function-grade-label-O1.json, capture/out/10-mcp-13-analyze-function-missing.json, capture/out/10-mcp-server.log, capture/fixtures/ledger.c, capture/fixtures/ledger-arm64-O1; rea 6.5.0 at 3b79af2: src/cliCommandNames.ts, src/domain/evidence.ts, src/ghidra/GhidraProviderCapabilities.ts, src/ghidra/GhidraProviderClient.ts, src/domain/analysisErrorProjection.ts, src/server/toolResult.ts, bridge/ghidra/ReaGhidraBridge.java
+Sources: capture/out/06-function-grade.json, capture/out/10-mcp-10-analyze-function-grade-O1.json, capture/out/07-decompile-total.json, capture/out/07-decompile-grade-x86_64-O1.json, capture/out/10-mcp-09-analyze-function-percent-change-O1.json, capture/out/10-mcp-11-analyze-function-total-O1.json, capture/out/10-mcp-12-analyze-function-grade-label-O1.json, capture/out/10-mcp-13-analyze-function-missing.json, capture/out/10-mcp-server.log, capture/fixtures/ledger.c, capture/fixtures/ledger-arm64-O1; rea 6.7.0 at 27dc42d: src/cliCommandNames.ts, src/domain/evidence.ts, src/ghidra/GhidraProviderCapabilities.ts, src/ghidra/GhidraProviderClient.ts, src/domain/analysisErrorProjection.ts, src/server/toolResult.ts, bridge/ghidra/ReaGhidraBridge.java

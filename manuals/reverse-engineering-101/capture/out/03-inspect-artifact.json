@@ -1,5 +1,5 @@
 {
-  "evidence_id": "ev_3823d30db26636be3ec68e26e64ec88aeab3608fb20d02d25d222e4582a771b6",
+  "evidence_id": "ev_0e878985e1b7f974d40413f4fef610deb60375b0e711000c9fdbb38ac45aee79",
   "subject": {
     "name": "ledger-arm64-O1",
     "digest": {
@@ -22,7 +22,7 @@
   },
   "raw_result": null,
   "normalized_result": {
-    "inspection_id": "ai_27d6f0e1e5f63de411ac58b3dcbe3b5cd06b1a6cee76f7809a5a06f41d49eaaf",
+    "inspection_id": "ai_fab80271f310e392f827126ff8fc292eee44df0cbb8e921c42c0871c6c31eeb1",
     "subject": {
       "manifest_id": "agm_8e2e5c4c5d396d3f2e72bec33b13243b76697c2cc4b467ed1954d7955189df0a",
       "root_artifact_id": "art_8906b5a777ab042d64b1b558797274ee4d1736bf46693b809657ebbcb5f382f7",
@@ -31,12 +31,12 @@
     },
     "substeps": [
       {
-        "substep_id": "ais_d1129f212324a8f87bfa12d2031ce168a01500dc3cdb759e47e5ff87a00d40c0",
+        "substep_id": "ais_189785429e1f98e21399aea511b115e888a9d3b37d6b9afa77fc77695838a500",
         "operation": "inventory_artifact",
         "status": "completed",
-        "evidence_id": "ev_88616401bc08a5e8bb7f6cfe1b3980bf604beb977d417ff342b5536a6c6751b7",
+        "evidence_id": "ev_c56ffde2b15288d1e14a6b6cd5feae6ff5c6d15f4e0c37e98d393ae5b2212449",
         "evidence": {
-          "evidence_id": "ev_88616401bc08a5e8bb7f6cfe1b3980bf604beb977d417ff342b5536a6c6751b7",
+          "evidence_id": "ev_c56ffde2b15288d1e14a6b6cd5feae6ff5c6d15f4e0c37e98d393ae5b2212449",
           "subject": {
             "name": "ledger-arm64-O1",
             "digest": {
@@ -108,8 +108,7 @@
             },
             "limitations": [
               "Artifact has no child container entries."
-            ],
-            "coverage_status": "complete"
+            ]
           },
           "confidence": "observed",
           "authority": "shipped-artifact",
@@ -125,7 +124,7 @@
     ],
     "observations": [
       {
-        "observation_id": "aio_0d5d14130f510098639dcf624e8a6009be916f4b7226669314b98130419a414e",
+        "observation_id": "aio_441061ba4e83b55b3f4af65fd1a5ed504688b1bcf7c7f09b499c7ec86bc56eff",
         "kind": "root-manifest",
         "subject": "art_8906b5a777ab042d64b1b558797274ee4d1736bf46693b809657ebbcb5f382f7",
         "value": {
@@ -138,14 +137,14 @@
           "occurrence_count": 1,
           "edge_count": 0
         },
-        "evidence_id": "ev_88616401bc08a5e8bb7f6cfe1b3980bf604beb977d417ff342b5536a6c6751b7"
+        "evidence_id": "ev_c56ffde2b15288d1e14a6b6cd5feae6ff5c6d15f4e0c37e98d393ae5b2212449"
       }
     ],
     "hypotheses": [],
     "contradictions": [],
     "unexplored_branches": [
       {
-        "branch_id": "aib_38d39810669e79062c97ccf6df2307f5ef614307123aae21c677e7a8a6cd8c85",
+        "branch_id": "aib_ff20889ecaa6ec11a22449f3059566c6a62185d6688a3b78dc160d3c38910ce5",
         "reason": "format-specific-analysis-required",
         "detail": "open_binary was not run by provider-neutral artifact inspection.",
         "next_probe": {
@@ -153,7 +152,7 @@
           "rationale": "Bind one deep native provider before function-level analysis.",
           "authority": "native-analysis-provider"
         },
-        "evidence_id": "ev_88616401bc08a5e8bb7f6cfe1b3980bf604beb977d417ff342b5536a6c6751b7"
+        "evidence_id": "ev_c56ffde2b15288d1e14a6b6cd5feae6ff5c6d15f4e0c37e98d393ae5b2212449"
       }
     ],
     "next_probes": [
@@ -176,7 +175,7 @@
       "next_probes_omitted": 0
     },
     "evidence_links": [
-      "ev_88616401bc08a5e8bb7f6cfe1b3980bf604beb977d417ff342b5536a6c6751b7"
+      "ev_c56ffde2b15288d1e14a6b6cd5feae6ff5c6d15f4e0c37e98d393ae5b2212449"
     ],
     "limitations": [
       "Artifact has no child container entries.",
@@ -193,6 +192,6 @@
   "relationship_coverage": null,
   "locations": [],
   "evidence_links": [
-    "ev_88616401bc08a5e8bb7f6cfe1b3980bf604beb977d417ff342b5536a6c6751b7"
+    "ev_c56ffde2b15288d1e14a6b6cd5feae6ff5c6d15f4e0c37e98d393ae5b2212449"
   ]
 }

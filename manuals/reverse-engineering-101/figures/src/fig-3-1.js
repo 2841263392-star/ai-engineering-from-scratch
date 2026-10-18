@@ -9,7 +9,7 @@ module.exports = figure('fig-3-1', {
 }, f => {
   f.kicker(20, 18, 'the record');
   f.kicker(360, 18, 'what it saw');
-  const record = f.box({ x: 20, y: 26, w: 280, h: 62, hue: 'teal', title: 'Evidence ev_3823d30d', sub: ['operation inspect_artifact', 'confidence observed · no analysis engine'] });
+  const record = f.box({ x: 20, y: 26, w: 280, h: 62, hue: 'teal', title: 'Evidence ev_0e878985', sub: ['operation inspect_artifact', 'confidence observed · no analysis engine'] });
   const subject = f.box({ x: 360, y: 26, w: 260, h: 62, hue: 'green', title: 'subject ledger-arm64-O1', sub: ['format mach-o · 33872 bytes', 'sha256 starts 01b5d08b'] });
   f.arrow(record.right(), [subject.x - 1, record.cy], { style: 'call', label: 'hashes', packet: false });
   const substep = f.box({ x: 20, y: 118, w: 280, h: 62, hue: 'blue', title: 'substep inventory_artifact', sub: ['status completed · its own Evidence', 'manifest agm_8e2e5c4c · 1 node · 0 edges'] });

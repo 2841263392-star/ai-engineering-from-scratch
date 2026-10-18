@@ -21,11 +21,11 @@
       "content": [
         {
           "type": "text",
-          "text": "<cut by run.py: the text copy of structuredContent, 10245 bytes>"
+          "text": "<cut by run.py: the text copy of structuredContent, 10265 bytes>"
         }
       ],
       "structuredContent": {
-        "evidence_id": "ev_b50c217fd6fe98aec8c1ec39bdae20afb7b463a681cedf0d31dc2e35f6b23dbc",
+        "evidence_id": "ev_3a09e4b07c52156c44d48985795162c81355d82edc62a7255a1310d9da3e5884",
         "subject": {
           "name": "ledger.wasm",
           "digest": {

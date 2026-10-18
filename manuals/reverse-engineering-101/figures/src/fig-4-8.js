@@ -29,7 +29,7 @@ module.exports = figure('fig-4-8', {
   f.kicker(20, 18, 'facet');
   f.kicker(200, 18, 'for _grade');
   f.kicker(380, 18, 'what it holds');
-  f.box({ x: 20, y: 26, w: 600, h: 26, hue: 'teal', title: 'Evidence ev_15244427 · analyze_function · observed', align: 'left', titleSize: 12 });
+  f.box({ x: 20, y: 26, w: 600, h: 26, hue: 'teal', title: 'Evidence ev_41e8ca1c · analyze_function · observed', align: 'left', titleSize: 12 });
   rows.forEach(([field, value, note], index) => {
     const y = 52 + index * 24;
     f.rect(20, y, 600, 24, { fill: color('paper'), stroke: color('panel-edge') });

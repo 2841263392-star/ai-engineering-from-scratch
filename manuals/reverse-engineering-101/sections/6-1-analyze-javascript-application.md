@@ -19,7 +19,7 @@ lang: json
 note: The kit kept the record without graph and semantic_graph, with --filter-output. The result fields follow.
 ---
 {
-  "evidence_id": "ev_9151392a…",
+  "evidence_id": "ev_14bd1d1e…",
   "subject": {
     "name": "js-app",
     "digest": {
@@ -76,6 +76,7 @@ note: The utility-process and native-addon counts, all zero, are cut.
   "text_bytes_read": 2888,
   "invalid_utf8_files": 0,
   "parsed_javascript_files": 4,
+  "skipped_javascript_files": 0,
   "visited_ast_nodes": 424,
   "findings": 25,
   "modules": 0,
@@ -85,17 +86,19 @@ note: The utility-process and native-addon counts, all zero, are cut.
 
 Check the numbers against the source in `capture/fixtures/js-app/`. `main.js` creates one `BrowserWindow` with three explicit `webPreferences`, `preload`, `contextIsolation`, and `nodeIntegration`. `preload.js` exposes one `contextBridge` API, `ledger`, with three members. The six IPC operations are the two `invoke` and one `send` in `preload.js`, and the two `handle` and one `on` in `main.js`. They use three literal channels, and each channel is paired.
 
-Four of the six files are JavaScript, 424 AST nodes were visited, and no file failed to parse. `modules` counts bundler modules, and this application has no bundle. While the command ran, rea wrote nineteen progress events to stderr, from inventory to the final hash of the record.
+Four of the six files are JavaScript, 424 AST nodes were visited, and no file failed to parse. `skipped_javascript_files` is 0, so no JavaScript file was left out for size or for a resource limit. When that count is above 0, the graph is incomplete, and the count tells you by how many files. `modules` counts bundler modules, and this application has no bundle. While the command ran, rea wrote nineteen progress events to stderr, from inventory to the final hash of the record. The events also show the split between the files. rea reads `index.html` and `package.json` for metadata only, and it parses the four JavaScript files.
 
 ```listing
-title: three of the nineteen progress events
+title: five of the nineteen progress events
 source: capture/out/00-commands.txt
 lang: text
-note: Events 1, 3, and 19 of the first analyze-javascript-application call. The other sixteen are cut.
+note: Events 1, 3, 4, 5, and 19 of the first analyze-javascript-application call. The other fourteen are cut.
 ---
 [stderr] {"rea_progress":{"phase":"analyze_javascript_application","completed":0,"total":1,"message":"Inventorying and parsing application artifacts","sequence":1}}
 …
-[stderr] {"rea_progress":{"phase":"parse_javascript_sources","completed":0,"total":1,"message":"Parsing and projecting 6 selected application source files","sequence":3}}
+[stderr] {"rea_progress":{"phase":"parse_javascript_sources","completed":0,"total":1,"message":"Processing 6 selected application files","sequence":3}}
+[stderr] {"rea_progress":{"phase":"process_javascript_artifact_metadata","completed":0,"total":1,"message":"Processing metadata for index.html (1/6)","sequence":4}}
+[stderr] {"rea_progress":{"phase":"parse_javascript_source","completed":0,"total":1,"message":"Parsing and projecting ledger.js (2/6)","sequence":5}}
 …
 [stderr] {"rea_progress":{"phase":"analyze_javascript_application","completed":1,"total":1,"message":"Application graph and Electron boundaries reconstructed","terminal":true,"sequence":19}}
 ```
@@ -106,7 +109,7 @@ note: Events 1, 3, and 19 of the first analyze-javascript-application call. The 
 
 The edges use a fixed vocabulary: "The directed relation vocabulary is `contains`, `loads`, `imports`, `maps_to`, `exposes`, `sends`, `invokes`, `handles`, `calls`, `persists_to`, `observed_as`, and `changed_from`." {{jsgraph Entities and relationships}}
 
-The graph for ledger-desk in `15-js-app-graph.json` has 42 nodes and 59 edges. Its own coverage is `complete`, and it omits nothing.
+The graph for ledger-desk in `15-js-app-graph.json` has 42 nodes and 59 edges. Its own coverage is `complete`, and it omits nothing. Each of the four source modules records the SHA-256 of its own file as `source_sha256`. That digest is the one `00-fixtures.txt` lists for the file, so you can match a module to its bytes without the directory digest.
 
 | Node kind | Count | In ledger-desk |
 |---|---|---|
@@ -248,4 +251,4 @@ A page says how much of the collection it covers: 15 of 15 items here, with no n
 - Page a large record with `inspect-analysis-view` instead of reading it whole.
 ```
 
-Sources: src/cli/electronCommands.ts, src/domain/javascript/javascriptApplicationAnalysis.ts, src/domain/javascript/javascriptAnalysisResourceControls.ts, src/domain/javascript/javascriptSourceParser.ts, src/contracts/javascript/electronToolContracts.ts, src/contracts/analysisViewToolContracts.ts, src/application/javascript/JavaScriptArtifactGraphEvidence.ts, src/domain/javascript/javascriptSourceSelection.ts at rea-agents-6.5.0 (3b79af2); rea docs/cli.md, docs/javascript-application-graph.md, docs/javascript-artifact-reconstruction.md (Select sources before analysis, What is reconstructed), docs/mcp-contracts.md; capture/README.md; capture/fixtures/js-app/main.js, preload.js, renderer.js, ledger.js, index.html, package.json; capture/out/00-commands.txt, 15-js-app.json, 15-js-app-graph.json, 15-js-app-view-summary.json, 15-js-app-view-modules.json
+Sources: src/cli/electronCommands.ts, src/domain/javascript/javascriptApplicationAnalysis.ts, src/domain/javascript/javascriptAnalysisResourceControls.ts, src/domain/javascript/javascriptSourceParser.ts, src/contracts/javascript/electronToolContracts.ts, src/contracts/analysisViewToolContracts.ts, src/application/javascript/JavaScriptArtifactGraphEvidence.ts, src/domain/javascript/javascriptSourceSelection.ts at rea-agents-6.7.0 (27dc42d); rea docs/cli.md, docs/javascript-application-graph.md, docs/javascript-artifact-reconstruction.md (Select sources before analysis, What is reconstructed), docs/mcp-contracts.md; capture/README.md; capture/fixtures/js-app/main.js, preload.js, renderer.js, ledger.js, index.html, package.json; capture/out/00-commands.txt, 15-js-app.json, 15-js-app-graph.json, 15-js-app-view-summary.json, 15-js-app-view-modules.json

@@ -32,7 +32,7 @@ note: The second and third claims are cut. The response follows the request in t
               "title": "percent_change: the Ghidra pseudocode is the same text in the -O1 and -O2 builds",
               "kind": "structural-function",
               "dimension": "pseudocode",
-              "comparison_evidence_id": "ev_ef3ad879…"
+              "comparison_evidence_id": "ev_2161e17a…"
             },
             …
             {
@@ -40,7 +40,7 @@ note: The second and third claims are cut. The response follows the request in t
               "title": "total: the Ghidra assembly is the same text in the -O1 and -O2 builds",
               "kind": "structural-function",
               "dimension": "assembly",
-              "comparison_evidence_id": "ev_c33c0c81…"
+              "comparison_evidence_id": "ev_40ba96d8…"
             }
           ]
         }
@@ -53,7 +53,7 @@ note: The second and third claims are cut. The response follows the request in t
 
 The tool has no CLI command. It is one of the 65 MCP tools without a CLI command, so a one-shot `rea` call cannot run it. Over MCP the handler takes the bundle of the current connection with `session.exportEvidenceBundle()` and verifies the specification against it. A claim whose comparison id is not in that bundle fails the whole call with `Missing comparison Evidence`. A comparison whose two sources are not `analyze_function` records fails the source check.
 
-That rule explains the order of the capture. `close_binary` at step 15 cleared the retained records of the `-O1` target. The two `-O1` dossiers came back into the ledger at steps 20 and 21. `compare_functions` records its two inline inputs before it records the comparison. The `import_evidence_bundle` call at step 23 then reported `imported: 6` and `total: 14` (capture/out/10-mcp-23-import-evidence-bundle-O1.json). Bundle `O1` holds eight records, and the two comparisons had already restored two of them.
+That rule explains the order of the capture. `close_binary` at step 15 cleared the retained records of the `-O1` target. The two `-O1` dossiers came back into the ledger at steps 20 and 21. `compare_functions` records its two inline inputs before it records the comparison. The `import_evidence_bundle` call at step 23 then reported `imported: 6` and `total: 15` (capture/out/10-mcp-23-import-evidence-bundle-O1.json). Bundle `O1` holds eight records, and the two comparisons had already restored two of them.
 
 ## What rea returned
 
@@ -66,7 +66,7 @@ lang: json
 note: The analysis_profile, the per-claim items, the probes, and the evidence links are cut.
 ---
       "structuredContent": {
-        "evidence_id": "ev_0f0a4142…",
+        "evidence_id": "ev_ccbaea4b…",
         "subject": null,
         "provider": {
           "id": "rea-reconstruction-verifier",
@@ -76,7 +76,7 @@ note: The analysis_profile, the per-claim items, the probes, and the evidence li
         …
         "normalized_result": {
           "status": "fail",
-          "specification_sha256": "69bf0857…",
+          "specification_sha256": "9e8d22fa…",
           "summary": {
             "total": 4,
             "passed": 2,
@@ -116,28 +116,30 @@ note: The evidence_links array and 28 of the 30 limitation strings are cut. The 
                 "dimension": "assembly",
                 "status": "fail",
                 "observed_status": "changed",
-                "comparison_evidence_id": "ev_c33c0c81…",
+                "comparison_evidence_id": "ev_40ba96d8…",
                 "left_evidence_ids": [
-                  "ev_7c94981b…"
+                  "ev_a1fe53ff…"
                 ],
                 "right_evidence_ids": [
-                  "ev_a36b5090…"
+                  "ev_bfe3275b…"
                 ],
                 …
                 "unknown_ids": [
-                  "unk_f318e8ba…"
+                  "unk_823f4184…"
                 ],
                 "limitations": [
                   "Artifact identity is unavailable for this observation.",
                   …
-                  "Residual unknown: Function comparison is changed (comparison ev_c33c0c81…)",
+                  "Residual unknown: Function comparison is changed (comparison ev_40ba96d8…)",
                   …
                 ]
 ```
 
-The two `percent_change` claims pass because the comparison record `ev_ef3ad879` reports all eight dimensions `unchanged`. The two `total` claims fail because `ev_c33c0c81` reports `changed` for pseudocode and assembly, and five of its eight dimensions changed in all. The `unknown_ids` entry is not something the verifier invented. `compare_functions` records a residual unknown whenever its status is not `unchanged`, with the question `Function comparison is changed (comparison ev_...)` and severity `medium` for a change. The verifier found that unknown in the bundle, listed its id on both `total` claims, and copied its question into the limitations. The claim still reads `fail`, because a changed observation outranks an open unknown in the order above.
+The two `percent_change` claims pass, although the comparison record `ev_2161e17a` is `unknown` overall. Each claim reads only its own dimension, and `ev_2161e17a` reports both pseudocode and assembly `unchanged`. Its one unknown dimension is `references`. The residual unknown it opened names only `overall` and `references`, so neither claim lists it in `unknown_ids`. A claim on `references` or on `overall` would have read `unknown`.
 
-Had every claim passed, the call would still have recorded one more unknown of its own. When the overall status is `unknown`, the handler records the question "Does the reconstruction satisfy every declared claim?" with the probes the verifier recommends. A `pass` and a `fail` record nothing new, and `recommended_probes` was empty here.
+The two `total` claims fail because `ev_40ba96d8` reports `changed` for pseudocode and assembly, and five of its eight dimensions changed in all. The `unknown_ids` entry is not something the verifier invented. `compare_functions` records a residual unknown whenever its status is not `unchanged`, with the question `Function comparison is changed (comparison ev_...)` and severity `medium` for a change. The verifier found that unknown in the bundle, listed its id on both `total` claims, and copied its question into the limitations. The claim still reads `fail`, because a changed observation outranks an open unknown in the order above.
+
+Had a claim come out `unknown`, the call would have recorded one more unknown of its own. When the overall status is `unknown`, the handler records the question "Does the reconstruction satisfy every declared claim?" with the probes the verifier recommends. A `pass` and a `fail` record nothing new, and `recommended_probes` was empty here.
 
 ```figure
 id: fig-7-1
@@ -149,7 +151,7 @@ caption: Read top down. The verification record cites four claims, each claim ci
 
 ## What a pass does not prove
 
-The fixed limitation of every verification record says it: "Pass means every declared claim passed; it does not establish global implementation equivalence.". The claim a `structural-function` dimension can pass is "same provider text", because `compare_functions` line-diffs the pseudocode and the assembly that Ghidra printed. The pseudocode and assembly dimensions carry a caveat in every comparison record: "Exact provider text is compared without address or generated-name normalization; layout-only differences do not establish a behavior change." The assembly dimension adds: "Assembly is opaque provider text; relocation normalization is unavailable." (capture/out/10-mcp-20-compare-functions-percent-change.json). Nothing in rea 6.5.0 runs a function or compiles one. A passed claim says that two decompiler outputs matched line for line, and a failed claim says they did not.
+The fixed limitation of every verification record says it: "Pass means every declared claim passed; it does not establish global implementation equivalence.". The claim a `structural-function` dimension can pass is "same provider text", because `compare_functions` line-diffs the pseudocode and the assembly that Ghidra printed. The pseudocode and assembly dimensions carry a caveat in every comparison record: "Exact provider text is compared without address or generated-name normalization; layout-only differences do not establish a behavior change." The assembly dimension adds: "Assembly is opaque provider text; relocation normalization is unavailable." (capture/out/10-mcp-20-compare-functions-percent-change.json). Nothing in rea 6.7.0 runs a function or compiles one. A passed claim says that two decompiler outputs matched line for line, and a failed claim says they did not.
 
 Two consequences follow for the `ledger` fixture. The `total` claims failed although both builds came from the same source line. `-O2` unrolled the loop into 62 instructions where `-O1` had 13 (capture/out/10-mcp-11-analyze-function-total-O1.json, capture/out/10-mcp-18-analyze-function-total-O2.json). Different text does not mean different behaviour.
 
@@ -180,4 +182,4 @@ source: readiness Required stages
 - Export the bundle before close_binary, because the close clears the retained records.
 ```
 
-Sources: capture/out/10-mcp-22-verify-reconstruction.json, 10-mcp-20-compare-functions-percent-change.json, 10-mcp-21-compare-functions-total.json, 10-mcp-11-analyze-function-total-O1.json, 10-mcp-18-analyze-function-total-O2.json, 10-mcp-23-import-evidence-bundle-O1.json, 10-mcp-02-tools-list.json, 10-mcp-session.txt; rea at rea-agents-6.5.0 (3b79af2): src/domain/reconstructionVerification.ts, src/domain/functionCallCoverage.ts, src/server/registerInvestigationTools.ts, src/server/registerFunctionComparisonTool.ts, src/domain/functionComparisonDimensions.ts, src/domain/evidence.ts, src/cliCommandNames.ts; rea docs/reconstruction-readiness.md
+Sources: capture/out/10-mcp-22-verify-reconstruction.json, 10-mcp-20-compare-functions-percent-change.json, 10-mcp-21-compare-functions-total.json, 10-mcp-11-analyze-function-total-O1.json, 10-mcp-18-analyze-function-total-O2.json, 10-mcp-23-import-evidence-bundle-O1.json, 10-mcp-02-tools-list.json, 10-mcp-session.txt; rea at rea-agents-6.7.0 (27dc42d): src/domain/reconstructionVerification.ts, src/domain/reconstructionUnknowns.ts, src/domain/functionCallCoverage.ts, src/server/registerInvestigationTools.ts, src/server/registerFunctionComparisonTool.ts, src/domain/functionComparisonDimensions.ts, src/domain/evidence.ts, src/cliCommandNames.ts; rea docs/reconstruction-readiness.md

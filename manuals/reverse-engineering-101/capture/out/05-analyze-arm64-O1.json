@@ -1,5 +1,5 @@
 {
-  "evidence_id": "ev_90e65378a5b1d958b02840bda801e5758d39ceb43acd0f4ed2d1a3ad7297588d",
+  "evidence_id": "ev_91bddcdbd53ddd56996c6009458495bbd91fdc8c885238b33432e67691cf1f06",
   "subject": {
     "name": "ledger-arm64-O1",
     "digest": {
@@ -45,8 +45,8 @@
           "location_resolution": "explicit-address-exact-entry-symbol-first-v3",
           "procedure_file_offset_resolution": "address-first-unique-target-source-mapping-v2",
           "instruction_flow_evidence": "decoded-return-pcode-v1",
-          "instruction_references": "exact-address-incoming-v1",
-          "function_boundary_observations": "ghidra-function-boundary-limitations-v3",
+          "instruction_references": "exact-address-incoming-without-synthetic-entry-v2",
+          "function_boundary_observations": "ghidra-function-boundary-limitations-v4",
           "no_return_repair": "returning-imports-decoded-return-v2",
           "process_launch": "inspected-jvm-launch-support-v1",
           "jump_table_evidence": "typed-case-default-blocks-v1",
@@ -56,11 +56,12 @@
           "compiler_spec_id": "auto-default",
           "analyzer_preset": "ghidra-default"
         },
-        "digest": "966e6016724421ad282356f583a9d5bf24577db4ac77a75c7099d236b88bcc28"
+        "digest": "3fc72c9b4b78498fb992b938f8f3389dc670244a293c1d40abf5e1d10162ed3b"
       },
-      "workflow_revision": 3
+      "source_limitations": "provider-operation-caveats-v1",
+      "workflow_revision": 4
     },
-    "digest": "36e03fb12d9b7fb24826a311c442f39020ecdc72441154c33bf99b49256605a8"
+    "digest": "2716b5c5fe7f147eb3160e61f6b491a21aa527277b9914c8cd73f1d15513182c"
   },
   "predicate_type": "rea.analysis",
   "operation": "binary_overview",
@@ -176,16 +177,14 @@
   "environment": null,
   "limitations": [
     "Derived by an REA composed workflow.",
-    "A headless Ghidra session contains exactly one imported Program, unlike Hopper's multi-document GUI session.",
-    "Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
-    "Charset is reported, while a non-missing terminator cannot distinguish a present terminator from a fixed or Pascal layout.",
-    "Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
-    "External functions and local thunks are distinct; procedure metadata identifies both and preserves a thunk target when Ghidra resolves one.",
-    "Memory-block end addresses are exclusive; permissions come from Ghidra MemoryBlock flags rather than inference from section names.",
-    "Only Ghidra-defined string Data is observed; packed or undefined string bytes may be absent. Completeness applies to that inventory, and an empty search does not establish that text is absent from the artifact. If an address is known, use read_bytes and xrefs to inspect bytes and references.",
-    "The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
-    "The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
-    "macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
+    "Ghidra (ghidra 12.1.4) read_binary_inventory_summary: Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
+    "Ghidra (ghidra 12.1.4) read_binary_inventory_summary: Counts use the complete defined-string inventory and the same local/external function inventory as list_strings and list_procedures. They do not establish discovery of undefined strings or unidentified functions.",
+    "Ghidra (ghidra 12.1.4) read_binary_inventory_summary: Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
+    "Ghidra (ghidra 12.1.4) read_binary_inventory_summary: Memory-block end addresses are exclusive; segment lengths use those observed address coordinates.",
+    "Ghidra (ghidra 12.1.4) read_binary_inventory_summary: Only Ghidra-defined string Data is observed; packed or undefined string bytes may be absent. Completeness applies to that inventory, and an empty search does not establish that text is absent from the artifact. If an address is known, use read_bytes and xrefs to inspect bytes and references.",
+    "Ghidra (ghidra 12.1.4) read_binary_inventory_summary: The imported Program and temporary project are ephemeral and deleted on close. Annotation operations edit session database metadata; original executable bytes are never written.",
+    "Ghidra (ghidra 12.1.4) read_binary_inventory_summary: The session serves operations only after Ghidra reports default auto-analysis complete; incomplete analysis does not expose partial results.",
+    "Ghidra (ghidra 12.1.4) read_binary_inventory_summary: macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state."
   ],
   "relationship_coverage": null,
   "locations": [],

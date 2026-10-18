@@ -136,7 +136,7 @@ Its first lab gets a skill into a real host in about ten minutes.
 
 ## Reverse engineering path
 
-Fourteen lessons teach how to read a compiled program you built yourself. Lessons 32 to 36 build the core pipeline: you parse the file, decode its instructions, lift them to pseudocode, record what you know as evidence, and prove a rebuilt function equal to the original. Lessons 37 to 45 teach the field around that pipeline: its history and main tools, calling conventions, compiler idioms, linking and stripped binaries, type recovery, debugging, bytecode formats, binary diffing and symbolic execution, and AI-assisted analysis. Each lesson runs the real tools on the same fixtures. The companion manual, [Reverse Engineering 101](../../manuals/reverse-engineering-101/), runs the same fixture through rea 6.5.0 and Ghidra 12.1.4.
+Fourteen lessons teach how to read a compiled program you built yourself. Lessons 32 to 36 build the core pipeline: you parse the file, decode its instructions, lift them to pseudocode, record what you know as evidence, and prove a rebuilt function equal to the original. Lessons 37 to 45 teach the field around that pipeline: its history and main tools, calling conventions, compiler idioms, linking and stripped binaries, type recovery, debugging, bytecode formats, binary diffing and symbolic execution, and AI-assisted analysis. Each lesson runs the real tools on the same fixtures. The companion manual, [Reverse Engineering 101](../../manuals/reverse-engineering-101/), runs the same fixture through rea 6.7.0 and Ghidra 12.1.4.
 
 | Lesson | What you build | Time |
 |---|---|---|

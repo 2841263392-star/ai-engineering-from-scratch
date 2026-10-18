@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 534" role="img" aria-labelledby="fig-5-1-title fig-5-1-desc" font-family="JetBrains Mono, ui-monospace, monospace">
   <title id="fig-5-1-title">The sixteen fields of one Evidence record</title>
-  <desc id="fig-5-1-desc">A table of the Evidence record ev_172d39ff37ab60d9e0e1 for analyze_function on _percent_change in ledger-arm64-O1, one row per field with its captured value: the subject digest, format and architecture, the Ghidra 12.1.4 provider, the analysis profile digest, predicate type, operation, parameters, raw and normalized results, confidence observed, the artifact bytes as authority, a null environment, ten limitations, complete relationship coverage, and empty locations and links. Two rows are drawn dashed, subject.name and subject.local_path, because the evidence id hashes every other row and not these two.</desc>
-  <text x="20" y="18" font-size="11" letter-spacing="1.2" fill="var(--m-ink-mute, #6f6f6a)">EV_172D39FF37AB, ANALYZE_FUNCTION _PERCENT_CHANGE</text>
+  <desc id="fig-5-1-desc">A table of the Evidence record ev_b492c85eb9570bd5f8e8 for analyze_function on _percent_change in ledger-arm64-O1, one row per field with its captured value: the subject digest, format and architecture, the Ghidra 12.1.4 provider, the analysis profile digest, predicate type, operation, parameters, raw and normalized results, confidence observed, the artifact bytes as authority, a null environment, ten limitations, complete relationship coverage, and empty locations and links. Two rows are drawn dashed, subject.name and subject.local_path, because the evidence id hashes every other row and not these two.</desc>
+  <text x="20" y="18" font-size="11" letter-spacing="1.2" fill="var(--m-ink-mute, #6f6f6a)">EV_B492C85EB957, ANALYZE_FUNCTION _PERCENT_CHANGE</text>
   <text x="440" y="18" font-size="11" letter-spacing="1.2" fill="var(--m-ink-mute, #6f6f6a)">FIELD NOTES</text>
   <rect x="20" y="26" width="400" height="26" fill="var(--m-teal-fill, #e1efee)" stroke="var(--m-teal-ink, #18696a)"/>
   <text x="30" y="42.45" font-size="11.5" font-weight="700">Evidence record, 16 fields, strict schema</text>
   <rect x="20" y="52" width="400" height="22" fill="var(--m-paper, #fafaf5)" stroke="var(--m-panel-edge, #e4e1d4)"/>
   <text x="30" y="67" font-size="11" fill="var(--m-ink-soft, #4a4a4a)">evidence_id</text>
-  <text x="180" y="67" font-size="11">ev_172d39ff37ab60d9e0e1</text>
+  <text x="180" y="67" font-size="11">ev_b492c85eb9570bd5f8e8</text>
   <line x1="420" y1="63" x2="434" y2="63" stroke="var(--m-teal-ink, #18696a)" stroke-width="1"/>
   <text x="440" y="67" font-size="11" class="m-serif" fill="var(--m-ink-soft, #4a4a4a)">SHA-256 of the solid rows</text>
   <rect x="20" y="74" width="400" height="22" fill="var(--m-paper, #fafaf5)" stroke="var(--m-ink-mute, #6f6f6a)" stroke-dasharray="5 4"/>
@@ -38,7 +38,7 @@
   <text x="440" y="199" font-size="11" class="m-serif" fill="var(--m-ink-soft, #4a4a4a)">the engine, with its version</text>
   <rect x="20" y="206" width="400" height="22" fill="var(--m-paper, #fafaf5)" stroke="var(--m-panel-edge, #e4e1d4)"/>
   <text x="30" y="221" font-size="11" fill="var(--m-ink-soft, #4a4a4a)">analysis_profile</text>
-  <text x="180" y="221" font-size="11">digest 966e6016724421ad28</text>
+  <text x="180" y="221" font-size="11">digest 3fc72c9b4b78498fb9</text>
   <line x1="420" y1="217" x2="434" y2="217" stroke="var(--m-teal-ink, #18696a)" stroke-width="1"/>
   <text x="440" y="221" font-size="11" class="m-serif" fill="var(--m-ink-soft, #4a4a4a)">the committed Ghidra settings</text>
   <rect x="20" y="228" width="400" height="22" fill="var(--m-paper, #fafaf5)" stroke="var(--m-panel-edge, #e4e1d4)"/>
@@ -84,7 +84,7 @@
   <text x="30" y="441" font-size="11" fill="var(--m-ink-soft, #4a4a4a)">relationship_coverage</text>
   <text x="180" y="441" font-size="11">complete</text>
   <line x1="420" y1="437" x2="434" y2="437" stroke="var(--m-teal-ink, #18696a)" stroke-width="1"/>
-  <text x="440" y="441" font-size="11" class="m-serif" fill="var(--m-ink-soft, #4a4a4a)">left out of the hash when null</text>
+  <text x="440" y="441" font-size="11" class="m-serif" fill="var(--m-ink-soft, #4a4a4a)">in the hash also when null</text>
   <rect x="20" y="448" width="400" height="22" fill="var(--m-paper, #fafaf5)" stroke="var(--m-panel-edge, #e4e1d4)"/>
   <text x="30" y="463" font-size="11" fill="var(--m-ink-soft, #4a4a4a)">locations</text>
   <text x="180" y="463" font-size="11">[]</text>

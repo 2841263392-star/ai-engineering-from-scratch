@@ -2,17 +2,17 @@
   "id": "reverse-engineering-101",
   "title": "Reverse Engineering 101",
   "subtitle": "Reading a compiled program you built, from file bytes to evidence-backed pseudocode, with rea and Ghidra",
-  "summary": "How to read a compiled program without its source and prove what you found. Every listing comes from a recorded run of rea 6.5.0 and Ghidra 12.1.4 on programs written for this manual.",
+  "summary": "How to read a compiled program without its source and prove what you found. Every listing comes from a recorded run of rea 6.7.0 and Ghidra 12.1.4 on programs written for this manual.",
   "audience": "You are an engineer who writes C, Python, or JavaScript and uses a coding agent. You have never read machine code with a decompiler. You want to understand what a compiled program does and to check what an agent tells you about it.",
   "edition": "2026.10",
   "status": "ready",
   "pin": {
     "subject": "rea (rea-agents) with the Ghidra provider",
-    "version": "rea-agents 6.5.0, Ghidra 12.1.4",
+    "version": "rea-agents 6.7.0, Ghidra 12.1.4",
     "source": "https://github.com/morluto/rea",
-    "commit": "3b79af28e80785afce9f5998d8f03289402a1847",
-    "date": "2026-10-14",
-    "verified": "2026-10-14"
+    "commit": "27dc42d10249f0410904a75c0997842eb03b931c",
+    "date": "2026-10-18",
+    "verified": "2026-10-18"
   },
   "outcomes": [
     "Read the file header, sections, symbols, and relocations of a compiled program, and map an address to a file offset.",
@@ -66,17 +66,17 @@
   "sources": [
     {
       "name": "rea source at the release tag",
-      "path": "rea-agents-6.5.0 (3b79af2)",
+      "path": "rea-agents-6.7.0 (27dc42d)",
       "usedFor": "every claim about how rea works; files listed in each Sources line"
     },
     {
       "name": "rea documentation at the release tag",
-      "path": "docs/ and DISCLAIMER.md at 3b79af2",
+      "path": "docs/ and DISCLAIMER.md at 27dc42d",
       "usedFor": "documented behaviour, limits, and the responsible use rules"
     },
     {
       "name": "Captured runs",
-      "path": "capture/out/ (rea 6.5.0, Ghidra 12.1.4, macOS 26.2 arm64)",
+      "path": "capture/out/ (rea 6.7.0, Ghidra 12.1.4, macOS 26.2 arm64)",
       "usedFor": "every listing and every number in a figure"
     },
     {
@@ -296,7 +296,7 @@
     {
       "number": 8,
       "title": "Agents over MCP",
-      "thesis": "An agent reaches rea through one MCP server with 170 tools, and its findings are only as good as the evidence it keeps.",
+      "thesis": "An agent reaches rea through one MCP server with 207 tools, and its findings are only as good as the evidence it keeps.",
       "summary": "The MCP server, its tools and deadlines, and one agent investigation from question to evidence.",
       "accent": "indigo",
       "sections": [

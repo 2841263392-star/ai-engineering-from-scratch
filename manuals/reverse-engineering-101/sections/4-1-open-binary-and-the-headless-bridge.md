@@ -1,8 +1,8 @@
 # open_binary and the headless bridge
 
-> open_binary binds one target to one provider in milliseconds, and the first Ghidra-backed call pays for a headless import, auto-analysis, and a private socket.
+> open_binary binds one target to one provider without a Ghidra import, and the first Ghidra-backed call pays for a headless import, auto-analysis, and a private socket.
 
-Your agent opened `ledger-arm64-O1` over MCP in a few milliseconds and then waited several seconds for `list_procedures`. Nothing was wrong. The open call did not start Ghidra. The first question did, and every question after it came back in milliseconds.
+Your agent opened `ledger-arm64-O1` over MCP in under two seconds and then waited several seconds for `list_procedures`. Nothing was wrong. The open call did not import the file into Ghidra. The first question did, and every question after it came back in milliseconds.
 
 When you finish this section, you can read the server log of a session and name the process that the first query started. You can also predict which calls will be slow.
 
@@ -36,6 +36,8 @@ note: The request and the result. The text copy of the result is cut by the capt
 
 The handler calls `session.open` with the path and the provider id, then returns five fields: `path`, `format`, `kind`, `sha256`, and `architecture`. To fill them rea reads the magic bytes: `7f 45 4c 46` for ELF, `MZ` for DOS and PE, and four Mach-O values. It hashes the whole file in 64 KiB chunks. A file with no header needs an explicit `format`. With `format: "raw-binary"` you also give `architecture` and `entry_point`, and the result adds `entry_point`. rea refuses a WebAssembly module here and sends it to `inspect_wasm_artifact`. For every other target, rea selects the provider you asked for, and `binary_session` records that choice.
 
+The selection waits for the provider's readiness checks. On the capture Mac, the server log shows about 1.6 s for the first `open_binary` and about 0.4 s for the second. The design docs allow the wait: "Readiness observations may await owned prerequisite commands." Release 6.5.0 answered the same calls in 36 ms and 1 ms. Neither version imports the target at this step.
+
 ```listing
 title: the binding that binary_session reports
 source: capture/out/10-mcp-04-binary-session.json
@@ -53,14 +55,14 @@ note: Cut to the provider binding and the server identity. The capabilities, can
   "selection_source": "request",
   "analysis_profile": {
     …
-    "digest": "966e6016…"
+    "digest": "3fc72c9b…"
   }
 },
 …
 "server_identity": {
   "package": {
     "name": "rea-agents",
-    "version": "6.5.0",
+    "version": "6.7.0",
     …
   },
   …
@@ -136,7 +138,7 @@ Some targets and settings need more arguments. A raw binary, a DOS file, or a la
 id: fig-4-1
 kind: sequence
 title: one open and three questions over MCP
-claim: The open call returns in milliseconds with no Ghidra process, the first question starts Java and waits seconds, and the next question takes under 100 ms.
+claim: The open call returns after the readiness checks with no import, the first question waits seconds for the headless import, and the next takes under 100 ms.
 caption: Time runs down. Solid arrows are calls, dashed arrows are replies. The violet lanes are rea's Ghidra client and the Java bridge inside analyzeHeadless. The times are the ranges in capture/README.md. From capture/out/10-mcp-server.log and 10-mcp-session.txt.
 ```
 
@@ -151,7 +153,7 @@ id: fig-4-2
 kind: tree
 title: the private runtime root of one session
 claim: One session owns one directory with the project, the hashed target copy, the descriptor, the socket, and the logs, and close_binary deletes it.
-caption: Read top to bottom. Each entry names the file or directory and what writes it. From src/ghidra/GhidraLauncher.ts and src/ghidra/GhidraClient.ts at rea 6.5.0, and capture/out/05-analyze-arm64-O1.json for the document name.
+caption: Read top to bottom. Each entry names the file or directory and what writes it. From src/ghidra/GhidraLauncher.ts and src/ghidra/GhidraClient.ts at rea 6.7.0, and capture/out/05-analyze-arm64-O1.json for the document name.
 ```
 
 ## Deadlines and the close
@@ -160,7 +162,7 @@ rea allows 330,000 ms for the start, set by `REA_GHIDRA_STARTUP_TIMEOUT_MS`. On 
 
 The docs record about 64 s on a Linux fixture and about 163 s on Windows. Set the client deadline from your own first run on your own machine.
 
-`close_binary` takes a fraction of a second in the log. The client sends `shutdown` to the bridge with a 10 s limit, the bridge disposes the decompiler, and `-deleteProject` removes the project. The next `open_binary` on `ledger-arm64-O2` took about a millisecond, and its first `analyze_function` again took seconds, because "Each new provider session still imports the target into a fresh temporary project." {{mcp §Ghidra first-query deadlines and recovery}}
+`close_binary` takes a fraction of a second in the log. The client sends `shutdown` to the bridge with a 10 s limit, the bridge disposes the decompiler, and `-deleteProject` removes the project. The next `open_binary` on `ledger-arm64-O2` took about 0.4 s, and its first `analyze_function` again took seconds, because "Each new provider session still imports the target into a fresh temporary project." {{mcp §Ghidra first-query deadlines and recovery}}
 
 ```takeaways
 - Expect the first Ghidra-backed call after `open_binary` to take seconds and the rest milliseconds.
@@ -169,4 +171,4 @@ The docs record about 64 s on a Linux fixture and about 163 s on Windows. Set th
 - Read `durationMs` in the server log to separate rea time from Ghidra time.
 ```
 
-Sources: capture/out/10-mcp-03-open-binary-O1.json, capture/out/10-mcp-04-binary-session.json, capture/out/10-mcp-session.txt, capture/out/10-mcp-server.log, capture/out/05-analyze-arm64-O1.json, capture/README.md; rea 6.5.0 at 3b79af2: src/server/registerSessionTools.ts, src/contracts/sessionLifecycleInputs.ts, src/domain/binaryTarget.ts, src/application/BinaryTargetResolver.ts, src/ghidra/GhidraClient.ts, src/ghidra/GhidraTransport.ts, src/ghidra/GhidraTargetSnapshot.ts, src/ghidra/GhidraLauncher.ts, src/ghidra/GhidraJavaLaunch.ts, src/ghidra/GhidraClientWire.ts, src/ghidra/protocol.ts, src/config/providerStartupTimeout.ts, bridge/ghidra/ReaGhidraBridge.java; rea docs/mcp-contracts.md, rea docs/installation.md
+Sources: capture/out/10-mcp-03-open-binary-O1.json, capture/out/10-mcp-04-binary-session.json, capture/out/10-mcp-session.txt, capture/out/10-mcp-server.log, capture/out/05-analyze-arm64-O1.json, capture/README.md; rea 6.7.0 at 27dc42d: src/server/registerSessionTools.ts, src/contracts/sessionLifecycleInputs.ts, src/domain/binaryTarget.ts, src/application/BinaryTargetResolver.ts, src/ghidra/GhidraClient.ts, src/ghidra/GhidraTransport.ts, src/ghidra/GhidraTargetSnapshot.ts, src/ghidra/GhidraLauncher.ts, src/ghidra/GhidraJavaLaunch.ts, src/ghidra/GhidraClientWire.ts, src/ghidra/protocol.ts, src/config/providerStartupTimeout.ts, src/application/binary/AnalysisProviderRegistry.ts, bridge/ghidra/ReaGhidraBridge.java; rea docs/mcp-contracts.md, rea docs/installation.md, rea docs/tool-design.md; the 6.5.0 recording of capture/out/10-mcp-server.log in commit 99d70723c of this repository

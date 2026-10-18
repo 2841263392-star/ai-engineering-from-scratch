@@ -19,12 +19,13 @@
       "content": [
         {
           "type": "text",
-          "text": "<cut by run.py: the text copy of structuredContent, 59754 bytes>"
+          "text": "<cut by run.py: the text copy of structuredContent, 67366 bytes>"
         }
       ],
       "structuredContent": {
         "result": {
           "open": true,
+          "cleanup_pending": false,
           "capabilities": [
             {
               "provider": {
@@ -245,6 +246,23 @@
                     "References cover the complete Ghidra function-body AddressSet and exact entry, including instruction-interior destinations and embedded-data sources; an enclosing address span does not establish function ownership.",
                     "Reference kinds are direct Ghidra ReferenceManager observations; unresolved computed flows without a target are absent and remain unknown.",
                     "Synthetic Ghidra entry-point references without actionable memory sources are omitted."
+                  ],
+                  "available": true,
+                  "reason": null,
+                  "availability_code": null
+                },
+                {
+                  "operations": [
+                    "read_binary_inventory_summary"
+                  ],
+                  "effects": [
+                    "launches_process",
+                    "may_write_filesystem"
+                  ],
+                  "limitations": [
+                    "Only Ghidra-defined string Data is observed; packed or undefined string bytes may be absent. Completeness applies to that inventory, and an empty search does not establish that text is absent from the artifact. If an address is known, use read_bytes and xrefs to inspect bytes and references.",
+                    "Counts use the complete defined-string inventory and the same local/external function inventory as list_strings and list_procedures. They do not establish discovery of undefined strings or unidentified functions.",
+                    "Memory-block end addresses are exclusive; segment lengths use those observed address coordinates."
                   ],
                   "available": true,
                   "reason": null,
@@ -578,8 +596,8 @@
                 "location_resolution": "explicit-address-exact-entry-symbol-first-v3",
                 "procedure_file_offset_resolution": "address-first-unique-target-source-mapping-v2",
                 "instruction_flow_evidence": "decoded-return-pcode-v1",
-                "instruction_references": "exact-address-incoming-v1",
-                "function_boundary_observations": "ghidra-function-boundary-limitations-v3",
+                "instruction_references": "exact-address-incoming-without-synthetic-entry-v2",
+                "function_boundary_observations": "ghidra-function-boundary-limitations-v4",
                 "no_return_repair": "returning-imports-decoded-return-v2",
                 "process_launch": "inspected-jvm-launch-support-v1",
                 "jump_table_evidence": "typed-case-default-blocks-v1",
@@ -589,7 +607,7 @@
                 "compiler_spec_id": "auto-default",
                 "analyzer_preset": "ghidra-default"
               },
-              "digest": "966e6016724421ad282356f583a9d5bf24577db4ac77a75c7099d236b88bcc28"
+              "digest": "3fc72c9b4b78498fb992b938f8f3389dc670244a293c1d40abf5e1d10162ed3b"
             }
           },
           "analysis_provider_candidates": [
@@ -913,6 +931,23 @@
                     },
                     {
                       "operations": [
+                        "read_binary_inventory_summary"
+                      ],
+                      "effects": [
+                        "launches_process",
+                        "may_write_filesystem"
+                      ],
+                      "limitations": [
+                        "Only Ghidra-defined string Data is observed; packed or undefined string bytes may be absent. Completeness applies to that inventory, and an empty search does not establish that text is absent from the artifact. If an address is known, use read_bytes and xrefs to inspect bytes and references.",
+                        "Counts use the complete defined-string inventory and the same local/external function inventory as list_strings and list_procedures. They do not establish discovery of undefined strings or unidentified functions.",
+                        "Memory-block end addresses are exclusive; segment lengths use those observed address coordinates."
+                      ],
+                      "available": true,
+                      "reason": null,
+                      "availability_code": null
+                    },
+                    {
+                      "operations": [
                         "read_bytes"
                       ],
                       "effects": [
@@ -1171,7 +1206,7 @@
                         "may_show_ui"
                       ],
                       "limitations": [
-                        "Regex mode uses ECMAScript Unicode semantics in a supervised worker with a five-second matching deadline. Cancellation or deadline failure stops matching without blocking Hopper; literal mode retains native casefold semantics."
+                        "Regex mode uses ECMAScript Unicode semantics in a cancellable worker with a 5-second matching deadline; matching failure leaves the service available. Literal mode retains native casefold semantics."
                       ],
                       "available": true,
                       "reason": null,
@@ -1186,7 +1221,7 @@
                         "may_show_ui"
                       ],
                       "limitations": [
-                        "Regex mode uses ECMAScript Unicode semantics in a supervised worker with a five-second matching deadline. Cancellation or deadline failure stops matching without blocking Hopper; literal mode retains native casefold semantics.",
+                        "Regex mode uses ECMAScript Unicode semantics in a cancellable worker with a 5-second matching deadline; matching failure leaves the service available. Literal mode retains native casefold semantics.",
                         "String values cover native typed objects. Hopper may split long literals into adjacent unterminated fragments; string searches match each object independently.",
                         "Undecodable typed objects retain native display text with an explicit decoding unknown; these values do not establish decoded source literals.",
                         "Reported string encodings are inferred from typed bytes and native display; the original source's intended encoding is unknown."
@@ -1299,10 +1334,181 @@
                   ]
                 }
               ]
+            },
+            {
+              "provider": {
+                "id": "kuna",
+                "name": "Kuna",
+                "version": null
+              },
+              "availability": {
+                "status": "unavailable",
+                "code": "not_configured",
+                "reason": "Set REA_KUNA_COMMAND to the absolute path of a caller-supplied kuna executable (verified with 1.833). REA does not download, install or update Kuna.",
+                "diagnostics": {
+                  "configured": false,
+                  "version_probed": false
+                }
+              },
+              "target_support": {
+                "status": "supported",
+                "code": null,
+                "reason": null,
+                "diagnostics": {
+                  "target_kind": "executable",
+                  "target_format": "mach-o"
+                }
+              },
+              "selected": false,
+              "capabilities": [
+                {
+                  "provider": {
+                    "id": "kuna",
+                    "name": "Kuna",
+                    "version": null
+                  },
+                  "shared_limitations": [],
+                  "groups": [
+                    {
+                      "operations": [
+                        "address_name",
+                        "list_procedures",
+                        "procedure_address"
+                      ],
+                      "effects": [
+                        "launches_process",
+                        "may_write_filesystem"
+                      ],
+                      "limitations": [
+                        "Kuna static analysis: addresses and bytes are its observations, procedure entries and extents its derivations, and pseudocode its reconstruction, never original source.",
+                        "Kuna may split one function at an entry its own analysis infers; entry extents are upper bounds."
+                      ],
+                      "available": false,
+                      "reason": "Set REA_KUNA_COMMAND to the absolute path of a caller-supplied kuna executable (verified with 1.833). REA does not download, install or update Kuna.",
+                      "availability_code": "not_configured"
+                    },
+                    {
+                      "operations": [
+                        "analyze_function",
+                        "procedure_assembly",
+                        "procedure_pseudo_code"
+                      ],
+                      "effects": [
+                        "launches_process",
+                        "may_write_filesystem"
+                      ],
+                      "limitations": [
+                        "Kuna static analysis: addresses and bytes are its observations, procedure entries and extents its derivations, and pseudocode its reconstruction, never original source.",
+                        "Pseudocode and assembly are exact Kuna text, not comparable as equal or different with another provider's text.",
+                        "Each buffered source facet admits at most 16777216 bytes before allocation; larger text stays accessible in the local project export."
+                      ],
+                      "available": false,
+                      "reason": "Set REA_KUNA_COMMAND to the absolute path of a caller-supplied kuna executable (verified with 1.833). REA does not download, install or update Kuna.",
+                      "availability_code": "not_configured"
+                    },
+                    {
+                      "operations": [
+                        "list_documents"
+                      ],
+                      "effects": [
+                        "launches_process",
+                        "may_write_filesystem"
+                      ],
+                      "limitations": [],
+                      "available": false,
+                      "reason": "Set REA_KUNA_COMMAND to the absolute path of a caller-supplied kuna executable (verified with 1.833). REA does not download, install or update Kuna.",
+                      "availability_code": "not_configured"
+                    },
+                    {
+                      "operations": [
+                        "list_strings"
+                      ],
+                      "effects": [
+                        "launches_process",
+                        "may_write_filesystem"
+                      ],
+                      "limitations": [
+                        "Kuna static analysis: addresses and bytes are its observations, procedure entries and extents its derivations, and pseudocode its reconstruction, never original source.",
+                        "Kuna scans its mapped sections or segments for printable runs of at least five characters, including unterminated fragments. Encodings are ASCII, UTF-8 and Latin-range UTF-16LE; other text can remain undiscovered. String scanning skips references; an empty search is not proof of absence."
+                      ],
+                      "available": false,
+                      "reason": "Set REA_KUNA_COMMAND to the absolute path of a caller-supplied kuna executable (verified with 1.833). REA does not download, install or update Kuna.",
+                      "availability_code": "not_configured"
+                    },
+                    {
+                      "operations": [
+                        "procedure_callees",
+                        "procedure_callers"
+                      ],
+                      "effects": [
+                        "launches_process",
+                        "may_write_filesystem"
+                      ],
+                      "limitations": [
+                        "Kuna static analysis: addresses and bytes are its observations, procedure entries and extents its derivations, and pseudocode its reconstruction, never original source.",
+                        "Kuna reports call-kind edges between its discovered function nodes. Jump/data edges are excluded; unresolved indirect calls and targets outside that inventory remain unknown."
+                      ],
+                      "available": false,
+                      "reason": "Set REA_KUNA_COMMAND to the absolute path of a caller-supplied kuna executable (verified with 1.833). REA does not download, install or update Kuna.",
+                      "availability_code": "not_configured"
+                    },
+                    {
+                      "operations": [
+                        "search_procedures"
+                      ],
+                      "effects": [
+                        "launches_process",
+                        "may_write_filesystem"
+                      ],
+                      "limitations": [
+                        "Kuna static analysis: addresses and bytes are its observations, procedure entries and extents its derivations, and pseudocode its reconstruction, never original source.",
+                        "Kuna may split one function at an entry its own analysis infers; entry extents are upper bounds.",
+                        "Regex mode uses ECMAScript Unicode semantics in a cancellable worker with a 5-second matching deadline; matching failure leaves the service available."
+                      ],
+                      "available": false,
+                      "reason": "Set REA_KUNA_COMMAND to the absolute path of a caller-supplied kuna executable (verified with 1.833). REA does not download, install or update Kuna.",
+                      "availability_code": "not_configured"
+                    },
+                    {
+                      "operations": [
+                        "search_strings"
+                      ],
+                      "effects": [
+                        "launches_process",
+                        "may_write_filesystem"
+                      ],
+                      "limitations": [
+                        "Kuna static analysis: addresses and bytes are its observations, procedure entries and extents its derivations, and pseudocode its reconstruction, never original source.",
+                        "Kuna scans its mapped sections or segments for printable runs of at least five characters, including unterminated fragments. Encodings are ASCII, UTF-8 and Latin-range UTF-16LE; other text can remain undiscovered. String scanning skips references; an empty search is not proof of absence.",
+                        "Regex mode uses ECMAScript Unicode semantics in a cancellable worker with a 5-second matching deadline; matching failure leaves the service available."
+                      ],
+                      "available": false,
+                      "reason": "Set REA_KUNA_COMMAND to the absolute path of a caller-supplied kuna executable (verified with 1.833). REA does not download, install or update Kuna.",
+                      "availability_code": "not_configured"
+                    },
+                    {
+                      "operations": [
+                        "xrefs"
+                      ],
+                      "effects": [
+                        "launches_process",
+                        "may_write_filesystem"
+                      ],
+                      "limitations": [
+                        "Kuna static analysis: addresses and bytes are its observations, procedure entries and extents its derivations, and pseudocode its reconstruction, never original source.",
+                        "Kuna's static reference walk unifies forwarding aliases and omits references internal to that alias class. REA keeps only exact-address incoming edges; an empty result does not prove no reference exists."
+                      ],
+                      "available": false,
+                      "reason": "Set REA_KUNA_COMMAND to the absolute path of a caller-supplied kuna executable (verified with 1.833). REA does not download, install or update Kuna.",
+                      "availability_code": "not_configured"
+                    }
+                  ]
+                }
+              ]
             }
           ],
           "analysis_run": {
-            "run_id": "2bce7a95-7fe6-4d68-8c72-8237d77c24f1",
+            "run_id": "90566ccb-cb14-4b64-bda2-d31374bd2054",
             "process_lineage": {
               "status": "not_observed"
             }
@@ -1393,16 +1599,18 @@
               },
               {
                 "names": [
-                  "analyze_javascript_application",
-                  "reconcile_javascript_runtime"
+                  "analyze_javascript_application"
                 ],
                 "surface": "electron-provider",
                 "effects": [
                   "mutatesSession",
+                  "writesFilesystem",
+                  "launchesProcess",
                   "idempotent"
                 ],
                 "annotations": [
-                  "idempotent"
+                  "idempotent",
+                  "open_world"
                 ],
                 "available": true,
                 "reason": "available",
@@ -1855,7 +2063,7 @@
                 ],
                 "available": false,
                 "reason": "provider_missing",
-                "remediation": "Start a JEB client serving MCP (GUI client, or headless via its programmatic launcher) and point REA_JEB_MCP_URL at it (default http://127.0.0.1:8425/mcp). REA does not install or launch JEB."
+                "remediation": "JEB MCP catalog failed"
               },
               {
                 "names": [
@@ -1987,14 +2195,15 @@
               {
                 "names": [
                   "frida_session_status",
-                  "gdb_session_status"
+                  "inspect_pe_resources",
+                  "rizin_debug_session_status"
                 ],
                 "surface": "native-provider",
                 "effects": [
+                  "mutatesSession",
                   "idempotent"
                 ],
                 "annotations": [
-                  "read_only",
                   "idempotent"
                 ],
                 "available": true,
@@ -2017,6 +2226,22 @@
                 "annotations": [
                   "destructive",
                   "open_world"
+                ],
+                "available": true,
+                "reason": "available",
+                "remediation": null
+              },
+              {
+                "names": [
+                  "gdb_session_status"
+                ],
+                "surface": "native-provider",
+                "effects": [
+                  "idempotent"
+                ],
+                "annotations": [
+                  "read_only",
+                  "idempotent"
                 ],
                 "available": true,
                 "reason": "available",
@@ -2390,23 +2615,6 @@
               },
               {
                 "names": [
-                  "inspect_pe_resources",
-                  "rizin_debug_session_status"
-                ],
-                "surface": "native-provider",
-                "effects": [
-                  "mutatesSession",
-                  "idempotent"
-                ],
-                "annotations": [
-                  "idempotent"
-                ],
-                "available": true,
-                "reason": "available",
-                "remediation": null
-              },
-              {
-                "names": [
                   "inspect_sqlite_database"
                 ],
                 "surface": "artifact-provider",
@@ -2635,7 +2843,7 @@
                 ],
                 "available": false,
                 "reason": "provider_missing",
-                "remediation": "Start a JEB client serving MCP (GUI client, or headless via its programmatic launcher) and point REA_JEB_MCP_URL at it (default http://127.0.0.1:8425/mcp). REA does not install or launch JEB."
+                "remediation": "JEB MCP catalog failed"
               },
               {
                 "names": [
@@ -2657,6 +2865,22 @@
                 "available": false,
                 "reason": "provider_unavailable",
                 "remediation": "The selected adb binary was not found: adb"
+              },
+              {
+                "names": [
+                  "reconcile_javascript_runtime"
+                ],
+                "surface": "electron-provider",
+                "effects": [
+                  "mutatesSession",
+                  "idempotent"
+                ],
+                "annotations": [
+                  "idempotent"
+                ],
+                "available": true,
+                "reason": "available",
+                "remediation": null
               },
               {
                 "names": [
@@ -2827,14 +3051,14 @@
           "server_identity": {
             "package": {
               "name": "rea-agents",
-              "version": "6.5.0",
+              "version": "6.7.0",
               "root_path": "$HOME/.npm/_npx/<hash>/node_modules/rea-agents",
               "build_commit": null
             },
             "server": {
               "name": "rea",
-              "version": "6.5.0",
-              "started_at": "2026-10-14T16:45:25.528Z",
+              "version": "6.7.0",
+              "started_at": "2026-10-18T09:49:11.502Z",
               "command_path": "$HOME/.npm/_npx/<hash>/node_modules/rea-agents/scripts/rea.mjs"
             },
             "sdk": {
@@ -2858,9 +3082,9 @@
                 "mcp_prompts": 6
               },
               "digests": {
-                "tools_sha256": "805433f17bb4f709558ff20c04f96fe561fca2938fd0f459b1f8cc0f6b438ded",
+                "tools_sha256": "af39310c9591bb981893ec0d2188b1bcf6e9cc8ba3ac513d5bbefc8ddcb85639",
                 "prompts_sha256": "7152916ab48bd2a9677a5ad9cdbde0a51dc53c113934952ad096e93f5f18aa7e",
-                "combined_sha256": "405725e736ec8dc8483435b970acbf20f9f26b9f1fd25203b992f5ab4cd2a4f4"
+                "combined_sha256": "96d8f6e6ea1b1ba13557216624a3461c738729d53c79b4b0100d1f3a3a32441c"
               }
             },
             "protocol_features": {

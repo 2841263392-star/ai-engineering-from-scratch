@@ -78,7 +78,7 @@ The ELF rule has the same shape. For a loadable segment it is `offset = address 
 
 The bridge does not compute. `addressToFileOffset` asks Ghidra for the memory block at the address and requires an initialized block. Otherwise it fails with `invalid_request` and the message "Address has no initialized file-backed memory". It then walks the source mappings of the block. It keeps only a mapping whose `FileBytes` start at file offset 0 and whose original bytes have the SHA-256 of the admitted target. It requires exactly one such mapping, and it refuses an offset above 2^53 - 1.
 
-The reply carries only `address` and `file_offset`. The output schema of rea also allows `provider_file_offset`, `image_base_file_offset`, and `source_path`, and the Ghidra provider at 6.5.0 leaves them out.
+The reply carries only `address` and `file_offset`. The output schema of rea also allows `provider_file_offset`, `image_base_file_offset`, and `source_path`, and the Ghidra provider at 6.7.0 leaves them out.
 
 Three addresses show the three outcomes. The capture ran only the first row. The other two follow from the bridge code above.
 
@@ -97,4 +97,4 @@ This is why the limitation says the offsets are not virtual-address arithmetic. 
 - Quote the file offset when you point another person at bytes in a hex viewer.
 ```
 
-Sources: capture/out/00-commands.txt, capture/out/04-inspect-macho.json, capture/out/08-address-to-file-offset.json, capture/fixtures/ledger-arm64-O1; rea 6.5.0 at 3b79af2: bridge/ghidra/ReaGhidraBridge.java, src/contracts/toolOutputSchemaGroups.ts
+Sources: capture/out/00-commands.txt, capture/out/04-inspect-macho.json, capture/out/08-address-to-file-offset.json, capture/fixtures/ledger-arm64-O1; rea 6.7.0 at 27dc42d: bridge/ghidra/ReaGhidraBridge.java, src/contracts/toolOutputSchemaGroups.ts

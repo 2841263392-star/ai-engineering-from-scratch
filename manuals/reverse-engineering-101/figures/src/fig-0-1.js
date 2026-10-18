@@ -4,7 +4,7 @@ const { figure } = require('../../../_shared/figkit.js');
 
 const lanes = [
   { title: 'agent', sub: 're101-capture', hue: 'plum' },
-  { title: 'rea mcp', sub: 'server 6.5.0', hue: 'indigo' },
+  { title: 'rea mcp', sub: 'server 6.7.0', hue: 'indigo' },
   { title: 'session', sub: 'BinarySession', hue: 'blue' },
   { title: 'client', sub: 'GhidraClient', hue: 'violet' },
   { title: 'Ghidra', sub: 'headless JVM', hue: 'violet' },
@@ -22,13 +22,13 @@ const rows = [
   [1, 0, 'event', 'MCP tool execution completed', 'an event on stderr · dotted indigo', 125],
   [1, 5, 'write', 'export 178629 bytes, 8 records', 'a durable write · solid teal'],
   [1, 0, 'fail', 'invalid_request: _nothing', 'a failure · dashed rose', 125],
-  [0, 6, 'model', 'finding cites ev_172d39ff', 'a model call · solid plum'],
+  [0, 6, 'model', 'finding cites ev_b492c85e', 'a model call · solid plum'],
 ];
 
 module.exports = figure('fig-0-1', {
   height: 500,
   title: 'Reading a sequence figure in this manual',
-  desc: 'Seven lifelines: the agent of the capture kit, the rea MCP server 6.5.0, the BinarySession, the GhidraClient, the headless Ghidra JVM, the exported bundle file, and the model of the agent. Nine numbered rows use the eight arrow styles: tools/call open_binary as a solid ink call, the mach-o executable arm64 answer as a dashed ink reply, analyze_function for _percent_change as a call, the launch of java AnalyzeHeadless as a dashed olive outside effect, analysis_complete true as a dashed amber state change, the stderr log line MCP tool execution completed as a dotted indigo event, the export of 178629 bytes and 8 records as a solid teal durable write, invalid_request for _nothing as a dashed rose failure, and the finding that cites ev_172d39ff as a solid plum model call.',
+  desc: 'Seven lifelines: the agent of the capture kit, the rea MCP server 6.7.0, the BinarySession, the GhidraClient, the headless Ghidra JVM, the exported bundle file, and the model of the agent. Nine numbered rows use the eight arrow styles: tools/call open_binary as a solid ink call, the mach-o executable arm64 answer as a dashed ink reply, analyze_function for _percent_change as a call, the launch of java AnalyzeHeadless as a dashed olive outside effect, analysis_complete true as a dashed amber state change, the stderr log line MCP tool execution completed as a dotted indigo event, the export of 178629 bytes and 8 records as a solid teal durable write, invalid_request for _nothing as a dashed rose failure, and the finding that cites ev_b492c85e as a solid plum model call.',
 }, f => {
   lanes.forEach((lane, index) => {
     f.box({ x: cx(index), y: 8, w: 86, h: 40, hue: lane.hue, title: lane.title, sub: lane.sub, titleSize: 11, anchor: 'middle', pad: 3 });

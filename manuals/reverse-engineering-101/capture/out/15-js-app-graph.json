@@ -755,8 +755,8 @@
               "source_map_reference": null,
               "properties": {
                 "semantic_role": "source-module",
+                "source_sha256": "72543bb205363c92d734110d3a219586ba406df5b3bcec5c422f301fe5941142",
                 "path": "preload.js",
-                "container_sha256": "bb9f726c3aafe026e6cc871b8de16cd81db9f03b4c2bab05f494307f8ebb42a2",
                 "logical_module_key": "preload.js",
                 "module_format": "commonjs",
                 "import_relationships": 2,
@@ -811,7 +811,7 @@
                 ],
                 "evidence_ids": []
               },
-              "observation_id": "jag_observation_829f9ff5a26c051b40715b966333ac56190c854b7f5c5b641b25bf5d78170249",
+              "observation_id": "jag_observation_55597ef3ca0008a5b238091af2694d6ad68b4554f685ba91416dfb11a80f93ad",
               "identifier_strategy": {
                 "strategy": "semantic-content-sha256",
                 "stability": "observation-exact"
@@ -1371,8 +1371,8 @@
               "source_map_reference": null,
               "properties": {
                 "semantic_role": "source-module",
+                "source_sha256": "68698484561e58890c6e99e8e1c47faf8d14e5294d884fcd05e1fdbe4740e850",
                 "path": "ledger.js",
-                "container_sha256": "bb9f726c3aafe026e6cc871b8de16cd81db9f03b4c2bab05f494307f8ebb42a2",
                 "logical_module_key": "ledger.js",
                 "module_format": "commonjs",
                 "import_relationships": 0,
@@ -1429,7 +1429,7 @@
                 ],
                 "evidence_ids": []
               },
-              "observation_id": "jag_observation_96feef8473eb1a28e6fd6019b70490428f1e2d7ed5302530234c36c8257bfded",
+              "observation_id": "jag_observation_6253123db17796ed68d2e4e77fa36bd9da4749692dcf95b1561efd4935c929a1",
               "identifier_strategy": {
                 "strategy": "semantic-content-sha256",
                 "stability": "observation-exact"
@@ -2164,8 +2164,8 @@
               "source_map_reference": null,
               "properties": {
                 "semantic_role": "source-module",
+                "source_sha256": "c1cff269b8ca0d69e4808a2ca8a9a0b78084f797f37e7eabb4c96fed817ee6af",
                 "path": "main.js",
-                "container_sha256": "bb9f726c3aafe026e6cc871b8de16cd81db9f03b4c2bab05f494307f8ebb42a2",
                 "logical_module_key": "main.js",
                 "module_format": "commonjs",
                 "import_relationships": 5,
@@ -2220,7 +2220,7 @@
                 ],
                 "evidence_ids": []
               },
-              "observation_id": "jag_observation_a697c4a101804f3e7e72e7dc2df2eccafa1bac4979cf92f05a5a8744fe6e48af",
+              "observation_id": "jag_observation_baafceb46189a7a4d9457766d83fa833fde770dfd3d59cb8b33c27da2c79728c",
               "identifier_strategy": {
                 "strategy": "semantic-content-sha256",
                 "stability": "observation-exact"
@@ -3046,8 +3046,8 @@
               "source_map_reference": null,
               "properties": {
                 "semantic_role": "source-module",
+                "source_sha256": "04f2cdeff3a97b60d4dad0da7cf3abd941b0f136825afaa7fb02b7d265815bb9",
                 "path": "renderer.js",
-                "container_sha256": "bb9f726c3aafe026e6cc871b8de16cd81db9f03b4c2bab05f494307f8ebb42a2",
                 "logical_module_key": "renderer.js",
                 "module_format": "unknown",
                 "import_relationships": 0,
@@ -3102,7 +3102,7 @@
                 ],
                 "evidence_ids": []
               },
-              "observation_id": "jag_observation_d4bc38a018fcc8e06b3435f4df4d1e2238974fa7a5c5cc68cfb8df0f81568ad3",
+              "observation_id": "jag_observation_d65d1489cfb8d80fe02032b6df83cdcbdc9ef9ff84e7f7896956b01d12d7cdfc",
               "identifier_strategy": {
                 "strategy": "semantic-content-sha256",
                 "stability": "observation-exact"
@@ -6689,7 +6689,7 @@
         "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
         "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code."
       ],
-      "graph_id": "jag_25479e76b473f073a46547a27e2616a64621cdbe52b50b987d667bd8af73db5a"
+      "graph_id": "jag_76a4acf96fb8a36564ff1d674b4e2729f37fd86c08609c1b12de017a83a09e3f"
     }
   }
 }

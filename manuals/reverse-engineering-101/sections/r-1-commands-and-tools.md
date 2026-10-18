@@ -2,7 +2,9 @@
 
 > Every rea command and MCP tool the captures ran, with what it answers, the capture file that holds its output, and the section that explains it.
 
-rea 6.5.0 has 153 CLI commands and 207 MCP tools. `binary_session` reports these counts in its catalog (capture/out/10-mcp-04-binary-session.json). The capture kit ran 16 commands and 13 tools, plus the two MCP methods that every session starts with. CLI names join words with `-` and MCP names with `_`. Three native commands map to tools with other names: `function` calls `analyze_function`, `decompile` calls `procedure_pseudo_code`, and `analyze` calls `binary_overview`. The capture passed `--format json` to every command and `--filter-output` with a key list where a record was too large to keep whole (capture/out/00-commands.txt).
+rea 6.7.0 has 153 CLI commands and 207 MCP tools. `binary_session` reports these counts in its catalog (capture/out/10-mcp-04-binary-session.json). The capture kit ran 17 one-shot commands and 13 tools, plus `rea mcp` and the two MCP methods that every session starts with. CLI names join words with `-` and MCP names with `_`. Three native commands map to tools with other names: `function` calls `analyze_function`, `decompile` calls `procedure_pseudo_code`, and `analyze` calls `binary_overview`. The capture passed `--format json` to every command and `--filter-output` with a key list where a record was too large to keep whole (capture/out/00-commands.txt).
+
+The output flags `--format`, `--filter-output`, `--token-limit`, and `--token-offset` accept the form `--flag=value`, as in `--format=json` {{cli Output and exit status}}. The setup runs used the same form for `--skill=false`.
 
 ## CLI commands
 
@@ -19,14 +21,15 @@ rea 6.5.0 has 153 CLI commands and 207 MCP tools. `binary_session` reports these
 | `rea address-to-file-offset <path> <address> --provider ghidra` | the file offset of one virtual address | `08-address-to-file-offset.json` | [3.3](#s-address-to-file-offset) |
 | `rea inspect-evidence-bundle '{"path":..., "detail": "summary"}'` | one row per record of a bundle, without the payloads | `11-inspect-evidence-bundle-*.json` | [5.4](#s-evidence-bundles-export-and-import) |
 | `rea evidence-export <bundle> <out>` | a canonical copy of a bundle, keys sorted | `12-evidence-export.json`, `12-evidence-export.txt` | [5.4](#s-evidence-bundles-export-and-import) |
-| `rea evidence-import <bundle>` | validation of every record id and manifest in a bundle | `13-evidence-import.json` | [5.4](#s-evidence-bundles-export-and-import) |
+| `rea evidence-import <bundle>` | validation of every record id and manifest in a bundle, and the refusal of a bundle whose ids do not verify | `13-evidence-import.json`, `13-evidence-import-rea-6.5.0.json` | [5.4](#s-evidence-bundles-export-and-import) |
 | `rea compare <left> <right>` | the two bundles by record membership and unknown revisions | `14-compare-bundles.json` | [5.5](#s-compare-and-compare-functions) |
 | `rea analyze-javascript-application <dir>` | the application graph of a JavaScript or Electron application, without running it | `15-js-app.json`, `15-js-app-graph.json` | [6.1](#s-analyze-javascript-application) |
 | `rea inspect-analysis-view <request.json>` | a summary or one page of a saved record | `15-js-app-view-summary.json`, `15-js-app-view-modules.json` | [6.1](#s-analyze-javascript-application) |
 | `rea inspect-wasm-artifact <path>` | the validation result, the sections, and the import and export interface of one WebAssembly module, from WABT 1.0.42 | `16-inspect-wasm-artifact.json` | [6.2](#s-inspect-wasm-artifact) |
+| `rea setup --client claude_code --skill=false` | the plan or the result of writing the rea entry into the Claude Code configuration | `18-setup-claude-jsonc.json`, `18-setup-claude-duplicate.json`, `18-setup-configs.txt` | [8.1](#s-the-rea-mcp-server) |
 | `rea mcp` | the MCP server over stdio | `10-mcp-*.json`, `10-mcp-server.log` | [8.1](#s-the-rea-mcp-server) |
 
-The CLI documents its exit status {{cli Output and exit status}}. It is `0` when the operation completed, with partial evidence or open questions allowed. It is `1` when it could not complete, and `128 + N` when signal `N` ended the process. `inspect-binary-layout` is the one command that exited `1` in the capture. An explicit `--provider` wins over `REA_ANALYSIS_PROVIDER`, and with neither set rea uses the single available provider that supports the target {{cli Choose a provider}}.
+The CLI documents its exit status {{cli Output and exit status}}. It is `0` when the operation completed, with partial evidence or open questions allowed. It is `1` when it could not complete, and `128 + N` when signal `N` ended the process. Three commands exited `1` in the capture. They are `inspect-binary-layout` on a Mach-O file, `evidence-import` on a bundle from rea 6.5.0, and one setup dry run. An explicit `--provider` wins over `REA_ANALYSIS_PROVIDER`, and with neither set rea uses the single available provider that supports the target {{cli Choose a provider}}.
 
 ## MCP methods and tools
 
@@ -52,7 +55,7 @@ The hints column reads the four annotations of each tool in `tools/list`: `readO
 
 ## Environment variables the capture set
 
-| Variable | Effect at 6.5.0 | Documented in |
+| Variable | Effect at 6.7.0 | Documented in |
 |---|---|---|
 | `GHIDRA_INSTALL_DIR` | the Ghidra installation, an absolute path | {{install Ghidra}} |
 | `JAVA_HOME` | the JDK, an absolute path | {{install Ghidra}} |
@@ -61,7 +64,10 @@ The hints column reads the four annotations of each tool in `tools/list`: `readO
 | `REA_MCP_INPUT_SCHEMA_PROFILE` | `compact` renders every advertised input schema within 13,312 bytes | {{mcp Compact input schema profile}} |
 | `REA_MCP_MAX_RESPONSE_BYTES` | the response budget, at least 10,485,760, read at startup | {{mcp Tool results}} |
 | `REA_WABT_BIN_DIRECTORY` | the absolute directory that holds `wasm-validate`, `wasm-objdump`, and `wasm2wat` from WABT 1.0.42 | rea docs/wasm-artifacts.md, Offline WebAssembly artifacts |
+| `HOME` and `CLAUDE_CONFIG_DIR` | for the setup runs only, a private work directory, so setup found and wrote only the copied test file | {{install Limit REA to one project or agent profile}} |
 
 The capture kit also removed `PWD` and `JAVA_TOOL_OPTIONS` from the environment of every rea process (capture/README.md). The paths in the records and the Java launch then stayed the same from run to run.
 
-Sources: capture/out/00-commands.txt, 10-mcp-session.txt, 10-mcp-02-tools-list.json, 10-mcp-04-binary-session.json, 04-inspect-binary-layout.json, 16-inspect-wasm-artifact.json, 10-mcp-24-inspect-wasm-artifact.json, 00-versions.txt; capture/README.md; rea docs/cli.md (Native analysis, Choose a provider, Import, export and compare Evidence, Output and exit status), docs/mcp-contracts.md (Compact input schema profile, Tool results), docs/wasm-artifacts.md (Offline WebAssembly artifacts); rea at 3b79af2: src/cliCommandNames.ts, src/config/environment.ts, src/config/providerStartupTimeout.ts, src/contracts/toolEffects.ts, src/contracts/wasm/wasmToolContracts.ts
+The kit did not set `REA_KUNA_COMMAND`, the absolute path of a `kuna` executable that you supply. Without it the Kuna provider reports `not_configured` ([Section 2.3](#s-rea-capabilities)).
+
+Sources: capture/out/00-commands.txt, 02-capabilities.json, 13-evidence-import-rea-6.5.0.json, 18-setup-claude-jsonc.json, 18-setup-claude-duplicate.json, 10-mcp-session.txt, 10-mcp-02-tools-list.json, 10-mcp-04-binary-session.json, 04-inspect-binary-layout.json, 16-inspect-wasm-artifact.json, 10-mcp-24-inspect-wasm-artifact.json, 00-versions.txt; capture/README.md; rea docs/cli.md (Native analysis, Choose a provider, Import, export and compare Evidence, Output and exit status), docs/installation.md (Limit REA to one project or agent profile), docs/kuna-provider.md, docs/mcp-contracts.md (Compact input schema profile, Tool results), docs/wasm-artifacts.md (Offline WebAssembly artifacts); rea at 27dc42d: src/cliCommandNames.ts, src/config/environment.ts, src/config/providerStartupTimeout.ts, src/contracts/toolEffects.ts, src/contracts/wasm/wasmToolContracts.ts

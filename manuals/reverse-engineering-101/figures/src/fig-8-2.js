@@ -4,7 +4,7 @@ const { figure, color } = require('../../../_shared/figkit.js');
 
 const xOf = seconds => Math.round(60 + (seconds * 560) / 340);
 const marks = [
-  { n: 1, seconds: 6.1, text: '6.1 s: list_procedures on this Mac, ledger-arm64-O1, 33,872 bytes' },
+  { n: 1, seconds: 6.3, text: '6.3 s: list_procedures on this Mac, ledger-arm64-O1, 33,872 bytes' },
   { n: 2, seconds: 64, text: 'about 64 s: binary_overview on Linux x64 under WSL2, from the docs' },
   { n: 3, seconds: 163, text: 'about 163 s: binary_overview on Windows x64, from the docs, the 60 s default timed out' },
 ];
@@ -12,7 +12,7 @@ const marks = [
 module.exports = figure('fig-8-2', {
   height: 352,
   title: 'Two deadlines and three measured first calls',
-  desc: 'One axis in seconds from 0 to 340. A grey bar from 0 to 60 s is the client default of 60,000 ms in SDK 2.3.1. A dashed grey bar from 0 to 240 s is the client setting the docs used as an example. A blue bar from 0 to 330 s is the rea startup deadline of 330,000 ms. Three numbered marks are measured first calls: 6.1 s for list_procedures on this Mac on the 33,872-byte ledger-arm64-O1, about 64 s for a binary_overview on Linux x64 under WSL2 from the docs, and about 163 s for a binary_overview on Windows x64 from the docs, where the 60 s default timed out.',
+  desc: 'One axis in seconds from 0 to 340. A grey bar from 0 to 60 s is the client default of 60,000 ms in SDK 2.3.1. A dashed grey bar from 0 to 240 s is the client setting the docs used as an example. A blue bar from 0 to 330 s is the rea startup deadline of 330,000 ms. Three numbered marks are measured first calls: 6.3 s for list_procedures on this Mac on the 33,872-byte ledger-arm64-O1, about 64 s for a binary_overview on Linux x64 under WSL2 from the docs, and about 163 s for a binary_overview on Windows x64 from the docs, where the 60 s default timed out.',
 }, f => {
   f.text(60, 44, 'client default 60,000 ms (SDK 2.3.1)', { size: 11, hue: 'grey' });
   f.rect(xOf(0), 50, xOf(60) - xOf(0), 16, { fill: color('grey-fill'), stroke: color('grey-ink') });

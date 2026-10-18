@@ -2,7 +2,7 @@
 
 > On macOS, inspect-binary-layout refuses with capability_unavailable, and inspect-macho is the engine-free reader of segments, sections, load commands, imports, and exports.
 
-You ran `rea inspect-binary-layout fixtures/ledger-x86_64-O1.o --format json` on the capture Mac. It exited 1 and printed a JSON error instead of a layout. Nothing is broken. rea 6.5.0 has two engine-free layout readers, and this one runs on Linux x64 only.
+You ran `rea inspect-binary-layout fixtures/ledger-x86_64-O1.o --format json` on the capture Mac. It exited 1 and printed a JSON error instead of a layout. Nothing is broken. rea 6.7.0 has two engine-free layout readers, and this one runs on Linux x64 only.
 
 When you finish this section, you can read that error envelope and name the host rule behind it. You can also read the load image of `ledger-arm64-O1` from `inspect-macho`: four segments, 17 load commands, six imports, and six exports.
 
@@ -289,4 +289,4 @@ Both the imports and the exports collections say `exhaustive: false`, because ea
 - Check `exhaustive` on each collection before you say a symbol is absent.
 ```
 
-Sources: capture/out/00-commands.txt, capture/out/04-inspect-binary-layout.json, capture/out/04-inspect-macho.json; rea 6.5.0 at 3b79af2: src/contracts/errorSchemas.ts, src/native/pwntools/PwntoolsDecoder.ts, src/server/createServer.ts, src/native/NativeMachoInspection.ts, src/native/parsers/otool.ts; rea docs/cli.md
+Sources: capture/out/00-commands.txt, capture/out/04-inspect-binary-layout.json, capture/out/04-inspect-macho.json; rea 6.7.0 at 27dc42d: src/contracts/errorSchemas.ts, src/native/pwntools/PwntoolsDecoder.ts, src/server/createServer.ts, src/native/NativeMachoInspection.ts, src/native/parsers/otool.ts; rea docs/cli.md

@@ -14,28 +14,28 @@
               "title": "percent_change: the Ghidra pseudocode is the same text in the -O1 and -O2 builds",
               "kind": "structural-function",
               "dimension": "pseudocode",
-              "comparison_evidence_id": "ev_ef3ad879183fe7cef5c2ebfb618cd300c3d3fb1d074992cf35c4785285e9e17d"
+              "comparison_evidence_id": "ev_2161e17a5ff6c19322e6f6ac34cb2de1a12c22fa75b51ba7fddf2bdfd73fdc48"
             },
             {
               "claim_id": "percent-change-assembly",
               "title": "percent_change: the Ghidra assembly is the same text in the -O1 and -O2 builds",
               "kind": "structural-function",
               "dimension": "assembly",
-              "comparison_evidence_id": "ev_ef3ad879183fe7cef5c2ebfb618cd300c3d3fb1d074992cf35c4785285e9e17d"
+              "comparison_evidence_id": "ev_2161e17a5ff6c19322e6f6ac34cb2de1a12c22fa75b51ba7fddf2bdfd73fdc48"
             },
             {
               "claim_id": "total-pseudocode",
               "title": "total: the Ghidra pseudocode is the same text in the -O1 and -O2 builds",
               "kind": "structural-function",
               "dimension": "pseudocode",
-              "comparison_evidence_id": "ev_c33c0c81f349d7a31130f68bd5d1289baff4d86c4fc26a256c68f18b76dbd674"
+              "comparison_evidence_id": "ev_40ba96d8ce66a46fdd84d1d344f17dc50e0d49d333936cc6eb54320234655393"
             },
             {
               "claim_id": "total-assembly",
               "title": "total: the Ghidra assembly is the same text in the -O1 and -O2 builds",
               "kind": "structural-function",
               "dimension": "assembly",
-              "comparison_evidence_id": "ev_c33c0c81f349d7a31130f68bd5d1289baff4d86c4fc26a256c68f18b76dbd674"
+              "comparison_evidence_id": "ev_40ba96d8ce66a46fdd84d1d344f17dc50e0d49d333936cc6eb54320234655393"
             }
           ]
         }
@@ -57,7 +57,7 @@
         }
       ],
       "structuredContent": {
-        "evidence_id": "ev_0f0a4142adb15fdaad7601fc4b8a55faa132c8bb44adc9135fcf1cee4c9fb333",
+        "evidence_id": "ev_ccbaea4b45697017422c68a0dcabbe574c7e1b498aa3f0f3a0b47e351b389e23",
         "subject": null,
         "provider": {
           "id": "rea-reconstruction-verifier",
@@ -68,7 +68,7 @@
         "predicate_type": "rea.reconstruction-verification",
         "operation": "verify_reconstruction",
         "parameters": {
-          "specification_sha256": "69bf0857c9918f3ca90679816bc4c684b676fd4ca195dacce75dc5efc7932eeb",
+          "specification_sha256": "9e8d22fa6db331994f2e80be5b728575a0e9cb17ff1e63d24ece22d235084bfe",
           "claim_ids": [
             "percent-change-pseudocode",
             "percent-change-assembly",
@@ -79,7 +79,7 @@
         "raw_result": null,
         "normalized_result": {
           "status": "fail",
-          "specification_sha256": "69bf0857c9918f3ca90679816bc4c684b676fd4ca195dacce75dc5efc7932eeb",
+          "specification_sha256": "9e8d22fa6db331994f2e80be5b728575a0e9cb17ff1e63d24ece22d235084bfe",
           "summary": {
             "total": 4,
             "passed": 2,
@@ -96,17 +96,17 @@
                 "dimension": "assembly",
                 "status": "pass",
                 "observed_status": "unchanged",
-                "comparison_evidence_id": "ev_ef3ad879183fe7cef5c2ebfb618cd300c3d3fb1d074992cf35c4785285e9e17d",
+                "comparison_evidence_id": "ev_2161e17a5ff6c19322e6f6ac34cb2de1a12c22fa75b51ba7fddf2bdfd73fdc48",
                 "left_evidence_ids": [
-                  "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350"
+                  "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a"
                 ],
                 "right_evidence_ids": [
-                  "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f"
+                  "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
                 ],
                 "evidence_links": [
-                  "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-                  "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f",
-                  "ev_ef3ad879183fe7cef5c2ebfb618cd300c3d3fb1d074992cf35c4785285e9e17d"
+                  "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259",
+                  "ev_2161e17a5ff6c19322e6f6ac34cb2de1a12c22fa75b51ba7fddf2bdfd73fdc48",
+                  "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a"
                 ],
                 "unknown_ids": [],
                 "limitations": [
@@ -147,17 +147,17 @@
                 "dimension": "pseudocode",
                 "status": "pass",
                 "observed_status": "unchanged",
-                "comparison_evidence_id": "ev_ef3ad879183fe7cef5c2ebfb618cd300c3d3fb1d074992cf35c4785285e9e17d",
+                "comparison_evidence_id": "ev_2161e17a5ff6c19322e6f6ac34cb2de1a12c22fa75b51ba7fddf2bdfd73fdc48",
                 "left_evidence_ids": [
-                  "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350"
+                  "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a"
                 ],
                 "right_evidence_ids": [
-                  "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f"
+                  "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259"
                 ],
                 "evidence_links": [
-                  "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-                  "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f",
-                  "ev_ef3ad879183fe7cef5c2ebfb618cd300c3d3fb1d074992cf35c4785285e9e17d"
+                  "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259",
+                  "ev_2161e17a5ff6c19322e6f6ac34cb2de1a12c22fa75b51ba7fddf2bdfd73fdc48",
+                  "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a"
                 ],
                 "unknown_ids": [],
                 "limitations": [
@@ -197,20 +197,20 @@
                 "dimension": "assembly",
                 "status": "fail",
                 "observed_status": "changed",
-                "comparison_evidence_id": "ev_c33c0c81f349d7a31130f68bd5d1289baff4d86c4fc26a256c68f18b76dbd674",
+                "comparison_evidence_id": "ev_40ba96d8ce66a46fdd84d1d344f17dc50e0d49d333936cc6eb54320234655393",
                 "left_evidence_ids": [
-                  "ev_7c94981bed0147c3d265eb822a26e48ec13e4d7a4ae1eee958fe9758b483b033"
+                  "ev_a1fe53ff3596b1ba02c39f7b9e00bf06049dd1637d448b510157fbd81cbe21ec"
                 ],
                 "right_evidence_ids": [
-                  "ev_a36b5090a55390a6a2b689d6f50bed679628395e6331ca55bd726a54f21f8c41"
+                  "ev_bfe3275bb0574d9b018464f2f0221fbb3ba91d1e38c8c36c984b38a47f0e0fd8"
                 ],
                 "evidence_links": [
-                  "ev_7c94981bed0147c3d265eb822a26e48ec13e4d7a4ae1eee958fe9758b483b033",
-                  "ev_a36b5090a55390a6a2b689d6f50bed679628395e6331ca55bd726a54f21f8c41",
-                  "ev_c33c0c81f349d7a31130f68bd5d1289baff4d86c4fc26a256c68f18b76dbd674"
+                  "ev_40ba96d8ce66a46fdd84d1d344f17dc50e0d49d333936cc6eb54320234655393",
+                  "ev_a1fe53ff3596b1ba02c39f7b9e00bf06049dd1637d448b510157fbd81cbe21ec",
+                  "ev_bfe3275bb0574d9b018464f2f0221fbb3ba91d1e38c8c36c984b38a47f0e0fd8"
                 ],
                 "unknown_ids": [
-                  "unk_f318e8ba1ae0a369e94779b51da819043feacb172cbfb067f1096eb13aabaa91"
+                  "unk_823f4184ea6491913caa6b2aa97fb0467de1a2ecd2a1e5ad7d03d0118996fee8"
                 ],
                 "limitations": [
                   "Artifact identity is unavailable for this observation.",
@@ -229,7 +229,7 @@
                   "Left: Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
                   "Left: Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
                   "Left: macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state.",
-                  "Residual unknown: Function comparison is changed (comparison ev_c33c0c81f349d7a31130f68bd5d1289baff4d86c4fc26a256c68f18b76dbd674)",
+                  "Residual unknown: Function comparison is changed (comparison ev_40ba96d8ce66a46fdd84d1d344f17dc50e0d49d333936cc6eb54320234655393)",
                   "Right: Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
                   "Right: Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
                   "Right: Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
@@ -251,20 +251,20 @@
                 "dimension": "pseudocode",
                 "status": "fail",
                 "observed_status": "changed",
-                "comparison_evidence_id": "ev_c33c0c81f349d7a31130f68bd5d1289baff4d86c4fc26a256c68f18b76dbd674",
+                "comparison_evidence_id": "ev_40ba96d8ce66a46fdd84d1d344f17dc50e0d49d333936cc6eb54320234655393",
                 "left_evidence_ids": [
-                  "ev_7c94981bed0147c3d265eb822a26e48ec13e4d7a4ae1eee958fe9758b483b033"
+                  "ev_a1fe53ff3596b1ba02c39f7b9e00bf06049dd1637d448b510157fbd81cbe21ec"
                 ],
                 "right_evidence_ids": [
-                  "ev_a36b5090a55390a6a2b689d6f50bed679628395e6331ca55bd726a54f21f8c41"
+                  "ev_bfe3275bb0574d9b018464f2f0221fbb3ba91d1e38c8c36c984b38a47f0e0fd8"
                 ],
                 "evidence_links": [
-                  "ev_7c94981bed0147c3d265eb822a26e48ec13e4d7a4ae1eee958fe9758b483b033",
-                  "ev_a36b5090a55390a6a2b689d6f50bed679628395e6331ca55bd726a54f21f8c41",
-                  "ev_c33c0c81f349d7a31130f68bd5d1289baff4d86c4fc26a256c68f18b76dbd674"
+                  "ev_40ba96d8ce66a46fdd84d1d344f17dc50e0d49d333936cc6eb54320234655393",
+                  "ev_a1fe53ff3596b1ba02c39f7b9e00bf06049dd1637d448b510157fbd81cbe21ec",
+                  "ev_bfe3275bb0574d9b018464f2f0221fbb3ba91d1e38c8c36c984b38a47f0e0fd8"
                 ],
                 "unknown_ids": [
-                  "unk_f318e8ba1ae0a369e94779b51da819043feacb172cbfb067f1096eb13aabaa91"
+                  "unk_823f4184ea6491913caa6b2aa97fb0467de1a2ecd2a1e5ad7d03d0118996fee8"
                 ],
                 "limitations": [
                   "Artifact identity is unavailable for this observation.",
@@ -282,7 +282,7 @@
                   "Left: Thunk and external classifications are Ghidra FunctionManager observations; they do not resolve targetless calls.",
                   "Left: Unresolved computed or indirect flows without target addresses are not represented as reference edges.",
                   "Left: macOS sessions require a matching executable Ghidra native decompiler; REA checks for it but does not build native components or change Gatekeeper quarantine state.",
-                  "Residual unknown: Function comparison is changed (comparison ev_c33c0c81f349d7a31130f68bd5d1289baff4d86c4fc26a256c68f18b76dbd674)",
+                  "Residual unknown: Function comparison is changed (comparison ev_40ba96d8ce66a46fdd84d1d344f17dc50e0d49d333936cc6eb54320234655393)",
                   "Right: Cancelling an active Ghidra request terminates its ephemeral database and discards session annotations. The selected target remains open; the next provider query imports the original artifact again.",
                   "Right: Default-space addresses use lowercase 0x-prefixed hexadecimal; other address spaces use <percent-encoded-space>:0x<hex>.",
                   "Right: Pseudocode and assembly are Ghidra-specific representations, not original source or Hopper-equivalent text.",
@@ -302,12 +302,12 @@
           },
           "recommended_probes": [],
           "evidence_links": [
-            "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-            "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f",
-            "ev_7c94981bed0147c3d265eb822a26e48ec13e4d7a4ae1eee958fe9758b483b033",
-            "ev_a36b5090a55390a6a2b689d6f50bed679628395e6331ca55bd726a54f21f8c41",
-            "ev_c33c0c81f349d7a31130f68bd5d1289baff4d86c4fc26a256c68f18b76dbd674",
-            "ev_ef3ad879183fe7cef5c2ebfb618cd300c3d3fb1d074992cf35c4785285e9e17d"
+            "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259",
+            "ev_2161e17a5ff6c19322e6f6ac34cb2de1a12c22fa75b51ba7fddf2bdfd73fdc48",
+            "ev_40ba96d8ce66a46fdd84d1d344f17dc50e0d49d333936cc6eb54320234655393",
+            "ev_a1fe53ff3596b1ba02c39f7b9e00bf06049dd1637d448b510157fbd81cbe21ec",
+            "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+            "ev_bfe3275bb0574d9b018464f2f0221fbb3ba91d1e38c8c36c984b38a47f0e0fd8"
           ],
           "limitations": [
             "Pass means every declared claim passed; it does not establish global implementation equivalence."
@@ -323,12 +323,12 @@
         "relationship_coverage": null,
         "locations": [],
         "evidence_links": [
-          "ev_172d39ff37ab60d9e0e1dd33ba7486cb2ee789a46b00d600cd083a825edd1350",
-          "ev_1f3bca22a69485fa2eaf7bdd59847e92fb77517bac6c01e657e143c14870013f",
-          "ev_7c94981bed0147c3d265eb822a26e48ec13e4d7a4ae1eee958fe9758b483b033",
-          "ev_a36b5090a55390a6a2b689d6f50bed679628395e6331ca55bd726a54f21f8c41",
-          "ev_c33c0c81f349d7a31130f68bd5d1289baff4d86c4fc26a256c68f18b76dbd674",
-          "ev_ef3ad879183fe7cef5c2ebfb618cd300c3d3fb1d074992cf35c4785285e9e17d"
+          "ev_142cc943d8259d42ce5d62ad5eb0417fcde4de4ee9a20afbfe1fdbc51ed3d259",
+          "ev_2161e17a5ff6c19322e6f6ac34cb2de1a12c22fa75b51ba7fddf2bdfd73fdc48",
+          "ev_40ba96d8ce66a46fdd84d1d344f17dc50e0d49d333936cc6eb54320234655393",
+          "ev_a1fe53ff3596b1ba02c39f7b9e00bf06049dd1637d448b510157fbd81cbe21ec",
+          "ev_b492c85eb9570bd5f8e866f94523122c8600ea0106603d90e9ea5445cf757b2a",
+          "ev_bfe3275bb0574d9b018464f2f0221fbb3ba91d1e38c8c36c984b38a47f0e0fd8"
         ]
       }
     },

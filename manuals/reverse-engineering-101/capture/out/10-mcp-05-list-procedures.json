@@ -19,11 +19,11 @@
       "content": [
         {
           "type": "text",
-          "text": "<cut by run.py: the text copy of structuredContent, 6232 bytes>"
+          "text": "<cut by run.py: the text copy of structuredContent, 6260 bytes>"
         }
       ],
       "structuredContent": {
-        "evidence_id": "ev_231b5398a37af922f9e3d226e729989d937d2cf7b6a0006d28c61b5ae169ea17",
+        "evidence_id": "ev_3c6350b28fc1f5b61a3318b8898e3169a87e83d7f75fed829907e439963b50e6",
         "subject": {
           "name": "ledger-arm64-O1",
           "digest": {
@@ -62,8 +62,8 @@
             "location_resolution": "explicit-address-exact-entry-symbol-first-v3",
             "procedure_file_offset_resolution": "address-first-unique-target-source-mapping-v2",
             "instruction_flow_evidence": "decoded-return-pcode-v1",
-            "instruction_references": "exact-address-incoming-v1",
-            "function_boundary_observations": "ghidra-function-boundary-limitations-v3",
+            "instruction_references": "exact-address-incoming-without-synthetic-entry-v2",
+            "function_boundary_observations": "ghidra-function-boundary-limitations-v4",
             "no_return_repair": "returning-imports-decoded-return-v2",
             "process_launch": "inspected-jvm-launch-support-v1",
             "jump_table_evidence": "typed-case-default-blocks-v1",
@@ -73,7 +73,7 @@
             "compiler_spec_id": "auto-default",
             "analyzer_preset": "ghidra-default"
           },
-          "digest": "966e6016724421ad282356f583a9d5bf24577db4ac77a75c7099d236b88bcc28"
+          "digest": "3fc72c9b4b78498fb992b938f8f3389dc670244a293c1d40abf5e1d10162ed3b"
         },
         "predicate_type": "rea.analysis",
         "operation": "list_procedures",

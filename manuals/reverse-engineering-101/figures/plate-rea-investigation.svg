@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 472" role="img" aria-labelledby="plate-rea-investigation-title plate-rea-investigation-desc" font-family="JetBrains Mono, ui-monospace, monospace">
   <title id="plate-rea-investigation-title">One function, four views</title>
-  <desc id="plate-rea-investigation-desc">The recorded run of rea function on ledger-arm64-O1 for _percent_change with the Ghidra provider. At the top, you call rea 6.5.0, which hands the question to the BinarySession bound to ghidra, which calls the GhidraClient over bridge.sock, which launches Ghidra 12.1.4 as a headless JVM to import and analyze the artifact ledger-arm64-O1, a mach-o arm64 executable of 33872 bytes. Three columns show the same function: the C you wrote in ledger.c, the six instructions clang -O1 made from cbz w0 at 0x100000500 to ret at 0x100000514, and the pseudocode Ghidra decompiled with a second zero check the source never had. The Evidence record ev_172d39ff at the bottom names the operation analyze_function, the provider ghidra 12.1.4, the profile digest, confidence observed, the authority of a static read, ten limitations, and the subject sha256.</desc>
+  <desc id="plate-rea-investigation-desc">The recorded run of rea function on ledger-arm64-O1 for _percent_change with the Ghidra provider. At the top, you call rea 6.7.0, which hands the question to the BinarySession bound to ghidra, which calls the GhidraClient over bridge.sock, which launches Ghidra 12.1.4 as a headless JVM to import and analyze the artifact ledger-arm64-O1, a mach-o arm64 executable of 33872 bytes. Three columns show the same function: the C you wrote in ledger.c, the six instructions clang -O1 made from cbz w0 at 0x100000500 to ret at 0x100000514, and the pseudocode Ghidra decompiled with a second zero check the source never had. The Evidence record ev_b492c85e at the bottom names the operation analyze_function, the provider ghidra 12.1.4, the profile digest, confidence observed, the authority of a static read, ten limitations, and the subject sha256.</desc>
   <defs><marker id="plate-rea-investigation-head-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0 1 L10 5 L0 9 z" fill="var(--m-ink, #1a1a1a)"/></marker><marker id="plate-rea-investigation-head-olive" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0 1 L10 5 L0 9 z" fill="var(--m-olive-ink, #515f26)"/></marker><marker id="plate-rea-investigation-head-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0 1 L10 5 L0 9 z" fill="var(--m-teal-ink, #18696a)"/></marker></defs>
   <text x="20" y="18" font-size="11" letter-spacing="1.2" fill="var(--m-ink-mute, #6f6f6a)">FOUR VIEWS</text>
   <text x="620" y="18" font-size="11" text-anchor="end" fill="var(--m-ink-soft, #4a4a4a)">rea function ledger-arm64-O1 _percent_change --provider ghidra</text>
@@ -8,7 +8,7 @@
   <text x="55" y="44.95" font-size="11.5" text-anchor="middle" font-weight="700">you</text>
   <text x="55" y="62.05" font-size="11" text-anchor="middle" class="m-serif" fill="var(--m-ink-soft, #4a4a4a)">ledger.c</text>
   <rect x="150" y="30" width="100" height="40" fill="var(--m-blue-fill, #e6edf6)" stroke="var(--m-blue-ink, #2f5d9a)"/>
-  <text x="200" y="44.95" font-size="11.5" text-anchor="middle" font-weight="700">rea 6.5.0</text>
+  <text x="200" y="44.95" font-size="11.5" text-anchor="middle" font-weight="700">rea 6.7.0</text>
   <text x="200" y="62.05" font-size="11" text-anchor="middle" class="m-serif" fill="var(--m-ink-soft, #4a4a4a)">the CLI</text>
   <rect x="310" y="30" width="115" height="40" fill="var(--m-blue-fill, #e6edf6)" stroke="var(--m-blue-ink, #2f5d9a)"/>
   <text x="367.5" y="44.95" font-size="11.5" text-anchor="middle" font-weight="700">BinarySession</text>
@@ -76,7 +76,7 @@
   <rect class="m-knock" x="522" y="344.03" width="61.2" height="15.5" fill="var(--m-panel, #f3f1e8)"/>
   <text x="525" y="355" font-size="11.5" fill="var(--m-teal-ink, #18696a)">recorded</text>
   <rect x="20" y="366" width="600" height="92" fill="var(--m-teal-fill, #e1efee)" stroke="var(--m-teal-ink, #18696a)"/>
-  <text x="320" y="392.1" font-size="12" text-anchor="middle" font-weight="700">Evidence ev_172d39ff for _percent_change</text>
+  <text x="320" y="392.1" font-size="12" text-anchor="middle" font-weight="700">Evidence ev_b492c85e for _percent_change</text>
   <text x="320" y="409.3" font-size="11" text-anchor="middle" class="m-serif" fill="var(--m-ink-soft, #4a4a4a)">operation analyze_function · provider ghidra 12.1.4</text>
   <text x="320" y="424.3" font-size="11" text-anchor="middle" class="m-serif" fill="var(--m-ink-soft, #4a4a4a)">confidence observed · 10 limitations</text>
   <text x="320" y="439.3" font-size="11" text-anchor="middle" class="m-serif" fill="var(--m-ink-soft, #4a4a4a)">subject ledger-arm64-O1 · mach-o arm64</text>

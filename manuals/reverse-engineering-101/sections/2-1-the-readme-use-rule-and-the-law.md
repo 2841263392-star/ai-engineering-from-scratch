@@ -92,4 +92,4 @@ Check that the facts are not already published. Confine the work to the parts yo
 - Keep intermediate copies for analysis, and keep copied code out of anything you release.
 ```
 
-Sources: readme Disclaimer (rea README.md); rea DISCLAIMER.md, Responsible use, at 3b79af2; law: 17 U.S.C. 1201(a)(1)(A), (a)(3)(A), (c)(1), (f)(1), (f)(4), (j)(1), Directive 2009/24/EC Articles 1(2), 5(1), 5(3), 6(1), 6(2)(c), 8, CJEU C-406/10 and C-13/20, Sega v. Accolade, 977 F.2d 1510, Sony v. Connectix, 203 F.3d 596; capture/out/00-fixtures.txt
+Sources: readme Disclaimer (rea README.md); rea DISCLAIMER.md, Responsible use, at 27dc42d; law: 17 U.S.C. 1201(a)(1)(A), (a)(3)(A), (c)(1), (f)(1), (f)(4), (j)(1), Directive 2009/24/EC Articles 1(2), 5(1), 5(3), 6(1), 6(2)(c), 8, CJEU C-406/10 and C-13/20, Sega v. Accolade, 977 F.2d 1510, Sony v. Connectix, 203 F.3d 596; capture/out/00-fixtures.txt
