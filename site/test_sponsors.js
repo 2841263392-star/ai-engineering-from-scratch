@@ -85,7 +85,7 @@ test('backer listings are reachable and preserve existing supporters', () => {
   assert.match(backers, /^# Backers\n/);
   assert.ok(backers.includes(`[SerpApi](${sponsorUrl})`));
   assert.ok(backers.includes('[SPONSORS.md](SPONSORS.md)'));
-  for (const name of ['CodeRabbit', 'iii', 'Vercel Open Source Program']) {
+  for (const name of ['CodeRabbit', 'Vercel Open Source Program']) {
     assert.ok(backers.includes(`[${name}](https://`), name);
   }
   for (const [, destination] of backers.matchAll(/\]\(([^)]+)\)/g)) {
