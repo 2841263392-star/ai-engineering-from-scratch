@@ -29,6 +29,7 @@ on:
       - "scripts/test_agent_negotiation.js"
       - "scripts/test_agent_readiness.py"
       - "scripts/test_seo_routes.js"
+      - "scripts/test_function_bundles.js"
       - "scripts/test_skill_artifact_bundles.py"
       - "scripts/test_translate_workflow.py"
       - "scripts/translate_matrix.py"
@@ -85,6 +86,7 @@ on:
       - "scripts/test_agent_negotiation.js"
       - "scripts/test_agent_readiness.py"
       - "scripts/test_seo_routes.js"
+      - "scripts/test_function_bundles.js"
       - "scripts/test_skill_artifact_bundles.py"
       - "scripts/test_translate_workflow.py"
       - "scripts/translate_matrix.py"
@@ -168,6 +170,10 @@ jobs:
         run: node --test site/test_highlights_page.js
       - name: build the static site
         run: node site/build.js && node site/build-projects.js --strict && node site/build-agents.js
+      - name: deployment bundles stay small and preserve runtime assets
+        run: |
+          npm install --prefix "$RUNNER_TEMP/function-trace" --no-save --no-package-lock @vercel/nft@1.5.0
+          NODE_PATH="$RUNNER_TEMP/function-trace/node_modules" node --test scripts/test_function_bundles.js
       - name: public API and MCP contracts
         run: node --test scripts/test_agent_api.js scripts/test_agent_wire.js
       - name: dynamic lesson and certification routes preserve their public contracts
