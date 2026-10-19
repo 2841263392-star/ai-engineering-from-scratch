@@ -5,7 +5,7 @@
   "summary": "How SGLang turns GPU memory and time into tokens, why each feature exists, and which defaults to trust. Local listings come from recorded runs of SGLang 0.5.22.",
   "audience": "You are an engineer who has called a model API and wants to serve an open model yourself. You know what a token and a GPU are. You have not read a serving engine's scheduler or cache, and you want to know which settings matter before you pay for them.",
   "edition": "2026.10",
-  "status": "draft",
+  "status": "ready",
   "pin": {
     "subject": "SGLang",
     "version": "0.5.22",

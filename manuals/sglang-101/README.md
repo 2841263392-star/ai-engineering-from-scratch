@@ -1,13 +1,13 @@
 # SGLang 101
 
-SGLang 0.5.22, from one request on a laptop to a fleet of GPUs, with the judgment that the flag list leaves out. The documentation tells you what each of the 535 options of `sglang serve` does. This manual tells you which ones matter, why each feature exists, which defaults assume a machine you do not have, and what we measured when we changed them. The web edition is at [aiengineeringfromscratch.com/manual-sglang-101.html](https://aiengineeringfromscratch.com/manual-sglang-101.html), and each release of the course attaches the PDF as `aiefs-manual-sglang-101.pdf` once the manual is published.
+SGLang 0.5.22, from one request on a laptop to a fleet of GPUs, with the judgment that the flag list leaves out. The documentation tells you what each of the 535 options of `sglang serve` does. This manual tells you which ones matter, why each feature exists, which defaults assume a machine you do not have, and what we measured when we changed them. The web edition is at [aiengineeringfromscratch.com/manual-sglang-101.html](https://aiengineeringfromscratch.com/manual-sglang-101.html), and each release of the course attaches the PDF as `aiefs-manual-sglang-101.pdf`.
 
 ## What is in it
 
 - 28 sections in 7 parts, then six reference sections. Part 1 puts SGLang on one page. Part 2 follows one request through the three processes and the scheduler. Part 3 is the KV cache. Part 4 makes each forward pass fast, and Part 5 measures a server. Part 6 spreads one model over many GPUs, and Part 7 operates SGLang and closes with SGLang as the rollout engine of Miles.
 - Every section tells one story: the cost, the obvious fix and why it fails, what SGLang does, what to measure, our position on the default, and a real incident with its link.
 - Every number carries one of four labels: we measured, the code, a field report from engineers outside the SGLang team, or a team or vendor claim.
-- A cover plate, 43 figures drawn with the figure kit from the captures and the code, and charts plotted from the GPU runs.
+- A cover plate, 63 figures drawn with the figure kit from the captures and the code, and charts plotted from the GPU runs.
 - A capture kit in `capture/` that starts the real server on Apple silicon through MLX, sends requests, runs the official benchmark, and writes what it sees to `capture/out/`.
 - A GPU kit in `capture/gpu/` that runs eight server configurations and three-seed benchmark sweeps on one NVIDIA GPU, with the GPU clock and temperature of every run.
 
@@ -55,7 +55,7 @@ From the repository root:
 
 ```bash
 node manuals/_shared/figkit.js build manuals/sglang-101
-node site/build-manuals.js --drafts
+node site/build-manuals.js
 node scripts/audit_manuals.js --manual sglang-101
 ```
 
