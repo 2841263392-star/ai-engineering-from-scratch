@@ -1,118 +1,84 @@
 # Evidence: cheatsheets/sglang-serving.md
 
-Abbreviations: S = manuals/sglang-101/sections, C = manuals/sglang-101/capture, O = manuals/sglang-101/capture/out.
+<!-- Line numbers are estimates made from the trimmed section text. The build must resolve each one, and any reference that does not hold a fact must be corrected or removed. -->
 
-## Front matter
-- subtitle pin 0.5.22: manual.json lines 9-15
+Abbreviations: S = manuals/sglang-101/sections, C = manuals/sglang-101/capture, M = manuals/sglang-101.
 
-## Tasks (task-table, 8)
-- sglang serve --model-path --port 30000: O/server-default.command.txt:1
-- POST /generate {"text": ...}: C/one_request.py:13
-- POST /v1/chat/completions: C/one_request.py:17
-- GET /ready readiness: S/7-1-operating-sglang.md:49,57
-- GET /metrics: C/run.py:94, S/5-2-the-metrics-endpoint.md:11
-- fixed concurrency cap --max-concurrency 8: C/run.py:34, S/5-1-sglang-benchmark-serving.md:29
-- fixed request rate --request-rate (default inf): S/5-1-sglang-benchmark-serving.md:42
-- docker stop sends SIGTERM to main process: S/7-1-operating-sglang.md:118
+## Architecture: Three processes (architecture, 5 nodes)
+- Client, POST /generate: S/1-2-one-request-end-to-end.md:3
+- TokenizerManager, text to ids: S/2-1-sglang-serve-and-the-three-processes.md:17
+- Scheduler, batches and KV pool: S/2-2-the-scheduler-loop-and-schedule-policy.md:3
+- Model forward, prefill and decode: S/2-2-the-scheduler-loop-and-schedule-policy.md:25
+- Detokenizer, ids to text: S/2-1-sglang-serve-and-the-three-processes.md:17
 
-## Start the server (terminal 1) (annotated-code, 5 lines)
-- sglang serve --model-path --port 30000 --enable-cache-report --enable-metrics --mem-fraction-static 0.4: O/server-default.command.txt:1
-- cache report and metrics meaning: S/r-1-flags-and-defaults.md:35,57. fraction meaning: S/3-2-mem-fraction-static-and-startup-sizing.md:55
+## Flow: One request (flow, 5 steps)
+1. POST /generate with a five-token prompt: S/1-2-one-request-end-to-end.md:3
+2. cached_tokens 2, 3 new tokens: S/1-2-one-request-end-to-end.md:46
+3. 12 tokens returned: S/1-2-one-request-end-to-end.md:40
+4. finish_reason length: S/1-2-one-request-end-to-end.md:42
+5. 950 ms end to end: S/1-2-one-request-end-to-end.md:3
 
-## Benchmark it (terminal 2) (annotated-code, 5 lines)
-- benchmark --backend sglang --port 30000 --dataset-name random --random-input-len 512 --random-output-len 128 --random-range-ratio 1.0: C/run.py:23,26, S/5-1-sglang-benchmark-serving.md:27-29
-- default range ratio 0.0 halves prompts: S/5-1-sglang-benchmark-serving.md:40,45
-- --num-prompts 32 --max-concurrency 8: C/run.py:34. 255.63 tok/s: O/bench-random-c8.txt:23
+## Start a server (annotated-code, 3 lines)
+- MLX server line with --disable-cuda-graph and --mem-fraction-static 0.4: S/2-1-sglang-serve-and-the-three-processes.md:35
+- GPU server line with --mem-fraction-static 0.7: S/5-1-sglang-benchmark-serving.md:110
+- python3 capture/run.py --check: C/README.md:12
 
-## Key flags (command-table, 8)
-- --mem-fraction-static: S/3-2-mem-fraction-static-and-startup-sizing.md:55
-- --max-total-tokens: S/r-1-flags-and-defaults.md:12
-- --max-running-requests at the knee: S/r-1-flags-and-defaults.md:13, S/5-1-sglang-benchmark-serving.md:131
-- --chunked-prefill-size: S/r-1-flags-and-defaults.md:14, meaning S/2-1-sglang-serve-and-the-three-processes.md:75
-- --schedule-policy lpm: S/2-2-the-scheduler-loop-and-schedule-policy.md:62-71
-- --schedule-conservativeness 1.3: S/2-3-admission-and-retraction.md:114
-- --disable-radix-cache: S/r-1-flags-and-defaults.md:31
-- --tp-size: S/6-1-tp-size-dp-size-and-attn-dp-size.md:13
+## Commands (command-table, 8 rows)
+- sglang serve --model-path --port: S/2-1-sglang-serve-and-the-three-processes.md:35
+- --enable-cache-report: S/2-1-sglang-serve-and-the-three-processes.md:42
+- --enable-metrics default off: S/5-2-the-metrics-endpoint.md:9
+- --mem-fraction-static: S/3-2-mem-fraction-static-and-startup-sizing.md:9
+- --schedule-policy lpm: S/2-2-the-scheduler-loop-and-schedule-policy.md:44
+- --kv-cache-dtype fp8_e4m3: S/4-3-quantization.md:30
+- --enable-deterministic-inference: S/4-6-deterministic-inference-and-logprobs.md:9
+- python3 capture/run.py --check: C/README.md:12
 
-## Three processes (architecture, 6 nodes, 6 edges)
-- Client, HTTP :30000: S/2-1-sglang-serve-and-the-three-processes.md:46
-- TokenizerManager main process: S/2-1-sglang-serve-and-the-three-processes.md:19
-- Scheduler owns GPU: S/2-1-sglang-serve-and-the-three-processes.md:21
-- DetokenizerManager, ids to text: S/2-1-sglang-serve-and-the-three-processes.md:23
-- UnifiedRadixCache, match_prefix: S/3-3-radixcache.md:60,77
-- KV pool one slot per token: S/3-1-kv-bytes-per-token-and-the-kv-pool.md:59
-- ZMQ links between processes: S/2-1-sglang-serve-and-the-three-processes.md:25
+## Four numbers (concepts, 5)
+- TTFT: S/1-1-what-a-serving-engine-owns.md:20
+- TPOT: S/1-1-what-a-serving-engine-owns.md:22
+- Throughput: S/1-1-what-a-serving-engine-owns.md:24
+- Goodput: S/1-1-what-a-serving-engine-owns.md:26
+- KV pool, max_total_num_tokens: S/3-1-kv-bytes-per-token-and-the-kv-pool.md:62
 
-## One request, end to end (flow, 7)
-- 1 TokenizerManager tokenizes, sends over ZMQ: S/2-1-sglang-serve-and-the-three-processes.md:19,25
-- 2 Scheduler adds it to the waiting queue in policy order: S/2-2-the-scheduler-loop-and-schedule-policy.md:21,62
-- 3 RadixCache match_prefix, #cached-token: S/3-3-radixcache.md:60, S/2-2-the-scheduler-loop-and-schedule-policy.md:53
-- 4 Scheduler admits if prompt plus max_new_tokens fits: S/2-3-admission-and-retraction.md:19
-- 5 Scheduler prefills #new-token in chunks, samples first token: S/2-2-the-scheduler-loop-and-schedule-policy.md:22,26
-- 6 Scheduler decodes one token per step: S/2-2-the-scheduler-loop-and-schedule-policy.md:22,24
-- 7 DetokenizerManager turns ids into text: S/2-1-sglang-serve-and-the-three-processes.md:23
+## Order of changes (flow, 5 steps)
+1. Benchmark at three concurrency levels: S/7-1-operating-sglang.md:120
+2. --mem-fraction-static on a shared machine: S/7-1-operating-sglang.md:122
+3. Shared text first in prompts: S/7-1-operating-sglang.md:124
+4. Cap --max-running-requests at the knee: S/7-1-operating-sglang.md:126
+5. One flag per run, --tp-size only when weights do not fit: S/7-1-operating-sglang.md:128, S/6-1-tp-size-dp-size-and-attn-dp-size.md:3
 
-## Defaults in the code (8, all S/r-1)
-- mem-fraction-static None: S/r-1-flags-and-defaults.md:11
-- max-running-requests None: S/r-1-flags-and-defaults.md:13
-- chunked-prefill-size None: S/r-1-flags-and-defaults.md:14
-- schedule-conservativeness 1.0: S/r-1-flags-and-defaults.md:16
-- schedule-policy fcfs: S/r-1-flags-and-defaults.md:23
-- enable-cache-report False: S/r-1-flags-and-defaults.md:35
-- enable-metrics None, resolves to off: S/r-1-flags-and-defaults.md:57
-- watchdog-timeout 300 s: S/r-1-flags-and-defaults.md:58
+## Defaults (defaults, 8 rows)
+- --tp-size 1: S/r-1-flags-and-defaults.md:36
+- --schedule-policy fcfs: S/r-1-flags-and-defaults.md:27
+- --radix-eviction-policy lru: S/r-1-flags-and-defaults.md:33
+- --schedule-conservativeness 1.0: S/r-1-flags-and-defaults.md:16
+- --decode-log-interval 40: S/2-2-the-scheduler-loop-and-schedule-policy.md:31
+- --num-reserved-decode-tokens 512: S/6-3-prefill-decode-disaggregation.md:58
+- --cache-threshold 0.3: S/6-4-sgl-model-gateway.md:30
+- --stream-interval 1: S/r-1-flags-and-defaults.md:25
 
-## Key metrics (concepts, 8)
-- time_to_first_token_seconds histogram, p99 over 5 min alert: S/r-2-metrics.md:11, S/5-2-the-metrics-endpoint.md:81
-- inter_token_latency_seconds histogram: S/r-2-metrics.md:12
-- queue_time_seconds histogram: S/r-2-metrics.md:15
-- num_queue_reqs alert: S/5-2-the-metrics-endpoint.md:83
-- token_usage alert: S/5-2-the-metrics-endpoint.md:84
-- num_retracted_reqs alert: S/5-2-the-metrics-endpoint.md:85
-- prefill_effective_tokens_total windowed hit rate: S/5-2-the-metrics-endpoint.md:47,66
-- cache_hit_rate last interval: S/5-2-the-metrics-endpoint.md:39
+## Troubleshooting (troubleshooting, 6 rows)
+- Insufficient Memory, 0.872 automatic fraction: S/3-2-mem-fraction-static-and-startup-sizing.md:28
+- ambiguous option --cuda-graph-max-bs: S/4-1-forwardmode-and-cuda-graphs.md:140
+- Could not find nvcc: S/7-1-operating-sglang.md:20
+- memory capacity is unbalanced: S/6-1-tp-size-dp-size-and-attn-dp-size.md:105
+- KV cache pool is full, retract requests: S/2-3-admission-and-retraction.md:60
+- #cached-token 0 on repeated prompts: S/3-4-prefix-friendly-prompts.md:9
 
-## Log lines to read (command-table, 8)
-- bytes_per_slot=114688, pool_size=181574: O/server-default.log:61
-- max_total_num_tokens=181574: O/server-default.log:70
-- max_running_requests=4096: O/server-default.log:70
-- #new-token: 3, #cached-token: 2: O/server-default.log:94, S/2-1 listing via 1-2:87
-- #running-req: 5 ... #queue-req: 11: O/server-small-pool.log:118
-- KV cache pool is full. Retract requests.: S/2-3-admission-and-retraction.md:82
-- crashed with exit code -15: O/server-default.log:566, S/2-1-sglang-serve-and-the-three-processes.md:111
-- Insufficient Memory: O/oom-exploratory.log:15, S/3-2-mem-fraction-static-and-startup-sizing.md:43 (memory outside the pool)
+## Glossary (glossary, 4)
+- ITL: S/1-1-what-a-serving-engine-owns.md:31
+- KV: S/3-1-kv-bytes-per-token-and-the-kv-pool.md:3
+- Radix tree: S/3-3-radixcache.md:3
+- MoE: S/6-2-moe-serving-deepep-and-eplb.md:3
 
-## Troubleshooting (8)
-- Insufficient Memory, 87 percent, 0.4: S/r-3-incident-index.md:11
-- RuntimeError, --disable-overlap-schedule, keep overlap on: S/r-3-incident-index.md:12
-- retractions, raise conservativeness: S/2-3-admission-and-retraction.md:114, S/r-3-incident-index.md:21
-- high TTFT fast TPOT, past knee, cap: S/2-3-admission-and-retraction.md:65-74, S/5-1-sglang-benchmark-serving.md:123,131
-- no cached_tokens without --enable-cache-report: S/1-2-one-request-end-to-end.md:133
-- #cached-token near 0, id at start, shared text first: S/3-4-prefix-friendly-prompts.md:29-33
-- health check failed, 20 s, /ready: S/r-3-incident-index.md:70
-- crash line at shutdown, process group: S/r-3-incident-index.md:13
+## Questions (qa, 4)
+- Queueing with free memory: S/2-3-admission-and-retraction.md:9
+- lpm changes to FCFS above 128: S/2-2-the-scheduler-loop-and-schedule-policy.md:62
+- Overlap scheduler default and MLX crash: S/2-4-the-overlap-scheduler.md:90
+- Temperature 0 and batch size: S/4-6-deterministic-inference-and-logprobs.md:80
 
-## Glossary (8)
-- TTFT: S/r-4-glossary.md:71, expansion S/3-3-radixcache.md:16
-- TPOT: S/r-4-glossary.md:69, O/bench-shared-prefix.txt:40
-- ITL: S/r-4-glossary.md:34, O/bench-shared-prefix.txt:46
-- KV cache: S/r-4-glossary.md:35
-- TP: S/r-4-glossary.md:65
-- DP: S/r-4-glossary.md:20
-- EP: S/r-4-glossary.md:25
-- PD: S/r-4-glossary.md:55
-
-## Q&A (5)
-- Why three processes, GIL: S/2-1-sglang-serve-and-the-three-processes.md:3,13
-- Five requests, 768 each: S/2-3-admission-and-retraction.md:38
-- 2,998 of 2,999 cached: S/3-3-radixcache.md:65
-- 0.942 vs 0.636, trust counters: S/5-2-the-metrics-endpoint.md:56,111
-- Knee at or below 8: S/5-1-sglang-benchmark-serving.md:123
-
-## Tips (6)
-- --random-range-ratio 1.0: S/5-1-sglang-benchmark-serving.md:47
-- p50/p99 TTFT and TPOT: S/5-1-sglang-benchmark-serving.md:129
-- steps of 0.02: S/3-2-mem-fraction-static-and-startup-sizing.md:88
-- radix cache on, measure hit rate per feature: S/3-3-radixcache.md:98-102
-- pin lmsysorg/sglang:v0.5.22: S/7-1-operating-sglang.md:24,161
-- mount ~/.cache/sglang: S/7-1-operating-sglang.md:41,162
+## Tips (tips, 4)
+- Pin lmsysorg/sglang:v0.5.22, never latest: S/7-1-operating-sglang.md:7
+- Start every server with --enable-metrics: S/5-2-the-metrics-endpoint.md:9
+- Read max_total_num_tokens at startup: S/2-1-sglang-serve-and-the-three-processes.md:55
+- Pass --random-range-ratio 1.0: S/5-1-sglang-benchmark-serving.md:85
