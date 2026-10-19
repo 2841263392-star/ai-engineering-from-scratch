@@ -150,7 +150,21 @@ caption: Output throughput against max concurrency, three seeds per point. Plum 
 
 The open-loop sweep of [section 5.1](#s-sglang-benchmark-serving) agreed. With requests arriving at a fixed rate, two copies completed at most 0.21 requests per second inside our latency target. One L4 alone completed 0.96.
 
-Two settings would help here, and we have not measured them yet. `--load-balance-method total_tokens` sends each request to the copy that holds the fewest tokens. Two separate servers behind the gateway in [section 6.4](#s-sgl-model-gateway) can each get a weight. The plain lesson is simpler. Data parallelism adds capacity only when every copy has about the same pool. Check the `#tokens` line of each `DP` rank before you trust the sum.
+We then measured one of the two settings that could help. `--load-balance-method total_tokens` sends each request to the copy that holds the fewest tokens.
+
+```listing
+title: the same uneven pair, routed by tokens
+source: capture/gpu/out-l4/server-dp2-tokens.log
+lang: text
+note: The two pools at startup. The second card was still shared, so its copy had an eighth of the pool.
+---
+[2026-10-19 00:24:05 DP0] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 24094, K size: 1.65 GB, V size: 1.65 GB
+[2026-10-19 00:24:06 DP1] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 2925, K size: 0.20 GB, V size: 0.20 GB
+```
+
+**We measured** a large gain over round robin, and still a loss against one card. At 64 users the pair gave 114.7 tok/s routed by tokens, against 41.7 with round robin and 250.9 on one L4. At 8 users it gave 92.1 against 64.2 and 112.6. The median TTFT at 64 users fell from 4,763 to 3,977 ms. The median clock at 64 users was 1,020 MHz, against 675 MHz in the round-robin run. So part of the gain can be the card.
+
+The other setting is two separate servers behind the gateway in [section 6.4](#s-sgl-model-gateway), each with a weight. We did not measure it. The plain lesson is simpler. Data parallelism adds capacity only when every copy has about the same pool. Check the `#tokens` line of each `DP` rank before you trust the sum.
 
 ```takeaways
 - Set --tp-size to the smallest number of GPUs that fits the model and its KV cache.

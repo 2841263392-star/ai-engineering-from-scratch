@@ -102,7 +102,28 @@ Decode could run only two requests at a time, and 19 more waited for decode memo
 
 The dangerous part came next. Each failed request still returned HTTP 200 through the router, with no text. The benchmark counted 240 successful requests out of 240 and printed a throughput higher than the FP8 server's. Only two numbers gave it away: zero retokenized output tokens and a mean TTFT of 0.00 ms.
 
-We did not publish those throughput numbers. Our kit now refuses a run in which every request has a TTFT of 0. We are measuring the split again with decode on the larger pool. Check `Total generated tokens (retokenized)` in every disaggregated benchmark before you read its throughput.
+We did not publish those throughput numbers. Our kit now refuses a run in which every request has a TTFT of 0.
+
+We then ran the split the other way round. Decode had the full pool of 24,094 tokens, and prefill had the shared card with 2,925. Up to 8 users, every request came back with text. At 16 users, only 2,048 of 8,192 generated tokens came back as text. At 32 users, every request came back empty, and the kit stopped the sweep.
+
+```listing
+title: the swapped split as it failed
+source: capture/gpu/out-l4/bench-pd-swap.txt
+lang: text
+note: Benchmark summary lines at 8, 16, and 32 users. Compare the generated tokens with the retokenized ones.
+---
+c8: Successful requests: 32 
+c8: Total generated tokens: 4096 
+c8: Total generated tokens (retokenized): 4096 
+c16: Successful requests: 64 
+c16: Total generated tokens: 8192 
+c16: Total generated tokens (retokenized): 2048 
+c32: Successful requests: 128 
+c32: Total generated tokens: 16384 
+c32: Total generated tokens (retokenized): 0 
+```
+
+The fixed-rate sweep and the original direction failed the same way, at 4 requests per second and at 4 users. We have no measured result for the split under load on this pair of cards, and we do not claim one. Check `Total generated tokens (retokenized)` in every disaggregated benchmark before you read its throughput.
 
 ## What to measure
 
@@ -122,4 +143,4 @@ Measure TTFT and inter-token latency on one server first, with the benchmark in 
 - Choose the prefill to decode ratio from your own concurrency, then watch transfer failures.
 ```
 
-Sources: python/sglang/srt/arg_groups/fields/disagg.py, python/sglang/srt/arg_groups/choices.py, python/sglang/srt/environ.py, python/sglang/srt/disaggregation/prefill.py, python/sglang/srt/disaggregation/decode.py, python/sglang/srt/disaggregation/base/conn.py (KVPoll), python/sglang/srt/disaggregation/common/conn.py, python/sglang/srt/disaggregation/mooncake/conn.py, python/sglang/srt/managers/data_parallel_controller.py, python/sglang/srt/observability/metrics_collector.py, sgl-model-gateway/src/routers/http/pd_router.rs and pd_types.rs, and docs/docs/advanced_features/pd_disaggregation.mdx, all at v0.5.22. capture/gpu/incidents/l4-pd-mooncake-tcp-queue.txt. Issues #12591, #9266, #9926, pull request #9803. Novita AI on Hugging Face, 2026-01-22. dstack, "Benchmarking Prefill-Decode ratios", 2025-09-25. LMSYS, 96 H100 deployment, 2025-05-05. The Mooncake team on the LMSYS blog, 2025-07-20.
+Sources: python/sglang/srt/arg_groups/fields/disagg.py, python/sglang/srt/arg_groups/choices.py, python/sglang/srt/environ.py, python/sglang/srt/disaggregation/prefill.py, python/sglang/srt/disaggregation/decode.py, python/sglang/srt/disaggregation/base/conn.py (KVPoll), python/sglang/srt/disaggregation/common/conn.py, python/sglang/srt/disaggregation/mooncake/conn.py, python/sglang/srt/managers/data_parallel_controller.py, python/sglang/srt/observability/metrics_collector.py, sgl-model-gateway/src/routers/http/pd_router.rs and pd_types.rs, and docs/docs/advanced_features/pd_disaggregation.mdx, all at v0.5.22. capture/gpu/incidents/l4-pd-mooncake-tcp-queue.txt, capture/gpu/out-l4/bench-pd-swap.txt. Issues #12591, #9266, #9926, pull request #9803. Novita AI on Hugging Face, 2026-01-22. dstack, "Benchmarking Prefill-Decode ratios", 2025-09-25. LMSYS, 96 H100 deployment, 2025-05-05. The Mooncake team on the LMSYS blog, 2025-07-20.

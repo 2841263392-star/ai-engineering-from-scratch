@@ -146,6 +146,31 @@ At concurrency 1 the pool size does not matter, and FP8 was still faster: 39.66 
 
 On this card the goodput result is clear. Our target was TTFT under 1 s and TPOT under 100 ms. BF16 served 0 requests per second within target at concurrency 32 and 64. FP8 served 2.87 requests per second within target at 64.
 
+### When the pool is too small for the prefixes
+
+The L4 test above gave BF16 a full pool. We then gave both builds the same smaller budget, `--mem-fraction-static 0.74`, and ran the shared-prefix sweep of [section 3.3](#s-radixcache). Each run sent 64 prompts in 4 groups of 16 at 8 users, with a shared system prompt of 0 to 4,096 tokens. Four groups at 4,096 tokens need about 16,000 tokens of prefix in the cache.
+
+```listing
+title: two pools from one memory budget
+source: capture/gpu/out-l4/server-small-pool-bf16-fp8.log
+lang: text
+note: The BF16 pool and the FP8 pool at the same memory fraction of 0.74.
+---
+[2026-10-18 19:35:26] KV Cache is allocated. dtype: torch.bfloat16, #tokens: 6559, K size: 0.45 GB, V size: 0.45 GB
+[2026-10-18 22:02:58] KV Cache is allocated. dtype: torch.float8_e4m3fn, #tokens: 107299, K size: 3.68 GB, V size: 3.68 GB
+```
+
+| Shared prompt tokens | Output tok/s, BF16 / FP8 | Median TTFT, BF16 / FP8 |
+|---|---|---|
+| 0 | 113.5 / 180.1 | 354 / 255 ms |
+| 1,024 | 95.0 / 164.1 | 470 / 349 ms |
+| 2,048 | 25.9 / 155.1 | 12,576 / 380 ms |
+| 4,096 | 10.9 / 134.8 | 40,126 / 372 ms |
+
+**We measured** a cliff for BF16 and none for FP8. The BF16 pool held 6,559 tokens, so at 2,048 shared tokens the four prefixes no longer fitted. Its median first token went from 470 ms to 12.6 s. The FP8 pool held 107,299 tokens and kept every prefix, with a first token under 400 ms at every length. At 2,048 shared tokens, FP8 gave 6.0 times the output of BF16.
+
+One caveat belongs with the last row. The BF16 runs at 4,096 shared tokens stayed under our 1,000 MHz clock floor after three tries, at a median of 390 MHz. Read the 2,048 row as the result. The FP8 runs had a median clock of 1,200 to 1,260 MHz.
+
 ## Our position
 
 Use an offline-quantized checkpoint and pass no `--quantization` flag. The docs say the same: "offline quantization is recommended over online quantization" {{docs}}. Online quantization adds load time and gives you a checkpoint that nobody evaluated.
@@ -172,4 +197,4 @@ Quantize per phase when you run prefill and decode on separate servers. Smaller 
 - Read the KV Cache is allocated line to see the pool size each choice buys.
 ```
 
-Sources: capture/gpu/out-gb10/server-default.log, server-fp8.log, server-fp8.command.txt, generate.txt, fp8-generate.txt, capture/gpu/summary/gb10.json, capture/gpu/summary/l4.json, capture/gpu/out-l4/server-load-default.log, server-load-fp8.log, python/sglang/srt/arg_groups/choices.py (QUANTIZATION_CHOICES), arg_groups/fields/model.py (kv_cache_dtype, quantization_param_path), configs/model_config.py (_verify_quantization), layers/quantization/__init__.py (get_quantization_config), layers/quantization/gptq/gptq.py (override_quantization_method), layers/quantization/fp8.py, and docs/docs/advanced_features/quantization.mdx at v0.5.22; PR #32114; field reports by Cloudflare (2026-08-03), joshua8.ai (2026-01-10), and Pivot News (2026-05-19).
+Sources: capture/gpu/out-gb10/server-default.log, server-fp8.log, server-fp8.command.txt, generate.txt, fp8-generate.txt, capture/gpu/summary/gb10.json, capture/gpu/summary/l4.json, capture/gpu/out-l4/server-load-default.log, server-load-fp8.log, python/sglang/srt/arg_groups/choices.py (QUANTIZATION_CHOICES), arg_groups/fields/model.py (kv_cache_dtype, quantization_param_path), configs/model_config.py (_verify_quantization), layers/quantization/__init__.py (get_quantization_config), layers/quantization/gptq/gptq.py (override_quantization_method), layers/quantization/fp8.py, and docs/docs/advanced_features/quantization.mdx at v0.5.22; PR #32114; field reports by Cloudflare (2026-08-03), joshua8.ai (2026-01-10), and Pivot News (2026-05-19); capture/gpu/out-l4/server-small-pool-bf16-fp8.log, capture/gpu/summary/l4.json (prefix.small-pool, prefix.fp8-small-pool).
