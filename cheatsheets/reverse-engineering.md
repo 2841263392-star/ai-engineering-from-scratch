@@ -1,9 +1,11 @@
 ---
 id: reverse-engineering
 title: Reverse Engineering with rea
-subtitle: Read a compiled program and prove what you found. Pinned to rea-agents 6.5.0 with Ghidra 12.1.4.
+code: RE
+subtitle: Read a compiled program and prove what you found. Pinned to rea-agents 6.7.0 with Ghidra 12.1.4.
 hue: 350
 sources: manuals/reverse-engineering-101, phases/13-tools-and-protocols/32-program-anatomy-elf-from-scratch, phases/13-tools-and-protocols/33-disassembly-and-control-flow, phases/13-tools-and-protocols/34-lifting-to-pseudocode, phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns, phases/13-tools-and-protocols/36-rebuild-and-prove-equal, phases/13-tools-and-protocols/37-the-reverse-engineering-landscape, phases/13-tools-and-protocols/38-calling-conventions-and-stack-frames, phases/13-tools-and-protocols/39-compiler-idioms-and-optimization, phases/13-tools-and-protocols/40-linking-loading-and-stripped-binaries, phases/13-tools-and-protocols/41-recovering-data-and-types, phases/13-tools-and-protocols/42-dynamic-analysis-of-your-own-program, phases/13-tools-and-protocols/43-bytecode-and-managed-formats, phases/13-tools-and-protocols/44-binary-diffing-and-symbolic-execution, phases/13-tools-and-protocols/45-ai-assisted-reverse-engineering
+source_hash: cebf6402c4ec1489
 ---
 
 ## rea CLI tasks
@@ -31,9 +33,9 @@ from: manuals/reverse-engineering-101/sections/r-1-commands-and-tools.md, manual
 | Export a canonical copy | `rea evidence-export <bundle> <out>` |
 | Validate a bundle | `rea evidence-import <bundle>` |
 | Compare two bundles | `rea compare <left> <right>` |
-| Start the MCP server | `npx -y rea-agents@6.5.0 mcp` |
+| Start the MCP server | `npx -y rea-agents@6.7.0 mcp` |
 | Write client registrations | `rea setup` |
-| Check a client registration | `rea doctor --client <id>` |
+| Check a client registration | `rea setup --client <id> --dry-run` |
 | Capture again and compare | `python3 run.py --check` |
 
 ## One investigation from the shell
@@ -140,7 +142,6 @@ from: manuals/reverse-engineering-101/sections/r-1-commands-and-tools.md, manual
 |---|---|---|
 | `REA_GHIDRA_STARTUP_TIMEOUT_MS` | 330,000 ms | rea waits this long for Ghidra |
 | Client tool call deadline | 60,000 ms | SDK 2.3.1. Set it above the first call |
-| Bridge `shutdown` deadline | 10 s | Then Ghidra deletes the project |
 | Output without `--format` | TOON | Pass `--format json` in scripts |
 | `confidence` not named | `observed` | When the producer names none |
 | `authority` not named | `shipped-artifact` | When the producer names none |
@@ -149,12 +150,11 @@ from: manuals/reverse-engineering-101/sections/r-1-commands-and-tools.md, manual
 
 ## Troubleshooting
 type: troubleshooting
-from: manuals/reverse-engineering-101/sections/r-3-errors.md, manuals/reverse-engineering-101/sections/8-1-the-rea-mcp-server.md, manuals/reverse-engineering-101/sections/2-2-rea-doctor-and-the-ghidra-provider.md, manuals/reverse-engineering-101/sections/4-6-analyze-function-and-pseudocode.md, manuals/reverse-engineering-101/sections/7-2-a-proof-harness-outside-rea.md, manuals/reverse-engineering-101/capture/README.md
+from: manuals/reverse-engineering-101/sections/r-3-errors.md, manuals/reverse-engineering-101/sections/8-1-the-rea-mcp-server.md, manuals/reverse-engineering-101/sections/2-2-rea-doctor-and-the-ghidra-provider.md, manuals/reverse-engineering-101/sections/7-2-a-proof-harness-outside-rea.md, manuals/reverse-engineering-101/capture/README.md
 
 | Symptom | Cause | Fix |
 |---|---|---|
 | `inspect-binary-layout` exits 1, `capability_unavailable` | The pwntools profile is Linux x64 only | Use `rea inspect-macho` on macOS |
-| `invalid_request`: unknown procedure name | The name is not in the target | Fix the name and retry |
 | Client times out, Java keeps running | First Ghidra call outlasts the client deadline | Raise the per-call client deadline |
 | `provider_timeout` on the first call | Ghidra startup passed the deadline | Raise `REA_GHIDRA_STARTUP_TIMEOUT_MS` |
 | `target_unavailable`: "No app is open." | No `open_binary` yet | Call `open_binary` first |
@@ -189,7 +189,7 @@ from: manuals/reverse-engineering-101/sections/1-1-rea-providers-and-evidence.md
 type: tips
 from: manuals/reverse-engineering-101/sections/8-1-the-rea-mcp-server.md, manuals/reverse-engineering-101/sections/5-1-the-evidence-record.md, manuals/reverse-engineering-101/sections/7-1-verify-reconstruction.md, manuals/reverse-engineering-101/sections/8-2-an-agent-investigation.md, manuals/reverse-engineering-101/sections/7-2-a-proof-harness-outside-rea.md
 
-- Register `rea-agents@6.5.0` with one exact version.
+- Register `rea-agents@6.7.0` with one exact version.
 - Read `confidence`, `authority` and `limitations` before `normalized_result`.
 - Export the bundle before `close_binary`.
 - Treat a passed structural claim as "same Ghidra text". Prove behaviour and bytes yourself.

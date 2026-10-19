@@ -1,6 +1,6 @@
 # Evidence: cheatsheets/mcp.md
 
-Paths are relative to /private/tmp/aiefs-cheatsheets/phases/13-tools-and-protocols/. L06 = 06-mcp-fundamentals, L07 = 07-building-an-mcp-server, L08 = 08-building-an-mcp-client, L09 = 09-mcp-transports, L12 = 12-mcp-roots-and-elicitation, L16 = 16-mcp-security-oauth-2-1, L29 = 29-mcp-reliability-cancellation-and-flow-control.
+Abbreviations: L06 = phases/13-tools-and-protocols/06-mcp-fundamentals, L07 = phases/13-tools-and-protocols/07-building-an-mcp-server, L08 = phases/13-tools-and-protocols/08-building-an-mcp-client, L09 = phases/13-tools-and-protocols/09-mcp-transports, L12 = phases/13-tools-and-protocols/12-mcp-roots-and-elicitation, L16 = phases/13-tools-and-protocols/16-mcp-security-oauth-2-1, L29 = phases/13-tools-and-protocols/29-mcp-reliability-cancellation-and-flow-control.
 
 ## Front matter
 - subtitle 2026-07-28, stdio and Streamable HTTP: L06/docs/en.md:22, L09/docs/en.md:28-42
@@ -46,8 +46,10 @@ Paths are relative to /private/tmp/aiefs-cheatsheets/phases/13-tools-and-protoco
 
 ## Methods (command-table, 8)
 - server/discover: L06/docs/en.md:108-114
-- tools/list, tools/call: L06/docs/en.md:39
-- resources/list, resources/read: L06/docs/en.md:40
+- tools/list: L06/docs/en.md:39
+- tools/call: L06/docs/en.md:39
+- resources/list: L06/docs/en.md:40
+- resources/read: L06/docs/en.md:40
 - prompts/list, prompts/get: L06/docs/en.md:41
 - cacheable list results: L06/docs/en.md:104
 - subscriptions/listen: L09/docs/en.md:124-150

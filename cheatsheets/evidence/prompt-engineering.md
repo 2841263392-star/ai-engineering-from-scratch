@@ -3,7 +3,13 @@
 Abbreviations: P11 = phases/11-llm-engineering. L01 = P11/01-prompt-engineering, L02 = P11/02-few-shot-cot, L05 = P11/05-context-engineering, L15 = P11/15-prompt-caching. d = docs/en.md. Code files: L01/c = code/prompt_engineering.py, L02/c = code/advanced_prompting.py, L05/c = code/main.py.
 
 ## Architecture: What goes in the window (8 nodes, 7 edges)
-- System prompt ~500, Tool definitions ~2K-8K, Retrieved context ~2K-10K, Conversation history ~2K-20K, Few-shot examples ~1K-3K, User query ~100-500, Generation budget ~2K-8K: L05/d:38-45
+- System prompt ~500: L05/d:40
+- Tool definitions ~2K-8K: L05/d:41
+- Retrieved context ~2K-10K: L05/d:42
+- Conversation history ~2K-20K: L05/d:43
+- Few-shot examples ~1K-3K: L05/d:44
+- User query ~100-500: L05/d:45
+- Generation budget ~2K-8K: L05/d:46
 - Context window is input plus output: L01/d:172, L05/d:574
 - edges follow the order in the window diagram: L05/d:40-45
 
@@ -36,7 +42,14 @@ Abbreviations: P11 = phases/11-llm-engineering. L01 = P11/01-prompt-engineering,
 - tree_of_thought_solve(question, client, model, breadth=3, depth=2): L02/c:352-354
 
 ## Pick a reasoning technique (command-table, 8)
-- all rows, best-for, API calls and token overhead: L02/d:311-321
+- Zero-shot: L02/d:313
+- Few-shot: L02/d:314
+- Zero-shot CoT: L02/d:315
+- Few-shot CoT: L02/d:316
+- Self-consistency, N=5: L02/d:317
+- Tree-of-Thought: L02/d:319
+- ReAct: L02/d:320
+- Prompt chaining: L02/d:321
 - "Let's think step by step": L02/d:104
 
 ## Prompt anatomy and patterns (concepts, 8)

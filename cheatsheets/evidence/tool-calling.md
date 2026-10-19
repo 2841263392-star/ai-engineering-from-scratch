@@ -1,6 +1,6 @@
 # Evidence: cheatsheets/tool-calling.md
 
-Paths are relative to /private/tmp/aiefs-cheatsheets/phases/. A = 11-llm-engineering/03-structured-outputs/docs/en.md, F = 11-llm-engineering/09-function-calling/docs/en.md, T1 = 13-tools-and-protocols/01-the-tool-interface, T2 = 13-tools-and-protocols/02-function-calling-deep-dive/docs/en.md, T3 = 13-tools-and-protocols/03-parallel-and-streaming-tool-calls, T4 = 13-tools-and-protocols/04-structured-output, T5 = 13-tools-and-protocols/05-tool-schema-design/docs/en.md, C21 = 19-capstone-projects/21-tool-registry-schema-validation, C23 = 19-capstone-projects/23-function-call-dispatcher
+Abbreviations: A = phases/11-llm-engineering/03-structured-outputs/docs/en.md, F = phases/11-llm-engineering/09-function-calling/docs/en.md, T1 = phases/13-tools-and-protocols/01-the-tool-interface, T2 = phases/13-tools-and-protocols/02-function-calling-deep-dive/docs/en.md, T3 = phases/13-tools-and-protocols/03-parallel-and-streaming-tool-calls, T4 = phases/13-tools-and-protocols/04-structured-output, T5 = phases/13-tools-and-protocols/05-tool-schema-design/docs/en.md, C21 = phases/19-capstone-projects/21-tool-registry-schema-validation, C23 = phases/19-capstone-projects/23-function-call-dispatcher.
 
 ## Function call tasks (task-table, 8)
 - declare OpenAI {"type": "function", "function": {...}}: F:63-67, F:582-584
@@ -74,7 +74,9 @@ Paths are relative to /private/tmp/aiefs-cheatsheets/phases/. A = 11-llm-enginee
 - strict: required, additionalProperties: false, no $ref: T4/docs/en.md:51
 
 ## Limits and defaults (defaults, 8)
-- OpenAI 128 tools, schema depth 5, 8192 bytes: T2:59
+- OpenAI 128 tools per request: T2:59
+- OpenAI schema depth 5: T2:59
+- OpenAI argument string 8192 bytes: T2:59
 - Anthropic 64 tools: T2:60
 - 1024 characters, truncated: T5:57
 - MAX_TURNS 5: T1/code/main.py:28

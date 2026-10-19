@@ -1,11 +1,15 @@
 # Evidence: cheatsheets/multi-agent.md
 
-Paths are relative to /private/tmp/aiefs-cheatsheets/phases/16-multi-agent-and-swarms/. Lesson directories are shortened to their number: 04 = 04-primitive-model, and so on. D = docs/en.md, C = code/main.py.
+Abbreviations: 04 = phases/16-multi-agent-and-swarms/04-primitive-model, D = docs/en.md, C = code/main.py, 22 = phases/16-multi-agent-and-swarms/22-production-scaling-queues-checkpoints, 13 = phases/16-multi-agent-and-swarms/13-shared-memory-blackboard, 11 = phases/16-multi-agent-and-swarms/11-handoffs-and-routines, 10 = phases/16-multi-agent-and-swarms/10-group-chat-speaker-selection, 05 = phases/16-multi-agent-and-swarms/05-supervisor-orchestrator-pattern, 14 = phases/16-multi-agent-and-swarms/14-consensus-and-bft, 23 = phases/16-multi-agent-and-swarms/23-failure-modes-mast-groupthink, 01 = phases/16-multi-agent-and-swarms/01-why-multi-agent, 06 = phases/16-multi-agent-and-swarms/06-hierarchical-architecture, 15 = phases/16-multi-agent-and-swarms/15-voting-debate-topology, 24 = phases/16-multi-agent-and-swarms/24-evaluation-coordination-benchmarks.
+
+Lesson directories are shortened to their number:, and so on.
 
 ## Four primitives (architecture, 8 nodes, 7 edges)
 - Orchestrator static, handoff, selector: 04/D:23; 04/C:82-128
 - CheckpointStore thread_id, super_step, each step: 22/C:22-48; 22/D:52
-- Agents researcher, writer, reviewer, prompt + tools, stateless: 04/C:74-79; 04/D:21, 54
+- Agent researcher, prompt + tools: 04/C:76; 04/D:21
+- Agent writer, stateless: 04/C:77; 04/D:54
+- Agent reviewer, stateless: 04/C:78; 04/D:54
 - handoff edges: 04/C:59, 65; 04/D:22
 - SharedState message pool, append: 04/C:23-30; 04/D:24
 - Blackboard topic pub/sub, publish: 13/D:47; 13/C:68-104
@@ -56,12 +60,14 @@ Paths are relative to /private/tmp/aiefs-cheatsheets/phases/16-multi-agent-and-s
 - Single agent under 20 tool calls and 100k tokens: 01/D:220
 
 ## Defaults in the code (defaults, 8)
-- max_steps 10: 04/C:88, 100, 121
+- max_steps 10: 04/C:88; 04/C:100; 04/C:121
 - max_rounds 8: 10/C:121
-- TERMINATE: 10/C:32, 49, 103
+- TERMINATE: 10/C:32; 10/C:49; 10/C:103
 - threshold 0.5: 14/C:36
 - rounds 2: 15/C:79
-- failure_threshold 0.5, window_size 20, open_cooldown_s 0.5: 23/C:66-68
+- failure_threshold 0.5: 23/C:66
+- window_size 20: 23/C:67
+- open_cooldown_s 0.5: 23/C:68
 
 ## Troubleshooting (8)
 - hot speaker, speaker balance: 10/D:82

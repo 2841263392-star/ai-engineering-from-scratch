@@ -1,9 +1,11 @@
 ---
 id: a2a
 title: A2A Protocol
+code: AP
 subtitle: Discover an agent, send it work, follow the task, read its errors. Pinned to A2A 1.0.1.
 hue: 140
 sources: manuals/a2a-101
+source_hash: 2bf16b666a27a172
 ---
 
 ## Tasks over JSON-RPC
@@ -185,11 +187,9 @@ from: manuals/a2a-101/sections/r-1-operations-by-binding.md, manuals/a2a-101/sec
 
 ## Tips
 type: tips
-from: manuals/a2a-101/sections/5-4-version-and-extension-headers.md, manuals/a2a-101/sections/4-1-send-message.md, manuals/a2a-101/sections/1-2-one-task-request-by-request.md, manuals/a2a-101/sections/2-2-discovery-and-supported-interfaces.md, manuals/a2a-101/sections/r-4-errors.md, manuals/a2a-101/sections/4-6-push-notification-configs.md
+from: manuals/a2a-101/sections/4-1-send-message.md, manuals/a2a-101/sections/1-2-one-task-request-by-request.md, manuals/a2a-101/sections/2-2-discovery-and-supported-interfaces.md, manuals/a2a-101/sections/4-6-push-notification-configs.md
 
-- Send `A2A-Version: 1.0` on every request, with no patch number.
 - Set `returnImmediately: true` when you poll, subscribe, or wait for a webhook.
 - Take the task id and context id from the first frame.
 - Skip any operation whose capability flag is absent or `false`.
-- Answer a task the caller cannot access with `TaskNotFoundError`.
 - Process push notifications idempotently. Duplicates can arrive.

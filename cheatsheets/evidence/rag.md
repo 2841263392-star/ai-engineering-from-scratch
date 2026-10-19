@@ -1,11 +1,12 @@
 # Evidence: cheatsheets/rag.md
 
-Abbreviations: P11 = phases/11-llm-engineering, P05 = phases/05-nlp-foundations-to-advanced, P19 = phases/19-capstone-projects. L64..L69 = P19/64-chunking-strategies-advanced .. P19/69-end-to-end-rag-system. d = docs/en.md, c = code/main.py.
+Abbreviations: P11 = phases/11-llm-engineering, P05 = phases/05-nlp-foundations-to-advanced, P19 = phases/19-capstone-projects, L64 = phases/19-capstone-projects/64-chunking-strategies-advanced, L65 = phases/19-capstone-projects/65-hybrid-retrieval-bm25-dense, L66 = phases/19-capstone-projects/66-reranker-cross-encoder, L67 = phases/19-capstone-projects/67-query-rewriting-hyde, L68 = phases/19-capstone-projects/68-rag-eval-precision-recall, L69 = phases/19-capstone-projects/69-end-to-end-rag-system, d = docs/en.md, c = code/main.py.
 
 ## Architecture: End-to-end RAG pipeline (8 nodes, 7 edges)
-- Documents, Chunker, Hybrid Index, Query, Rewriter, Retriever, Reranker, Generator, cited answer: L69/d:24-37
+- Documents, source documents: L69/d:26
 - Chunker recursive split: L69/d:94, L69/c:130-138
 - HybridIndex BM25 + dense: L69/d:95, L69/c:212-223
+- User query: L69/d:28
 - Rewriter HyDE, multi-query, decompose: L69/d:96, L69/c:249-255
 - Retriever RRF, top_n 12: L69/c:200, 220, 476
 - Reranker cross-encoder, top_k 5: L69/d:97, L69/c:477, 515
@@ -52,14 +53,14 @@ Abbreviations: P11 = phases/11-llm-engineering, P05 = phases/05-nlp-foundations-
 - sentence_chunks, long single topic, target 500: L64/d:117
 - semantic_chunks, short mixed topics, threshold 0.6: L64/d:118
 - fixed_window as a control, mid-symbol cuts: L64/d:48, 100
-- Parent-document, retrieve child, return parent, dedupe: P05/23/d:36, 152
-- Contextual retrieval, 50-100 words of context: P05/23/d:40, 161
-- Late chunking, token-level embed then pool: P05/23/d:38
+- Parent-document, retrieve child, return parent, dedupe: P05/23-chunking-strategies-rag/d:36, 152
+- Contextual retrieval, 50-100 words of context: P05/23-chunking-strategies-rag/d:40, 161
+- Late chunking, token-level embed then pool: P05/23-chunking-strategies-rag/d:38
 
 ## Key formulas (concepts, 8)
-- Cosine, -1 to 1: P11/06/d:95-99
-- BM25 term: P11/07/d:42-47
-- RRF: P11/07/d:55-60
+- Cosine, -1 to 1: P11/06-rag/d:95-99
+- BM25 term: P11/07-advanced-rag/d:42-47
+- RRF: P11/07-advanced-rag/d:55-60
 - Precision@k: L68/d:47, L68/c:39-45
 - Recall@k: L68/d:51, L68/c:48-52
 - MRR: L68/d:57
@@ -67,11 +68,11 @@ Abbreviations: P11 = phases/11-llm-engineering, P05 = phases/05-nlp-foundations-
 - nDCG@k = DCG / IDCG, range 0 to 1: L68/d:63, L68/c:84-91
 
 ## Defaults and numbers (defaults, 8)
-- BM25 k1 1.5: L65/c:51, L65/d:90. Lesson 11.07 uses 1.2: P11/07/d:47, 186
+- BM25 k1 1.5: L65/c:51, L65/d:90. Lesson 11.07 uses 1.2: P11/07-advanced-rag/d:47, 186
 - b 0.75, 0 ignores length, 1 full: L65/c:52, L65/d:135
 - RRF k 60, rank 1 adds 1/61: L65/c:145, L65/d:55
-- chunk size 256-512 with 50-token overlap: P11/06/d:131
-- 5 to 10 chunks, 2,500-5,000 tokens: P11/06/d:174, 176
+- chunk size 256-512 with 50-token overlap: P11/06-rag/d:131
+- 5 to 10 chunks, 2,500-5,000 tokens: P11/06-rag/d:174, 176
 - rerank pool N 50 to 200: L66/d:26
 - top_n 12, top_k 5: L69/c:476-477
 - REFUSE_THRESHOLD 0.05, REFUSE_TEXT: L69/c:431-432
@@ -81,16 +82,16 @@ Abbreviations: P11 = phases/11-llm-engineering, P05 = phases/05-nlp-foundations-
 - good recall, low MRR, reranker: L68/d:133
 - high MRR, low faithfulness, force cite or refuse: L68/d:134
 - high faithfulness, low relevance, query rewriter: L68/d:135
-- E-4021 missed by embedding: P11/07/d:34, BM25 exact match: P11/07/d:36-38
+- E-4021 missed by embedding: P11/07-advanced-rag/d:34, BM25 exact match: P11/07-advanced-rag/d:36-38
 - N = K gives zero lift, N at least 3 times K: L66/d:94
 - HyDE invents identifier, cap length, weight BM25 lower: L67/d:129
-- 40-token fragments, enforce min_tokens: P05/23/d:189
+- 40-token fragments, enforce min_tokens: P05/23-chunking-strategies-rag/d:189
 
 ## Abbreviations (glossary, 8)
-- RAG: P11/06/d:417
-- BM25 Best Matching 25: P11/07/d:40, 515
-- RRF: P11/07/d:517
-- HyDE: P11/07/d:105
+- RAG: P11/06-rag/d:417
+- BM25 Best Matching 25: P11/07-advanced-rag/d:40, 515
+- RRF: P11/07-advanced-rag/d:517
+- HyDE: P11/07-advanced-rag/d:105
 - MRR: L68/d:55, 174
 - nDCG: L68/d:63
 - Qrels: L68/d:178
@@ -98,13 +99,13 @@ Abbreviations: P11 = phases/11-llm-engineering, P05 = phases/05-nlp-foundations-
 
 ## Questions (qa, 5)
 - RRF vs score interpolation, BM25 unbounded: L65/d:61
-- cross-encoder 100-1000x slower: P11/07/d:74
+- cross-encoder 100-1000x slower: P11/07-advanced-rag/d:74
 - recall@k quoted, generator cannot use unseen chunk: L68/d:53
 - HyDE wrong answer still helps, token distribution: L67/d:58
-- RAG for facts, fine-tuning for style, tone, reasoning pattern: P11/06/d:70
+- RAG for facts, fine-tuning for style, tone, reasoning pattern: P11/06-rag/d:70
 
 ## Tips (tips, 6)
-- recursive 512, recall@5 on 50 queries: P05/23/d:207
+- recursive 512, recall@5 on 50 queries: P05/23-chunking-strategies-rag/d:207
 - answer only from context, say "I don't know": P05/13-question-answering/d:106, 111
 - pin bi-encoder, cross-encoder and N: L66/d:106
 - different model family for the judge: L68/d:140

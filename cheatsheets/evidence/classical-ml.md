@@ -1,6 +1,7 @@
-# Evidence: classical-ml
+# Evidence: cheatsheets/classical-ml.md
 
-Paths are relative to /private/tmp/aiefs-cheatsheets/phases/02-ml-fundamentals/. Each lesson is named by its number: 02 = 02-linear-regression, 03 = 03-logistic-regression, 04 = 04-decision-trees, 05 = 05-support-vector-machines, 06 = 06-knn-and-distances, 07 = 07-unsupervised-learning, 08 = 08-feature-engineering, 09 = 09-model-evaluation, 10 = 10-bias-variance, 11 = 11-ensemble-methods, 12 = 12-hyperparameter-tuning, 13 = 13-ml-pipelines, 14 = 14-naive-bayes, 17 = 17-imbalanced-data, 18 = 18-feature-selection. D = docs/en.md.
+Abbreviations: 02 = phases/02-ml-fundamentals/02-linear-regression, 03 = phases/02-ml-fundamentals/03-logistic-regression, 04 = phases/02-ml-fundamentals/04-decision-trees, 05 = phases/02-ml-fundamentals/05-support-vector-machines, 06 = phases/02-ml-fundamentals/06-knn-and-distances, 07 = phases/02-ml-fundamentals/07-unsupervised-learning, 08 = phases/02-ml-fundamentals/08-feature-engineering, 09 = phases/02-ml-fundamentals/09-model-evaluation, 10 = phases/02-ml-fundamentals/10-bias-variance, 11 = phases/02-ml-fundamentals/11-ensemble-methods, 12 = phases/02-ml-fundamentals/12-hyperparameter-tuning, 13 = phases/02-ml-fundamentals/13-ml-pipelines, 14 = phases/02-ml-fundamentals/14-naive-bayes, 17 = phases/02-ml-fundamentals/17-imbalanced-data, 18 = phases/02-ml-fundamentals/18-feature-selection, D = docs/en.md.
+
 
 ## Fit a model (task-table, 8)
 - Ridge(alpha=1.0): 02/D:513

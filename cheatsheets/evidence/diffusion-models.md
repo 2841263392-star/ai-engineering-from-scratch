@@ -1,4 +1,4 @@
-# Evidence: diffusion-models
+# Evidence: cheatsheets/diffusion-models.md
 
 Abbreviations: P08 = phases/08-generative-ai. VAE = P08/02-autoencoders-vae, GAN = P08/03-gans-generator-discriminator, DDPM = P08/06-diffusion-ddpm-from-scratch, LDM = P08/07-latent-diffusion-stable-diffusion, CN = P08/08-controlnet-lora-conditioning, FM = P08/13-flow-matching-rectified-flows, EV = P08/14-evaluation-fid-clip-score. doc = docs/en.md, code = code/main.py.
 

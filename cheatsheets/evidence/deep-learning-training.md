@@ -1,9 +1,10 @@
 # Evidence: cheatsheets/deep-learning-training.md
 
-Paths are relative to /private/tmp/aiefs-cheatsheets/phases/03-deep-learning-core/. L03 = 03-backpropagation/docs/en.md, L06 = 06-optimizers/docs/en.md, L07 = 07-regularization/docs/en.md, L08 = 08-weight-initialization/docs/en.md, L09 = 09-learning-rate-schedules/docs/en.md, L13 = 13-debugging-neural-networks/docs/en.md.
+Abbreviations: L03 = phases/03-deep-learning-core/03-backpropagation/docs/en.md, L06 = phases/03-deep-learning-core/06-optimizers/docs/en.md, L07 = phases/03-deep-learning-core/07-regularization/docs/en.md, L08 = phases/03-deep-learning-core/08-weight-initialization/docs/en.md, L09 = phases/03-deep-learning-core/09-learning-rate-schedules/docs/en.md, L13 = phases/03-deep-learning-core/13-debugging-neural-networks/docs/en.md.
 
 ## One AdamW step (architecture, 8 nodes)
-- loss, loss.backward(): L06:417-418
+- Loss node, forward pass output: L06:417
+- loss.backward() node: L06:418
 - clip_grad_norm_ max_norm=1.0: L06:419, L06:458
 - first moment m_t, mean, beta1 0.9: L06:85, L06:107
 - second moment v_t, variance, beta2 0.999: L06:86, L06:107
@@ -12,9 +13,13 @@ Paths are relative to /private/tmp/aiefs-cheatsheets/phases/03-deep-learning-cor
 - decoupled decay lr · λ · w, edge AdamW: L06:115-120
 
 ## The training step (flow, 7)
-- order zero_grad, forward, loss, backward, clip, step, schedule: L06:424
-- each step: L06:415-421
-- scheduler.step() after optimizer.step(): L06:424
+- 1 zero_grad: L06:415
+- 2 forward: L06:416
+- 3 loss: L06:417
+- 4 backward: L06:418
+- 5 clip, optional: L06:419, L06:424
+- 6 step: L06:420
+- 7 scheduler.step() after optimizer.step(): L06:421, L06:424
 
 ## Training loop with AdamW and cosine (annotated-code, 13 lines)
 - AdamW lr=3e-4 weight_decay=0.01: L06:410
@@ -56,7 +61,7 @@ Paths are relative to /private/tmp/aiefs-cheatsheets/phases/03-deep-learning-cor
 - Adam lr 0.001, change lr first: L06:107
 - beta1 0.9, almost never change: L06:107
 - beta2 0.999, change second: L06:107
-- epsilon 1e-8: L06:107 (10^{-8}), 06-optimizers/docs/en.md:216 (epsilon=1e-8)
+- epsilon 1e-8: L06:107 (10^{-8}), L06:216 (epsilon=1e-8)
 - AdamW weight_decay 0.01, not scaled by adaptive rate: L06:121, L06:246
 - SGD momentum 0.9, last 10 gradients: L06:56, L06:426
 - SGD weight decay 1e-4 on CNNs, step or cosine: L06:426

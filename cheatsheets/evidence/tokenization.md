@@ -13,10 +13,14 @@ Abbreviations: N19 = phases/05-nlp-foundations-to-advanced/19-subword-tokenizati
 - AutoTokenizer.from_pretrained("meta-llama/Llama-3.1-8B"): T1/docs/en.md:426
 
 ## Tokenizer and data pipeline (architecture, 8 nodes, 7 edges)
-- Raw Text, Normalize, Pre-Tokenize, BPE Merge, Special Tokens, Token IDs: T2/docs/en.md:35-41
-- NFKC, split into chunks, merge table, fixed IDs: T2/docs/en.md:55-58
-- flat list of ids, Dataset, windows of T+1 ids: C31/docs/en.md:29,33-39
-- DataLoader seeded shuffle, B x T: C31/docs/en.md:42-44,70
+- Raw Text: T2/docs/en.md:37
+- Normalize, NFKC: T2/docs/en.md:37, 55
+- Pre-Tokenize, split into chunks: T2/docs/en.md:38, 56
+- BPE Merge, merge table: T2/docs/en.md:39, 57
+- Special Tokens, fixed IDs: T2/docs/en.md:40, 58
+- Token IDs, flat list of ids: T2/docs/en.md:41; C31/docs/en.md:34
+- PyTorch Dataset, windows of T+1 ids: C31/docs/en.md:39, 68
+- DataLoader seeded shuffle, B x T: C31/docs/en.md:42-43, 78
 
 ## Train BPE merges (annotated-code, 14 lines)
 - initialize, _build_initial_units, while loop: C30/code/main.py:116-118

@@ -1,6 +1,6 @@
 # Evidence: cheatsheets/inference-optimization.md
 
-Paths are relative to /private/tmp/aiefs-cheatsheets/phases/. KV = 07-transformers-deep-dive/12-kv-cache-flash-attention/docs/en.md, IO = 10-llms-from-scratch/12-inference-optimization/docs/en.md, QZ = 10-llms-from-scratch/11-quantization/docs/en.md, VL = 17-infrastructure-and-production/04-vllm-serving-internals/docs/en.md, EG = 17-infrastructure-and-production/05-eagle3-speculative-decoding/docs/en.md, MT = 17-infrastructure-and-production/08-inference-metrics-goodput/docs/en.md, PQ = 17-infrastructure-and-production/09-production-quantization/docs/en.md.
+Abbreviations: KV = phases/07-transformers-deep-dive/12-kv-cache-flash-attention/docs/en.md, IO = phases/10-llms-from-scratch/12-inference-optimization/docs/en.md, QZ = phases/10-llms-from-scratch/11-quantization/docs/en.md, VL = phases/17-infrastructure-and-production/04-vllm-serving-internals/docs/en.md, EG = phases/17-infrastructure-and-production/05-eagle3-speculative-decoding/docs/en.md, MT = phases/17-infrastructure-and-production/08-inference-metrics-goodput/docs/en.md, PQ = phases/17-infrastructure-and-production/09-production-quantization/docs/en.md.
 
 ## Tasks (task-table, 8)
 - --enable-prefix-caching: KV:199
@@ -32,13 +32,22 @@ Paths are relative to /private/tmp/aiefs-cheatsheets/phases/. KV = 07-transforme
 - goodput: MT:53-55
 
 ## Serving engine (architecture, 7 nodes, 6 edges)
-- waiting queue, RUNNING list, scheduler per decode iteration: VL:39-45
-- KV block pool 16-token blocks, block table: VL:31
-- fused forward, one GPU call: VL:91
-- draft proposes K tokens, target verifies: EG:21
+- Waiting queue, new requests: VL:42, VL:78
+- Scheduler, runs every decode step: VL:39
+- RUNNING list, prefill and decode: VL:39, 45
+- KV block pool, 16-token blocks: VL:31
+- Block table, logical to physical: VL:31
+- Fused forward, one GPU call: VL:91
+- Draft head proposes K tokens, target verifies: EG:21
 
 ## One scheduler iteration (flow, 7)
-- 1: VL:41, VL:75. 2: VL:31,76. 3: VL:42,78-81. 4: VL:51,87. 5: VL:89. 6: VL:91. 7: VL:31
+- 1, scheduler removes finished sequences: VL:41, VL:75
+- 2, allocator returns blocks to the pool: VL:31, VL:76
+- 3, scheduler admits waiting sequences: VL:42, VL:78-81
+- 4, prefill chunk of 512 tokens: VL:51, VL:87
+- 5, one decode token for every other sequence: VL:89
+- 6, one fused forward: VL:91
+- 7, allocator adds a block on growth: VL:31
 
 ## Defaults worth knowing (defaults, 7)
 - PagedAttention block 16 tokens, under 4 percent: VL:31,33
@@ -68,7 +77,11 @@ Paths are relative to /private/tmp/aiefs-cheatsheets/phases/. KV = 07-transforme
 - compatibility matrix: VL:61, EG:71
 
 ## Glossary (8)
-- TTFT, TPOT, ITL, E2E, P99: MT:127-133
+- TTFT: MT:127
+- TPOT: MT:128
+- ITL: MT:129
+- E2E: MT:130
+- P99: MT:133
 - HBM 80 GB on H100, ~3 TB/s: KV:220
 - Alpha: EG:98
 - PTQ: QZ:144

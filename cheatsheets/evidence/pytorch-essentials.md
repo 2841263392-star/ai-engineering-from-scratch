@@ -1,6 +1,6 @@
 # Evidence: cheatsheets/pytorch-essentials.md
 
-Paths are relative to /private/tmp/aiefs-cheatsheets/phases/. P = 03-deep-learning-core/11-intro-to-pytorch/docs/en.md, D = 03-deep-learning-core/13-debugging-neural-networks/docs/en.md, G = 00-setup-and-tooling/03-gpu-setup-and-cloud/docs/en.md, X = 00-setup-and-tooling/12-debugging-and-profiling/docs/en.md.
+Abbreviations: P = phases/03-deep-learning-core/11-intro-to-pytorch/docs/en.md, D = phases/03-deep-learning-core/13-debugging-neural-networks/docs/en.md, G = phases/00-setup-and-tooling/03-gpu-setup-and-cloud/docs/en.md, X = phases/00-setup-and-tooling/12-debugging-and-profiling/docs/en.md.
 
 ## Tasks (task-table, 8)
 - device = torch.device("cuda" if ... else "cpu"): P:67, 245, G:94
@@ -44,13 +44,23 @@ Paths are relative to /private/tmp/aiefs-cheatsheets/phases/. P = 03-deep-learni
 - float16 forward: P:255
 
 ## Tensor ops (command-table, 8)
-- view, reshape, permute, unsqueeze, squeeze: P:79-83
+- x.view(2, 12), contiguous: P:79
+- x.reshape(6, 4), works always: P:80
+- x.permute(2, 0, 1): P:81
+- x.unsqueeze(0), (1, 2, 3, 4): P:82
+- x.squeeze(), removes size 1 dimensions: P:83
 - x.to("cuda") / x.cpu(): P:69-70
 - .detach(): D:190
 - labels.long(): D:193
 
 ## Modules (command-table, 8)
-- nn.Linear, Conv2d, BatchNorm1d, Dropout, ReLU, Embedding, LayerNorm rows: P:146-153
+- nn.Linear(in, out), Wx + b, in*out + out: P:146
+- nn.Conv2d(in_ch, out_ch, k), 2D convolution: P:147
+- nn.BatchNorm1d(features), 2 * features: P:148
+- nn.LayerNorm(dim), 2 * dim: P:153
+- nn.Dropout(p), 0 parameters: P:149
+- nn.ReLU(): P:150
+- nn.Embedding(vocab, dim), vocab * dim: P:152
 - nn.Sequential runs modules in order: P:343-351, 462
 
 ## Defaults and numbers (defaults, 8)

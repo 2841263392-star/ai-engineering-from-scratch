@@ -1,4 +1,4 @@
-# Evidence: agent-harness (after trim pass)
+# Evidence: cheatsheets/agent-harness.md
 
 P14 = phases/14-agent-engineering, P15 = phases/15-autonomous-systems, P19 = phases/19-capstone-projects
 L20 = P19/20-agent-harness-loop-contract, L21 = P19/21-tool-registry-schema-validation, L23 = P19/23-function-call-dispatcher, L25 = P19/25-verification-gates-observation-budget, L26 = P19/26-sandbox-runner-denylist, L27 = P19/27-eval-harness-fixture-tasks, L28 = P19/28-observability-otel-traces, L29 = P19/29-end-to-end-coding-task-demo, PACK = P14/42-agent-workbench-capstone/outputs/agent-workbench-pack
@@ -61,10 +61,18 @@ L20 = P19/20-agent-harness-loop-contract, L21 = P19/21-tool-registry-schema-vali
 - generate_handoff.py handoff.json, handoff.md: PACK/scripts/generate_handoff.py:68-71, 107
 
 ## The seven workbench surfaces
-- P14/31-agent-workbench-why-models-fail/docs/en.md:29-37
+- Instructions, startup rules, forbidden actions, definition of done: P14/31-agent-workbench-why-models-fail/docs/en.md:31
+- State, current task, touched files, blockers, next action: P14/31-agent-workbench-why-models-fail/docs/en.md:32
+- Scope, allowed files, forbidden files, acceptance criteria: P14/31-agent-workbench-why-models-fail/docs/en.md:33
+- Feedback, real command output captured into the loop: P14/31-agent-workbench-why-models-fail/docs/en.md:34
+- Verification, tests, lint, smoke run, scope check: P14/31-agent-workbench-why-models-fail/docs/en.md:35
+- Review, a second pass with a different role: P14/31-agent-workbench-why-models-fail/docs/en.md:36
+- Handoff, what changed, why, what is left: P14/31-agent-workbench-why-models-fail/docs/en.md:37
 
 ## Defaults (8 rows)
-- max_turns 8, max_tool_calls 16, max_wall_seconds 30.0: L20/code/main.py:73-75
+- max_turns 8: L20/code/main.py:73
+- max_tool_calls 16: L20/code/main.py:74
+- max_wall_seconds 30.0: L20/code/main.py:75
 - timeout_ms 30_000, override wins: L21/code/main.py:58; L23/code/main.py:203
 - max_attempts 3, timeout and transient only: L23/code/main.py:136, 220-239
 - concurrency 8: L23/code/main.py:137, 145

@@ -67,8 +67,10 @@ Abbreviations: E = phases/11-llm-engineering/04-embeddings, D = phases/05-nlp-fo
 - 1,536 to 256 safe, to 64 not: D/docs/en.md:142
 
 ## Defaults in the code (defaults, 8)
-- chunk_size 200, overlap 50: E/code/embeddings.py:6
-- top_k 5, metric "cosine": E/code/embeddings.py:109; metrics dot, euclidean, hamming: 113-118
+- chunk_size 200: E/code/embeddings.py:6
+- overlap 50: E/code/embeddings.py:6
+- top_k 5: E/code/embeddings.py:109
+- metric "cosine", also dot, euclidean, hamming: E/code/embeddings.py:109, 113-118
 - RRF k 60: D/code/main.py:59
 - hash_embed dim 256: D/code/main.py:16
 - n_min 3, n_max 6: FT/docs/en.md:89
