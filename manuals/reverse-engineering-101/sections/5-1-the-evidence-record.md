@@ -179,6 +179,8 @@ claim: The id hashes every field of the record except subject.name and subject.l
 caption: Read top to bottom. Solid rows enter the hash and dashed rows are display fields. Values are from capture/out/10-mcp-09-analyze-function-percent-change-O1.json, digests shown by their first hex digits.
 ```
 
+The [Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?symbols=off) machine files each stage of one decompilation in an evidence ledger. The ledger uses the same three confidence words and adds a tray for unknowns. This link opens the run with the symbol table switched off, so you can watch which facts move from observed to unknown.
+
 ```takeaways
 - Read `confidence`, `authority`, and `limitations` before `normalized_result`, and copy all three into your notes.
 - Treat `observed` as "rea recorded the engine output", never as "the source was recovered".

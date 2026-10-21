@@ -259,6 +259,8 @@ The lookup was a round trip on the socket to Ghidra, a couple of milliseconds in
 
 Read the sixteen facets in this order. Start with `procedure` for the body and `assembly` for what the processor does. Then read `basic_blocks` for the shape and the references for the edges, and `pseudocode` last. [Section 5.5](#s-compare-and-compare-functions) compares two dossiers of the same function from two builds. [Section 7.2](#s-a-proof-harness-outside-rea) shows the test that decides whether a rebuild from this text is equal to the original.
 
+To see where each line of pseudocode comes from, run the [Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler) machine. It decompiles `percent_change` from the x86-64 fixture object in nine stations, from the header to the pseudocode. The instructions, IR and pseudocode on the page are the ones that the course lifter in lesson 34 prints. Switch the build to `-O0` to see stack slots become locals, and switch the symbols off to see the name become an unknown.
+
 ```takeaways
 - Read `signature_source` and the parameter `confidence` before you trust a type in the pseudocode.
 - Check every constant and table address in the text against the assembly and the bytes.
