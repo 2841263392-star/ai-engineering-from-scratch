@@ -108,6 +108,8 @@ throughput-latency
 
 `code/main.py` is a toy goodput calculator. Generate a synthetic latency distribution, apply an SLO, and compute goodput. Also shows the GenAI-Perf vs LLMPerf TPOT difference on the same trace.
 
+The [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?users=1) machine shows where time per output token comes from on an NVIDIA L4. One decode step reads 16.41 GB of weights, which takes at least 54.7 ms at 300 GB/s, and the measured step took 60.16 ms.
+
 ## Ship It
 
 This lesson produces `outputs/skill-slo-goodput-gate.md`. Given a workload and SLO, it produces a CI/CD-ready benchmark recipe that gates deploys on goodput rather than throughput.

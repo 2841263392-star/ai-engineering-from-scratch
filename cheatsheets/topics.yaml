@@ -306,6 +306,7 @@
 - id: sglang-serving
   title: LLM Serving with SGLang
   kind: manual
+  explainer: inside-an-llm-serving-gpu.html
   sources:
     - manuals/sglang-101
 

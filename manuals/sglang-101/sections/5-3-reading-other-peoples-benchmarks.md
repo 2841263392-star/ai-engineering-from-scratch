@@ -304,6 +304,8 @@ This is one model, one GPU, and four workloads. It agrees with the field reports
 
 The sweep adds the part that a throughput chart hides. When the pool is full, you choose between a fast first token and a smooth stream, and the two engines chose differently by default. With mixed prompt lengths, vLLM was ahead by default on throughput and stream smoothness. SGLang still gave the first token at the same time or sooner. One SGLang flag, `--enable-mixed-chunk`, removed that lead.
 
+To see why one GPU number differs from another, run the [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu) machine. It reads its pool sizes, step times and throughputs from the same summaries as this section, for the L4 and the GB10. It says when a setting was not measured.
+
 ## Our position
 
 For a dense model with unique prompts, the choice of engine is not a throughput decision. It is a latency decision, and the shape of your traffic picks the winner. When requests arrive together, at a full pool or in waves, SGLang protected the stream and vLLM the first token. When prompts of mixed lengths arrive one by one, vLLM led by default on throughput and stream smoothness. With the mixed chunk on, SGLang tied it.

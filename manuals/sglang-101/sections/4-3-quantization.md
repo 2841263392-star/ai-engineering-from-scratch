@@ -171,6 +171,8 @@ note: The BF16 pool and the FP8 pool at the same memory fraction of 0.74.
 
 One caveat belongs with the last row. The BF16 runs at 4,096 shared tokens stayed under our 1,000 MHz clock floor after three tries, at a median of 390 MHz. Read the 2,048 row as the result. The FP8 runs had a median clock of 1,200 to 1,260 MHz.
 
+The [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?workload=shared&shared=2048&frac=0.74) machine runs the small-pool test on an L4. This link opens BF16 at a fraction of 0.74 with 2,048 shared tokens. The four prefixes do not fit in 6,559 tokens together, so the tree evicts prefixes and requests compute them again. Switch the weights to FP8 to keep every prefix in 107,299 tokens.
+
 ## Our position
 
 Use an offline-quantized checkpoint and pass no `--quantization` flag. The docs say the same: "offline quantization is recommended over online quantization" {{docs}}. Online quantization adds load time and gives you a checkpoint that nobody evaluated.

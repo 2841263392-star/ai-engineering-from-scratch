@@ -86,6 +86,8 @@ The two levers that change the number are the memory fraction in [section 3.2](#
 
 A field report shows the size of that lever. Cloudflare reported that FP8 KV raised the context held in memory for Kimi K2.6 from about 686,000 to about 1.37 million tokens {{field Cloudflare 2026-08}}. The same report measured a few percent less throughput per request at low concurrency. At concurrency 64, the BF16 configuration ran out of memory, and the FP8 configuration reached 2,192 tokens per second. You trade a little speed per token for twice the users. Read the [Cloudflare post](https://blog.cloudflare.com/smaller-faster-safer-models/) for their accuracy checks before you copy the change.
 
+The [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?users=64) machine draws the KV pool as cells on the six GDDR6 packages of an L4. This link opens the BF16 run at 64 users: the 24,094-token pool holds 37 requests of 640 tokens, and the other 27 wait. Switch the weights to FP8 to see the pool grow to 142,369 tokens.
+
 ## What to measure
 
 - Read `bytes_per_slot` or compute it, and check that the two agree.
@@ -102,4 +104,4 @@ The lesson on [inference optimization](phases/10-llms-from-scratch/12-inference-
 - Try FP8 KV before you buy more GPUs, and check accuracy on your data.
 ```
 
-Sources: python/sglang/srt/model_executor/pool_configurator.py (_compute_cell_size, calculate_pool_sizes), python/sglang/srt/mem_cache/memory_pool.py (ReqToTokenPool), python/sglang/srt/mem_cache/allocator/token.py (TokenToKVPoolAllocator), python/sglang/srt/hardware_backend/mlx/model_runner.py (_compute_pool_size), python/sglang/srt/arg_groups/fields/model.py (kv_cache_dtype) at v0.5.22, capture/out/server-default.log, the SGLang paper (arXiv 2312.07104), the Cloudflare report of 2026-08-03.
+Sources: python/sglang/srt/model_executor/pool_configurator.py (_compute_cell_size, calculate_pool_sizes), python/sglang/srt/mem_cache/memory_pool.py (ReqToTokenPool), python/sglang/srt/mem_cache/allocator/token.py (TokenToKVPoolAllocator), python/sglang/srt/hardware_backend/mlx/model_runner.py (_compute_pool_size), python/sglang/srt/arg_groups/fields/model.py (kv_cache_dtype) at v0.5.22, capture/out/server-default.log, the SGLang paper (arXiv 2312.07104), the Cloudflare report of 2026-08-03, capture/gpu/out-l4/server-load-default.log and capture/gpu/out-l4/server-load-fp8.log for the L4 pools.
