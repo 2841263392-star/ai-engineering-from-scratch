@@ -69,15 +69,14 @@ module.exports = figure('plate-planner-run', {
     f.arrow([lane.start, lane.oy + dy], [left, lane.oy + dy], { style: 'call', label });
   };
 
-  const task = (lane, machine, id, lines, slips) => {
+  const task = (lane, machine, id, lines, slips, doneBeat) => {
     f.arrow([machine.P(46, 0, 0)[0] + 2, lane.oy - 20], [TRAY[0] - 2, lane.oy - 20], { style: 'state' });
-    const label = pill(f, TRAY[0], lane.top, TRAY[1] - TRAY[0], `task ${id}`, lines, 'amber');
     f.isoBeam(lane.view, { sx0: TRAY[0], sx1: TRAY[1], c: 22, back: 44, h: 3, z: 6, hue: 'paper', inkHue: 'amber', ink: 1, shadow: false });
-    const placed = slips.map(([sx, hue]) => {
-      const slip = unit(lane.view, sx, 30, 4, hue, 9);
-      f.leader([sx, label.bottom], [slip.top[0], slip.top[1]], { hue });
-      return slip;
-    });
+    const placed = [unit(lane.view, slips[0][0], 30, 4, slips[0][1], 9)];
+    if (doneBeat) f.beat(doneBeat);
+    const label = pill(f, TRAY[0], lane.top, TRAY[1] - TRAY[0], `task ${id}`, lines, 'amber');
+    if (slips[1]) placed.push(unit(lane.view, slips[1][0], 30, 4, slips[1][1], 9));
+    slips.forEach(([sx, hue], index) => f.leader([sx, label.bottom], [placed[index].top[0], placed[index].top[1]], { hue }));
     if (placed.length === 2) f.arrow([slips[0][0] + 28, lane.oy - 11], [slips[1][0] - 28, lane.oy - 11], { style: 'state' });
     return placed;
   };
@@ -103,20 +102,21 @@ module.exports = figure('plate-planner-run', {
   [[21, 'paper', 26], [16, 'rose-fill', 18], [11, 'paper', 22]].forEach(([k, hue, end]) => face(review, [[10, 46, k], [10 + end, 46, k], [10 + end, 46, k - 2.4], [10, 46, k - 2.4]], hue, 0.95));
   call(two, review, -30, 'SendMessage');
   f.beat(4);
-  task(two, review, '80bc7784', [['wait', 'TASK_STATE_INPUT_REQUIRED'], ['done', 'TASK_STATE_COMPLETED'], ['note', 'review.json: 1 finding']], [[450, 'amber'], [550, 'green']]);
+  task(two, review, '80bc7784', [['wait', 'TASK_STATE_INPUT_REQUIRED'], ['done', 'TASK_STATE_COMPLETED'], ['note', 'review.json: 1 finding']], [[450, 'amber'], [550, 'green']], 6);
   f.beat(5);
   call(two, review, -12, 'answer: main');
 
-  f.beat(6);
+  f.beat(7);
   const deploy = agent(three, 'deployer', ['port 41243', 'skill deploy', 'bearer token required'], 'blue');
   face(deploy, [[15, 46, 8], [31, 46, 8], [31, 46, 22], [15, 46, 22]], 'amber-fill', 0.95);
   face(deploy, [[21.5, 46, 12], [24.5, 46, 12], [24.5, 46, 18], [21.5, 46, 18]], 'amber-ink', 0.9);
   call(three, deploy, -30, 'SendMessage');
-  f.beat(7);
-  const [auth] = task(three, deploy, 'a31361b3', [['wait', 'TASK_STATE_AUTH_REQUIRED'], ['done', 'TASK_STATE_COMPLETED'], ['note', 'build live on staging']], [[450, 'amber'], [550, 'green']]);
+  f.beat(8);
+  const [auth] = task(three, deploy, 'a31361b3', [['wait', 'TASK_STATE_AUTH_REQUIRED'], ['done', 'TASK_STATE_COMPLETED'], ['note', 'build live on staging']], [[450, 'amber'], [550, 'green']], 10);
+  f.beat(8);
   call(three, deploy, -12, 'SubscribeToTask');
 
-  f.beat(8);
+  f.beat(9);
   const yard = f.isoView({ ox: 0, oy: 694, angle: 'true' });
   const operator = unit(yard, 450, 34, 22, 'grey', 0);
   const person = f.box({ x: 250, y: 652, w: 140, hue: 'grey', title: 'operator', sub: 'outside A2A' });
