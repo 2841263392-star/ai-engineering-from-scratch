@@ -22,6 +22,7 @@
   }
 
   function dueAt(lesson, entry) {
+    if (entry && entry.at && lesson.completedAt > entry.at) entry = null;
     var step = entry && entry.step > 0 ? entry.step : 0;
     if (step >= INTERVAL_DAYS.length) return Infinity;
     var base = entry && entry.at ? entry.at : lesson.completedAt;
@@ -191,6 +192,16 @@
       button.title = 'Keep this figure on screen while you read the code below';
       bar.appendChild(button);
       figure.parentNode.insertBefore(bar, figure.nextSibling);
+      if (!figure.dataset.lfMounted && root.MutationObserver) {
+        bar.hidden = true;
+        var watcher = new root.MutationObserver(function () {
+          if (!figure.dataset.lfMounted) return;
+          bar.hidden = false;
+          watcher.disconnect();
+        });
+        watcher.observe(figure, { attributes: true, attributeFilter: ['data-lf-mounted'] });
+        cleanups.push(function () { watcher.disconnect(); });
+      }
       var entry = { figure: figure, bar: bar, button: button, auto: false, dismissed: false };
       on(button, 'click', function () {
         if (pinned === entry) dismiss();
@@ -288,7 +299,7 @@
       doc.body.classList.add('wt-split');
       schedule();
     });
-    on(article, 'lf:step-request', function (e) {
+    on(doc, 'lf:step-request', function (e) {
       var host = e.target;
       var sync = null;
       for (var i = 0; i < syncs.length; i++) if (syncs[i].host === host || syncs[i].host.contains(host)) sync = syncs[i];
@@ -374,7 +385,9 @@
       var nextDays = INTERVAL_DAYS[step];
       finish('recalled', nextDays ? 'Good. You will see it again in ' + nextDays + ' days.' : 'Good. This lesson is now retired from review.');
     });
-    on(open, 'click', function () { finish('forgot', ''); });
+    on(open, 'click', function () {
+      writeJson(REVISIT_KEY, recordRevisit(readJson(REVISIT_KEY) || {}, path, 'forgot', Date.now()));
+    });
     on(later, 'click', function () { finish('later', 'Snoozed. It will come back on a later visit.'); });
 
     var anchor = article.querySelector('#exercises, #key-terms, .lesson-nav-bottom');

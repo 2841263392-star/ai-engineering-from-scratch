@@ -69,6 +69,7 @@
   animation: wt-dock-in var(--motion-enter) var(--ease-out);
 }
 
+.wt-figbar[hidden],
 .wt-dock[hidden] {
   display: none;
 }

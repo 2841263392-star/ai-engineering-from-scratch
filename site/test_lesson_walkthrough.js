@@ -56,6 +56,14 @@ test('a lesson recalled at every interval retires from review', () => {
   assert.equal(nextRevisit({ p: { completedAt: T0 } }, state, T0 + 1000 * DAY, ''), null);
 });
 
+test('a retired lesson completed again starts a fresh schedule', () => {
+  let state = {};
+  for (let i = 0; i < INTERVAL_DAYS.length; i++) state = recordRevisit(state, 'p', 'recalled', T0);
+  const again = { p: { completedAt: T0 + 30 * DAY } };
+  assert.equal(nextRevisit(again, state, T0 + 31 * DAY - 1, ''), null);
+  assert.equal(nextRevisit(again, state, T0 + 31 * DAY, ''), 'p');
+});
+
 test('recordRevisit does not mutate its input', () => {
   const before = { p: { step: 2, at: T0 } };
   recordRevisit(before, 'p', 'recalled', T0 + DAY);
