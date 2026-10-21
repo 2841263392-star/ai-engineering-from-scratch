@@ -85,7 +85,7 @@
 .dm-flash:empty { display: none; }
 .dm-flash[data-on] { opacity: 1; }
 
-.dm-readouts { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; background: var(--rule-soft); border: 1px solid var(--rule-soft); }
+.dm-readouts { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 1px; background: var(--rule-soft); border: 1px solid var(--rule-soft); }
 .dm-readout { display: grid; gap: 4px; padding: 10px 12px; background: var(--bg); min-width: 0; }
 .dm-readout--wide { grid-column: 1 / -1; }
 .dm-readout span { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute); }

@@ -108,7 +108,7 @@ export function tilesSvg(variant) {
     const gap = Math.min(0.12, (x1 - x0) * 0.2);
     const hot = reached.has(insn.a);
     const h = hot ? 1.6 : 0.7;
-    out.push([x0, `<g data-tile="${i}" style="display:none">${box(x0 + gap, BED.y0 + 2, BED.z, x1 - gap, BED.y1 - 2, BED.z + h, { tone: hot ? "hi" : "lo" }, { r: 0, steps: 1 })}</g>`]);
+    out.push([x0, `<g data-tile="${i}" data-addr="${insn.a}" style="display:none">${box(x0 + gap, BED.y0 + 2, BED.z, x1 - gap, BED.y1 - 2, BED.z + h, { tone: hot ? "hi" : "lo" }, { r: 0, steps: 1 })}</g>`]);
   });
   const marks = [];
   for (const a of variant.missed) {

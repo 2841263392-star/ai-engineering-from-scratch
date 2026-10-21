@@ -34,7 +34,7 @@ const body = Gm.items.map((item) => `<g data-i="${item.id}" data-asm="${item.asm
 const LABEL =
   "A decompiler built as a machine on a bench, drawn in isometric view. A carriage rides one straight rail past nine stations in order: a tape reel with a magic gauge for the file header, a section cabinet with a symbol index, a decode bed with a moving cursor for disassembly, a block board with a drop bin for the control-flow graph, a lift press with an IR stack, a board of type pins, a structuring jig with two jaws, a pseudocode printer, and an evidence ledger with four trays.";
 const FILTER = ink.wobbleFilter("dm-hand", 2.4);
-const svg = k.figureSvg({ width: Gm.W, height: Gm.H, label: LABEL, body: `${FILTER}<g data-layer filter="url(#dm-hand)">${body}</g><g data-pills></g>`, className: "dm-svg iso-ink" }).replace("<svg ", "<svg data-dm-svg ");
+const svg = k.figureSvg({ width: Gm.W, height: Gm.H, label: LABEL, body: `${FILTER}<g data-layer filter="url(#dm-hand)">${body}</g><g data-pills></g>`, className: "dm-svg" }).replace("<svg ", "<svg data-dm-svg ");
 
 const BREAK_NOTES = [
   "Broke the symbols: the name and the end of the function are unknown.",

@@ -198,6 +198,7 @@ function load(config, { autoplay = false } = {}) {
   state.beats = beatsFor(state.sim);
   state.variant = variantOf(state.config);
   state.program = programOf(state.config);
+  state.order = state.sim.events.find((event) => event.type === "decode").order;
   Object.assign(state, { pose: freshPose(), bi: 0, bt: 0, shown: -1, done: false, stopAt: -1 });
   live("tiles").innerHTML = state.variant.tiles;
   live("graph").innerHTML = state.variant.graph;
@@ -332,7 +333,8 @@ function draw() {
   }
   live("lock").style.display = pose.lock ? "" : "none";
   const tiles = live("tiles");
-  tiles.querySelectorAll("[data-tile]").forEach((node, i) => (node.style.display = i < pose.tiles ? "" : "none"));
+  const visited = new Set(state.order.slice(0, pose.tiles));
+  tiles.querySelectorAll("[data-tile]").forEach((node) => (node.style.display = visited.has(Number(node.dataset.addr)) ? "" : "none"));
   tiles.querySelectorAll("[data-missed], [data-conflict]").forEach((node) => (node.style.display = pose.marks ? "" : "none"));
   const graph = live("graph");
   state.variant.liveOrder.forEach((start, i) => {
