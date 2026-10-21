@@ -204,3 +204,22 @@ test('a changed task version asks for a new pass', () => {
   store.record('rope', 'submit', 5, 5);
   assert.equal(store.status('rope'), 'solved');
 });
+
+test('the browser start-up survives a localStorage getter that throws', () => {
+  const vm = require('node:vm');
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const window = {};
+  Object.defineProperty(window, 'localStorage', { get() { throw new Error('SecurityError'); } });
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, 'practice-store.js'), 'utf8'), { window });
+  assert.ok(window.AIFSPracticeStore);
+  window.AIFSPracticeStore.record('rope', 'submit', 1, 1);
+  assert.equal(window.AIFSPracticeStore.status('rope'), 'solved');
+});
+
+test('a solved record without a version asks for a new pass when a version arrives', () => {
+  const store = Store.create({ localStorage: memoryStorage(), now: () => NOON });
+  store.record('rope', 'submit', 1, 1);
+  store.open('rope', 'v1');
+  assert.equal(store.status('rope'), 'attempted');
+});
