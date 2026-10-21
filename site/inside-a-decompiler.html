@@ -2372,7 +2372,9 @@ const startPalette = startParams.get("pal");
 const state = { config: M.decode(location.search), sim: null, beats: [], bi: 0, bt: 0, pose: null, playing: false, stopAt: -1, shown: -1, done: false, speed: 1, selected: null, explode: { target: 0, shares: {} } };
 D.ASSEMBLIES.forEach((asm) => (state.explode.shares[asm] = { x: 0, v: 0 }));
 
+let replayTimer = 0;
 function load(config, { autoplay = false } = {}) {
+  clearTimeout(replayTimer);
   state.config = M.configOf(config);
   state.sim = M.simulate(state.config);
   state.beats = beatsFor(state.sim);
@@ -2449,7 +2451,7 @@ function advance(dt) {
     state.pose.hot = [];
     state.pose.sound = "";
     render(state.sim.events.length - 1);
-    if (mode === "auto" && !renderMode) setTimeout(() => mode === "auto" && state.done && load(state.config, { autoplay: true }), 1800);
+    if (mode === "auto" && !renderMode) replayTimer = setTimeout(() => mode === "auto" && state.done && load(state.config, { autoplay: true }), 1800);
     const o = state.sim.outcome;
     const t = state.sim.totals;
     $("[data-dm-live]").textContent = `Run finished: ${o.status}. ${t.observed} observed, ${t.derived} derived, ${t.inferred} inferred, ${t.unknown} unknown.`;
