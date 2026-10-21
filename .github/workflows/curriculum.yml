@@ -168,6 +168,8 @@ jobs:
         run: node --test site/test_highlights.js site/test_highlights_store.js
       - name: my highlights page filters, exports, and stays local
         run: node --test site/test_highlights_page.js
+      - name: practice pages hide the solution and progress survives storage faults
+        run: node --test site/test_practice.js site/test_practice_store.js
       - name: build the static site
         run: node site/build.js && node site/build-projects.js --strict && node site/build-agents.js
       - name: deployment bundles stay small and preserve runtime assets
