@@ -27,6 +27,7 @@ const LESSON_PATTERN = /^phases\/\d\d-[a-z0-9-]+\/\d\d-[a-z0-9-]+$/;
 const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const FIXED_FILES = ['meta.json', 'problem.md', 'starter.py', 'solution.py', 'tests.py', 'hints.md', 'notes.md'];
 const MUTANT_PATH = /^mutants\/[a-z0-9_]+\.py$/;
+const OPTIONAL_FILES = ['support.py'];
 const MIN_MUTANTS = 3;
 const MAX_MUTANTS = 6;
 const VALIDATOR_FILES = ['scripts/practice/validate.py', 'scripts/practice/run.py'];
@@ -137,7 +138,7 @@ ${bundle.text}`;
 
 function safePath(file) {
   if (!file || file.startsWith('/') || file.includes('\\') || file.split('/').includes('..') || file.split('/').includes('.')) return false;
-  return FIXED_FILES.includes(file) || MUTANT_PATH.test(file);
+  return FIXED_FILES.includes(file) || OPTIONAL_FILES.includes(file) || MUTANT_PATH.test(file);
 }
 
 function stripFence(text) {
@@ -150,7 +151,7 @@ function parseReply(text) {
   let match;
   while ((match = pattern.exec(text))) {
     const file = match[1].trim();
-    if (!safePath(file)) return { error: `The reply has the file "${file}". Write only ${FIXED_FILES.join(', ')} and mutants/<name>.py, with a path inside the problem folder.` };
+    if (!safePath(file)) return { error: `The reply has the file "${file}". Write only ${FIXED_FILES.join(', ')}, an optional ${OPTIONAL_FILES.join(', ')} and mutants/<name>.py, with a path inside the problem folder.` };
     if (files[file] !== undefined) return { error: `The reply has the file "${file}" two times.` };
     files[file] = `${stripFence(match[2]).replace(/\s*$/, '')}\n`;
   }
@@ -205,6 +206,10 @@ function stage(files, id, root) {
   }
   fs.cpSync(path.join(root, 'practice', '_harness'), path.join(dir, 'practice', '_harness'), { recursive: true, filter: source => !/__pycache__/.test(source) });
   fs.copyFileSync(path.join(root, 'practice', 'collections.json'), path.join(dir, 'practice', 'collections.json'));
+  if (fs.existsSync(path.join(root, 'research', 'methods.json'))) {
+    fs.mkdirSync(path.join(dir, 'research'), { recursive: true });
+    fs.copyFileSync(path.join(root, 'research', 'methods.json'), path.join(dir, 'research', 'methods.json'));
+  }
   for (const link of ['phases', 'cheatsheets']) {
     if (fs.existsSync(path.join(root, link))) fs.symlinkSync(path.join(root, link), path.join(dir, link), 'dir');
   }

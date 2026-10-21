@@ -182,6 +182,8 @@ test('the reply parser takes only the allowed paths inside the problem folder', 
     const parsed = generate.parseReply(`${replyText(files)}\n<file path="${bad}">\nx = 1\n</file>`);
     assert.match(parsed.error, /The reply has the file/, bad);
   }
+  assert.equal(generate.safePath('support.py'), true);
+  assert.equal(generate.parseReply(`${replyText(files)}\n<file path="support.py">\nVALUE = 1\n</file>`).files['support.py'], 'VALUE = 1\n');
   assert.match(generate.parseReply(`${replyText(files)}\n<file path="hints.md">\nagain\n</file>`).error, /two times/);
   assert.match(generate.parseReply('Here is the problem.').error, /<file path="\.\.\."> part/);
   const { 'notes.md': dropped, ...noNotes } = files;
