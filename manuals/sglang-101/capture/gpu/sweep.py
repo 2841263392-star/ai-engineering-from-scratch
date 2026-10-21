@@ -53,6 +53,9 @@ def configs(profile):
         "pd": (p["model"], []),
         "pd-swap": (p["model"], []),
         "vllm": (p["model"], []),
+        "vllm-no-prefix-cache": (p["model"], ["--no-enable-prefix-caching"]),
+        "graphs-on-b": (p["model"], []),
+        "graphs-off-b": (p["model"], ["--cuda-graph-backend-decode", "disabled", "--cuda-graph-backend-prefill", "disabled"]),
         "moe-tp2": (p.get("moe_fp8", p["fp8"]), ["--tp-size", "2", "--kv-cache-dtype", "fp8_e4m3"]),
     }
 
@@ -136,13 +139,13 @@ def start_pd(model, port, fraction, directory, swap=False):
     return Group(started)
 
 
-def start_vllm(model, port, directory, profile):
+def start_vllm(model, port, directory, profile, flags=()):
     vllm = os.environ.get("VLLM_BIN", "vllm")
     blocks = os.environ.get("VLLM_GPU_BLOCKS", profile.get("vllm_blocks", "1506"))
     util = os.environ.get("VLLM_GPU_UTIL", profile.get("vllm_util", "0.9"))
     max_len = profile.get("vllm_max_len", "8192")
     require_free(port)
-    process = launch([vllm, "serve", model, "--host", "127.0.0.1", "--port", str(port), "--num-gpu-blocks-override", blocks, "--gpu-memory-utilization", util, "--max-model-len", max_len, "--seed", "0"], directory / "server.log", {"VLLM_USE_FLASHINFER_SAMPLER": "0"})
+    process = launch([vllm, "serve", model, "--host", "127.0.0.1", "--port", str(port), "--num-gpu-blocks-override", blocks, "--gpu-memory-utilization", util, "--max-model-len", max_len, "--seed", "0", *flags], directory / "server.log", {"VLLM_USE_FLASHINFER_SAMPLER": "0"})
     try:
         wait_healthy([port], [process], directory)
     except RuntimeError:
@@ -286,8 +289,8 @@ def main():
             continue
         if name in ("pd", "pd-swap"):
             process = start_pd(model, args.port, fraction, directory, swap=name == "pd-swap")
-        elif name == "vllm":
-            process = start_vllm(model, args.port, directory, PROFILES[args.profile])
+        elif name.startswith("vllm"):
+            process = start_vllm(model, args.port, directory, PROFILES[args.profile], flags)
         else:
             process = start_server(model, flags, args.port, fraction, directory / "server.log", env)
         (directory / "server.command.txt").write_text(" ".join([*(f"{k}={v}" for k, v in env.items()), os.path.basename(process.args[0]), *process.args[1:]]) + "\n")
@@ -298,7 +301,7 @@ def main():
                     print(f"[{name}] {run} start {start_temp} C after {waited} s", flush=True)
                     sampler = telemetry(gpu_index(), directory / f"{run}.gpu.csv")
                     try:
-                        bench(args.port, directory / f"{run}.jsonl", bench_args, dataset, "vllm" if name == "vllm" else "sglang")
+                        bench(args.port, directory / f"{run}.jsonl", bench_args, dataset, "vllm" if name.startswith("vllm") else "sglang")
                     finally:
                         sampler.terminate()
                         sampler.wait()
