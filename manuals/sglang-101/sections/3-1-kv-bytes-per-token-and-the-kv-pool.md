@@ -86,6 +86,8 @@ The two levers that change the number are the memory fraction in [section 3.2](#
 
 A field report shows the size of that lever. Cloudflare reported that FP8 KV raised the context held in memory for Kimi K2.6 from about 686,000 to about 1.37 million tokens {{field Cloudflare 2026-08}}. The same report measured a few percent less throughput per request at low concurrency. At concurrency 64, the BF16 configuration ran out of memory, and the FP8 configuration reached 2,192 tokens per second. You trade a little speed per token for twice the users. Read the [Cloudflare post](https://blog.cloudflare.com/smaller-faster-safer-models/) for their accuracy checks before you copy the change.
 
+The [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?users=64) machine draws the KV pool as cells on the six GDDR6 packages of an L4. This link opens the BF16 run at 64 users: the 24,094-token pool holds 37 requests of 640 tokens, and the other 27 wait. Switch the weights to FP8 to see the pool grow to 142,369 tokens.
+
 ## What to measure
 
 - Read `bytes_per_slot` or compute it, and check that the two agree.

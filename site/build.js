@@ -2350,6 +2350,7 @@ function writeSitemap(lessonManifest, glossaryCount, certifications, projects, h
     { loc: '/skills.html', priority: '0.7', freq: 'monthly' },
     { loc: '/inside-an-ai-agent.html', priority: '0.7', freq: 'monthly' },
     { loc: '/inside-a-decompiler.html', priority: '0.7', freq: 'monthly' },
+    { loc: '/inside-an-llm-serving-gpu.html', priority: '0.7', freq: 'monthly' },
     { loc: '/how-to-learn.html', priority: '0.8', freq: 'monthly' },
     { loc: '/developer.html', priority: '0.6', freq: 'monthly' },
     { loc: '/contact.html', priority: '0.3', freq: 'yearly' },

@@ -131,6 +131,8 @@ note: One decode line from each server at 33 running requests. The first replaye
 
 Our reading: a step of an 8B model at batch 1 reads about 16 GB of weights from memory. The launch time that a graph removes is small next to that read.
 
+The [Inside an LLM Serving GPU](https://aiengineeringfromscratch.com/inside-an-llm-serving-gpu?graphs=off&users=1) machine shows one decode step on the L4 as a weight read and the work after it. This link opens the run without graphs at one user. Launch commands cross PCIe for every kernel, and the step grows by 0.47 ms to 60.63 ms.
+
 ## Our position
 
 Keep CUDA graphs on, and size them to your traffic. The default `max_bs` suits moderate concurrency. If your benchmark or your production peak runs more requests than that, set `--cuda-graph-max-bs-decode` and `--max-running-requests` to your target before you measure. SemiAnalysis InferenceX recipes {{field InferenceX 2026-05}} derive both values from the concurrency they test.
