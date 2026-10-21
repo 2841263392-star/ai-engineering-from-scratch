@@ -50,6 +50,7 @@ on:
       - "site/build.js"
       - "site/**"
       - "scripts/agent-machine/**"
+      - "scripts/decompiler-machine/**"
       - "api/**"
       - "lib/**"
       - "scripts/test_agent_api.js"
@@ -107,6 +108,7 @@ on:
       - "site/build.js"
       - "site/**"
       - "scripts/agent-machine/**"
+      - "scripts/decompiler-machine/**"
       - "api/**"
       - "lib/**"
       - "scripts/test_agent_api.js"
@@ -164,6 +166,8 @@ jobs:
         run: node --test site/test_star_nudge.js
       - name: agent machine simulation and page stay in sync
         run: node --test site/test_agent_machine.js
+      - name: decompiler machine simulation and page stay in sync
+        run: node --test site/test_decompiler_machine.js
       - name: lesson highlights re-anchor and survive storage faults
         run: node --test site/test_highlights.js site/test_highlights_store.js
       - name: my highlights page filters, exports, and stays local
