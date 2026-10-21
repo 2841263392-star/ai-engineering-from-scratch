@@ -230,11 +230,11 @@
 .dm-flash:empty { display: none; }
 .dm-flash[data-on] { opacity: 1; }
 
-.dm-readouts { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1px; background: var(--rule-soft); border: 1px solid var(--rule-soft); }
+.dm-readouts { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; background: var(--rule-soft); border: 1px solid var(--rule-soft); }
 .dm-readout { display: grid; gap: 4px; padding: 10px 12px; background: var(--bg); min-width: 0; }
 .dm-readout--wide { grid-column: 1 / -1; }
 .dm-readout span { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute); }
-.dm-readout strong { font-family: var(--font-mono); font-weight: 500; font-size: 0.86rem; color: var(--ink); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.dm-readout strong { font-family: var(--font-mono); font-weight: 500; font-size: 0.86rem; color: var(--ink); overflow-wrap: normal; font-variant-numeric: tabular-nums; }
 .dm-readout--wide strong { font-family: var(--font-body); font-size: 1.1rem; font-weight: 600; }
 .dm-readout { padding: 7px 10px; gap: 2px; }
 .dm-readout strong { font-size: 0.76rem; }
@@ -286,7 +286,7 @@
 .dm-trace li:last-child { background: var(--blueprint-tint); }
 .dm-trace .dm-n, .dm-trace .dm-c { color: var(--ink-mute); }
 .dm-trace .dm-t { color: var(--blueprint); }
-.dm-trace .dm-d { overflow-wrap: anywhere; }
+.dm-trace .dm-d { overflow-wrap: normal; }
 .dm-trace li[data-type="timeout"] .dm-t, .dm-trace li[data-type="bypass"] .dm-t, .dm-trace li[data-type="limit"] .dm-t { color: var(--warn); }
 .dm-scenario { width: 100%; padding: 7px 10px; }
 .dm-scenario span { font-size: 0.84rem; }
@@ -373,7 +373,7 @@
 :root[data-poster] .dm-figure .iso-plate-corners { display: none; }
 .dm-svg [data-off] { opacity: .35; }
 .dm-source { margin: 0 0 6px; font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); }
-.dm-bytes { margin: 0 0 12px; font-family: var(--font-mono); font-size: 0.74rem; line-height: 1.5; color: var(--ink); overflow-wrap: anywhere; }
+.dm-bytes { margin: 0 0 12px; font-family: var(--font-mono); font-size: 0.74rem; line-height: 1.5; color: var(--ink); overflow-wrap: normal; }
 .dm-listing, .dm-ledger { list-style: none; margin: 0 0 12px; padding: 0; border: 1px solid var(--rule-soft); font-family: var(--font-mono); font-size: 0.72rem; max-height: 220px; overflow: auto; }
 .dm-listing li { display: grid; grid-template-columns: 40px minmax(0, 1.1fr) minmax(0, 1.4fr); gap: 8px; padding: 4px 10px; border-bottom: 1px solid var(--paper-rule); }
 .dm-listing li > span:first-child { color: var(--ink-mute); }
@@ -382,11 +382,16 @@
 .dm-ledger .dm-c { text-transform: uppercase; letter-spacing: 0.06em; color: var(--blueprint); }
 .dm-ledger li[data-confidence="inferred"] .dm-c { color: var(--ink-soft); }
 .dm-ledger li[data-confidence="unknown"] .dm-c { color: var(--warn); }
-.dm-output { margin: 0 0 12px; padding: 10px 12px; border: 1px solid var(--rule-soft); background: var(--bg-surface); font-family: var(--font-mono); font-size: 0.76rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
-.dm-inspect code { font-family: var(--font-mono); font-size: 0.8rem; overflow-wrap: anywhere; }
+.dm-output { margin: 0 0 12px; padding: 10px 12px; border: 1px solid var(--rule-soft); background: var(--bg-surface); font-family: var(--font-mono); font-size: 0.76rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: normal; }
+.dm-inspect code { font-family: var(--font-mono); font-size: 0.8rem; overflow-wrap: normal; }
 .dm-select select:disabled { opacity: .45; }
 .dm-status[data-status="decompiled"] { border-color: var(--blueprint); color: var(--blueprint); }
 .dm-status[data-status="stopped"] { border-color: var(--warn); color: var(--warn); }
+.dm-nobr { white-space: nowrap; }
+.dm-readout--names { grid-column: span 2; }
+.dm-readout--names strong { font-size: 0.72rem; }
+.dm-inspect dd { overflow-x: auto; }
+.dm-readout > span { letter-spacing: 0.06em; font-size: 0.64rem; overflow-wrap: normal; }
 </style>
 </head>
 <body>
@@ -460,7 +465,7 @@
       <aside class="dm-left" aria-label="Scenarios">
         <h2>Try to break it</h2>
         <p class="dm-muted">Each one sets the switches and decompiles the same bytes again.</p>
-        <div class="dm-scenarios"><button type="button" class="dm-scenario" data-dm-scenario='{}'><strong>Healthy run</strong><span>-O2, symbols, recursive descent.</span></button><button type="button" class="dm-scenario" data-dm-scenario='{&quot;opt&quot;:&quot;O0&quot;}'><strong>Unoptimized build</strong><span>-O0: stack slots and an if/else.</span></button><button type="button" class="dm-scenario" data-dm-scenario='{&quot;symbols&quot;:false}'><strong>Strip the symbols</strong><span>The name and the end are unknown.</span></button><button type="button" class="dm-scenario" data-dm-scenario='{&quot;opt&quot;:&quot;O0&quot;,&quot;sweep&quot;:&quot;linear&quot;}'><strong>Linear sweep at -O0</strong><span>Padding decoded as code.</span></button><button type="button" class="dm-scenario" data-dm-scenario='{&quot;symbols&quot;:false,&quot;sweep&quot;:&quot;linear&quot;}'><strong>Linear sweep, no symbols</strong><span>The sweep runs to the end of .text.</span></button><button type="button" class="dm-scenario" data-dm-scenario='{&quot;program&quot;:&quot;trap&quot;,&quot;sweep&quot;:&quot;linear&quot;}'><strong>Data in code, linear sweep</strong><span>Data decoded, a real instruction missed.</span></button><button type="button" class="dm-scenario" data-dm-scenario='{&quot;program&quot;:&quot;trap&quot;}'><strong>Data in code, descent</strong><span>The jump skips the data.</span></button></div>
+        <div class="dm-scenarios"><button type="button" class="dm-scenario" data-dm-scenario='{}'><strong>Healthy run</strong><span><span class="dm-nobr">-O2</span>, symbols, recursive descent.</span></button><button type="button" class="dm-scenario" data-dm-scenario='{&quot;opt&quot;:&quot;O0&quot;}'><strong>Unoptimized build</strong><span><span class="dm-nobr">-O0</span>: stack slots and an if/else.</span></button><button type="button" class="dm-scenario" data-dm-scenario='{&quot;symbols&quot;:false}'><strong>Strip the symbols</strong><span>The name and the end are unknown.</span></button><button type="button" class="dm-scenario" data-dm-scenario='{&quot;opt&quot;:&quot;O0&quot;,&quot;sweep&quot;:&quot;linear&quot;}'><strong>Linear sweep at <span class="dm-nobr">-O0</span></strong><span>Padding decoded as code.</span></button><button type="button" class="dm-scenario" data-dm-scenario='{&quot;symbols&quot;:false,&quot;sweep&quot;:&quot;linear&quot;}'><strong>Linear sweep, no symbols</strong><span>The sweep runs to the end of .text.</span></button><button type="button" class="dm-scenario" data-dm-scenario='{&quot;program&quot;:&quot;trap&quot;,&quot;sweep&quot;:&quot;linear&quot;}'><strong>Data in code, linear sweep</strong><span>Data decoded, a real instruction missed.</span></button><button type="button" class="dm-scenario" data-dm-scenario='{&quot;program&quot;:&quot;trap&quot;}'><strong>Data in code, descent</strong><span>The jump skips the data.</span></button></div>
       </aside>
 
       <div class="dm-center">
@@ -470,7 +475,7 @@
           <div class="dm-readout dm-readout--wide"><span>Stage</span><strong data-dm-stage-name>Ready</strong></div>
           <div class="dm-readout"><span>Instructions</span><strong data-dm-decoded>0</strong></div>
           <div class="dm-readout"><span>Blocks</span><strong data-dm-blocks>0</strong></div>
-          <div class="dm-readout"><span>Names and types</span><strong data-dm-names>none yet</strong></div>
+          <div class="dm-readout dm-readout--names"><span>Names and types</span><strong data-dm-names>none yet</strong></div>
           <div class="dm-readout"><span>Unknowns</span><strong data-dm-unknowns>0</strong></div>
           <div class="dm-readout"><span>Evidence</span><strong data-dm-evidence>0 observed</strong></div>
           <div class="dm-readout"><span>Steps</span><strong data-dm-steps>0</strong></div>
@@ -1804,6 +1809,7 @@ D.items.forEach((item) => {
 });
 const live = (name) => svg.querySelector(`[data-live="${name}"]`);
 const escapeHtml = (text) => String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const breakable = (text) => escapeHtml(text).replace(/([(,])/g, "$1<wbr>").replace(/(-O\d)/g, '<span class="dm-nobr">$1</span>');
 
 function freshPose() {
   const pose = { cx: D.HOME_X, plates: 0, needle: 0, drawer: 0, lock: 0, cursor: 0, tiles: 0, marks: 0, blocks: 0, edges: 0, dead: 0, ir: 0, bolt: 0, pins: 0, jawA: 0, jawB: 0, printed: 0, trays: [0, 0, 0, 0], hot: [] };
@@ -2218,7 +2224,7 @@ function syncControls() {
   $("#dm-opt").value = c.opt;
   $("#dm-opt").disabled = c.program === "trap";
   const source = D.SOURCES[M.keyOf(c)];
-  $("[data-dm-source]").textContent = source;
+  $("[data-dm-source]").innerHTML = escapeHtml(source).replace(/(-O\d)/g, '<span class="dm-nobr">$1</span>');
   $("[data-dm-bytes]").textContent = state.program.bytes;
 }
 function syncButtons() {
@@ -2250,7 +2256,7 @@ function render(index) {
   $("[data-dm-stage-name]").textContent = ev ? `${ev.stage}/9 ${D.CONCEPT[ev.station]} · ${ev.trace}` : "Ready · press Run";
   $("[data-dm-decoded]").textContent = ev && ev.decoded ? `${ev.decoded} · ${state.config.sweep === "linear" ? "linear sweep" : "descent"}` : "0";
   $("[data-dm-blocks]").textContent = ev && ev.live ? `${ev.live} live${ev.dropped ? ` · ${ev.dropped} dropped` : ""}` : "0";
-  $("[data-dm-names]").textContent = ev ? ev.signature || ev.name || "none yet" : "none yet";
+  $("[data-dm-names]").innerHTML = breakable(ev ? ev.signature || ev.name || "none yet" : "none yet");
   const tally = ev ? M.tallyOf(ev.ledger) : { observed: 0, derived: 0, inferred: 0, unknown: 0 };
   $("[data-dm-unknowns]").textContent = String(tally.unknown);
   $("[data-dm-evidence]").textContent = `${tally.observed} observed · ${tally.derived} derived · ${tally.inferred} inferred`;
@@ -2340,7 +2346,7 @@ function inspect(asm) {
     kick();
     return;
   }
-  panel.innerHTML = `<p class="dm-label">${D.CONCEPT[asm]}</p><h3>${escapeHtml(info.name)}</h3><p class="dm-kicker">${escapeHtml(info.is)}</p><dl><dt>What it does</dt><dd>${escapeHtml(info.does)}</dd><dt>Why you need it</dt><dd>${escapeHtml(info.why)}</dd><dt>Without it</dt><dd>${escapeHtml(info.without)}</dd><dt>In code</dt><dd><code>${escapeHtml(info.code)}</code></dd></dl><a class="dm-lesson" href="${info.lesson.href}">Lesson: ${escapeHtml(info.lesson.title)} →</a>`;
+  panel.innerHTML = `<p class="dm-label">${D.CONCEPT[asm]}</p><h3>${escapeHtml(info.name)}</h3><p class="dm-kicker">${breakable(info.is)}</p><dl><dt>What it does</dt><dd>${breakable(info.does)}</dd><dt>Why you need it</dt><dd>${breakable(info.why)}</dd><dt>Without it</dt><dd>${breakable(info.without)}</dd><dt>In code</dt><dd><code>${breakable(info.code)}</code></dd></dl><a class="dm-lesson" href="${info.lesson.href}">Lesson: ${escapeHtml(info.lesson.title)} →</a>`;
   kick();
 }
 $$("[data-dm-part]").forEach((button) => button.addEventListener("click", () => inspect(state.selected === button.dataset.dmPart ? null : button.dataset.dmPart)));

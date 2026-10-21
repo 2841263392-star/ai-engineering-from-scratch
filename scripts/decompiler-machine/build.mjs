@@ -69,7 +69,8 @@ const SUB = "Strip the symbols. Switch the decoder. Watch the ledger.";
 const DESCRIPTION = "An interactive machine that decompiles one small function stage by stage: header, sections, disassembly, control flow, lifting, types, structuring and pseudocode, with an evidence ledger of what was observed and what was inferred.";
 
 const parts = PART_ORDER.map((asm, i) => `<button type="button" class="dm-part" data-dm-part="${asm}" aria-pressed="false"><span class="dm-part-n">${String(i + 1).padStart(2, "0")}</span><strong>${escape(CONCEPT[asm])}</strong><span class="dm-part-s">${escape(INFO[asm].name)}</span></button>`).join("");
-const scenarios = SCENARIOS.map((item) => `<button type="button" class="dm-scenario" data-dm-scenario='${escape(JSON.stringify(item.config))}'><strong>${escape(item.label)}</strong><span>${escape(item.note)}</span></button>`).join("");
+const flags = (text) => escape(text).replace(/(-O\d)/g, '<span class="dm-nobr">$1</span>');
+const scenarios = SCENARIOS.map((item) => `<button type="button" class="dm-scenario" data-dm-scenario='${escape(JSON.stringify(item.config))}'><strong>${flags(item.label)}</strong><span>${flags(item.note)}</span></button>`).join("");
 
 const plate = k.plateHtml({
   fig: "FIG_DEC · interactive simulation",
@@ -200,7 +201,7 @@ const html = `<!DOCTYPE html>
           <div class="dm-readout dm-readout--wide"><span>Stage</span><strong data-dm-stage-name>Ready</strong></div>
           <div class="dm-readout"><span>Instructions</span><strong data-dm-decoded>0</strong></div>
           <div class="dm-readout"><span>Blocks</span><strong data-dm-blocks>0</strong></div>
-          <div class="dm-readout"><span>Names and types</span><strong data-dm-names>none yet</strong></div>
+          <div class="dm-readout dm-readout--names"><span>Names and types</span><strong data-dm-names>none yet</strong></div>
           <div class="dm-readout"><span>Unknowns</span><strong data-dm-unknowns>0</strong></div>
           <div class="dm-readout"><span>Evidence</span><strong data-dm-evidence>0 observed</strong></div>
           <div class="dm-readout"><span>Steps</span><strong data-dm-steps>0</strong></div>

@@ -85,11 +85,11 @@
 .dm-flash:empty { display: none; }
 .dm-flash[data-on] { opacity: 1; }
 
-.dm-readouts { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1px; background: var(--rule-soft); border: 1px solid var(--rule-soft); }
+.dm-readouts { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 1px; background: var(--rule-soft); border: 1px solid var(--rule-soft); }
 .dm-readout { display: grid; gap: 4px; padding: 10px 12px; background: var(--bg); min-width: 0; }
 .dm-readout--wide { grid-column: 1 / -1; }
 .dm-readout span { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute); }
-.dm-readout strong { font-family: var(--font-mono); font-weight: 500; font-size: 0.86rem; color: var(--ink); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.dm-readout strong { font-family: var(--font-mono); font-weight: 500; font-size: 0.86rem; color: var(--ink); overflow-wrap: normal; font-variant-numeric: tabular-nums; }
 .dm-readout--wide strong { font-family: var(--font-body); font-size: 1.1rem; font-weight: 600; }
 .dm-readout { padding: 7px 10px; gap: 2px; }
 .dm-readout strong { font-size: 0.76rem; }
@@ -141,7 +141,7 @@
 .dm-trace li:last-child { background: var(--blueprint-tint); }
 .dm-trace .dm-n, .dm-trace .dm-c { color: var(--ink-mute); }
 .dm-trace .dm-t { color: var(--blueprint); }
-.dm-trace .dm-d { overflow-wrap: anywhere; }
+.dm-trace .dm-d { overflow-wrap: normal; }
 .dm-trace li[data-type="timeout"] .dm-t, .dm-trace li[data-type="bypass"] .dm-t, .dm-trace li[data-type="limit"] .dm-t { color: var(--warn); }
 .dm-scenario { width: 100%; padding: 7px 10px; }
 .dm-scenario span { font-size: 0.84rem; }
@@ -228,7 +228,7 @@
 :root[data-poster] .dm-figure .iso-plate-corners { display: none; }
 .dm-svg [data-off] { opacity: .35; }
 .dm-source { margin: 0 0 6px; font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); }
-.dm-bytes { margin: 0 0 12px; font-family: var(--font-mono); font-size: 0.74rem; line-height: 1.5; color: var(--ink); overflow-wrap: anywhere; }
+.dm-bytes { margin: 0 0 12px; font-family: var(--font-mono); font-size: 0.74rem; line-height: 1.5; color: var(--ink); overflow-wrap: normal; }
 .dm-listing, .dm-ledger { list-style: none; margin: 0 0 12px; padding: 0; border: 1px solid var(--rule-soft); font-family: var(--font-mono); font-size: 0.72rem; max-height: 220px; overflow: auto; }
 .dm-listing li { display: grid; grid-template-columns: 40px minmax(0, 1.1fr) minmax(0, 1.4fr); gap: 8px; padding: 4px 10px; border-bottom: 1px solid var(--paper-rule); }
 .dm-listing li > span:first-child { color: var(--ink-mute); }
@@ -237,8 +237,13 @@
 .dm-ledger .dm-c { text-transform: uppercase; letter-spacing: 0.06em; color: var(--blueprint); }
 .dm-ledger li[data-confidence="inferred"] .dm-c { color: var(--ink-soft); }
 .dm-ledger li[data-confidence="unknown"] .dm-c { color: var(--warn); }
-.dm-output { margin: 0 0 12px; padding: 10px 12px; border: 1px solid var(--rule-soft); background: var(--bg-surface); font-family: var(--font-mono); font-size: 0.76rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
-.dm-inspect code { font-family: var(--font-mono); font-size: 0.8rem; overflow-wrap: anywhere; }
+.dm-output { margin: 0 0 12px; padding: 10px 12px; border: 1px solid var(--rule-soft); background: var(--bg-surface); font-family: var(--font-mono); font-size: 0.76rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: normal; }
+.dm-inspect code { font-family: var(--font-mono); font-size: 0.8rem; overflow-wrap: normal; }
 .dm-select select:disabled { opacity: .45; }
 .dm-status[data-status="decompiled"] { border-color: var(--blueprint); color: var(--blueprint); }
 .dm-status[data-status="stopped"] { border-color: var(--warn); color: var(--warn); }
+.dm-nobr { white-space: nowrap; }
+.dm-readout--names { grid-column: span 2; }
+.dm-readout--names strong { font-size: 0.72rem; }
+.dm-inspect dd { overflow-x: auto; }
+.dm-readout > span { letter-spacing: 0.06em; font-size: 0.64rem; overflow-wrap: normal; }

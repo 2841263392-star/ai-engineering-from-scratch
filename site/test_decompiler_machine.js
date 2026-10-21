@@ -148,6 +148,8 @@ test('the page carries every control, readout and social tag', () => {
     assert.ok(html.includes(hook), hook);
   }
   assert.match(html, /This is a simulation\./);
+  assert.match(html, /Linear sweep at <span class="dm-nobr">-O0<\/span>/);
+  assert.ok(!/overflow-wrap: anywhere/.test(html.slice(html.indexOf('.dm {'))));
   assert.match(html, /<meta property="og:image" content="https:\/\/aiengineeringfromscratch\.com\/og\/page\/inside-a-decompiler\.png">/);
   assert.match(html, /role="img" aria-label="A decompiler built as a machine/);
   for (const name of ['og', 'poster', 'machine', 'machine-dark']) assert.ok(fs.existsSync(path.join(__dirname, 'anatomy', `inside-a-decompiler-${name}.png`)), name);

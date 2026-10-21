@@ -32,6 +32,7 @@ D.items.forEach((item) => {
 });
 const live = (name) => svg.querySelector(`[data-live="${name}"]`);
 const escapeHtml = (text) => String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const breakable = (text) => escapeHtml(text).replace(/([(,])/g, "$1<wbr>").replace(/(-O\d)/g, '<span class="dm-nobr">$1</span>');
 
 function freshPose() {
   const pose = { cx: D.HOME_X, plates: 0, needle: 0, drawer: 0, lock: 0, cursor: 0, tiles: 0, marks: 0, blocks: 0, edges: 0, dead: 0, ir: 0, bolt: 0, pins: 0, jawA: 0, jawB: 0, printed: 0, trays: [0, 0, 0, 0], hot: [] };
@@ -446,7 +447,7 @@ function syncControls() {
   $("#dm-opt").value = c.opt;
   $("#dm-opt").disabled = c.program === "trap";
   const source = D.SOURCES[M.keyOf(c)];
-  $("[data-dm-source]").textContent = source;
+  $("[data-dm-source]").innerHTML = escapeHtml(source).replace(/(-O\d)/g, '<span class="dm-nobr">$1</span>');
   $("[data-dm-bytes]").textContent = state.program.bytes;
 }
 function syncButtons() {
@@ -478,7 +479,7 @@ function render(index) {
   $("[data-dm-stage-name]").textContent = ev ? `${ev.stage}/9 ${D.CONCEPT[ev.station]} · ${ev.trace}` : "Ready · press Run";
   $("[data-dm-decoded]").textContent = ev && ev.decoded ? `${ev.decoded} · ${state.config.sweep === "linear" ? "linear sweep" : "descent"}` : "0";
   $("[data-dm-blocks]").textContent = ev && ev.live ? `${ev.live} live${ev.dropped ? ` · ${ev.dropped} dropped` : ""}` : "0";
-  $("[data-dm-names]").textContent = ev ? ev.signature || ev.name || "none yet" : "none yet";
+  $("[data-dm-names]").innerHTML = breakable(ev ? ev.signature || ev.name || "none yet" : "none yet");
   const tally = ev ? M.tallyOf(ev.ledger) : { observed: 0, derived: 0, inferred: 0, unknown: 0 };
   $("[data-dm-unknowns]").textContent = String(tally.unknown);
   $("[data-dm-evidence]").textContent = `${tally.observed} observed · ${tally.derived} derived · ${tally.inferred} inferred`;
@@ -568,7 +569,7 @@ function inspect(asm) {
     kick();
     return;
   }
-  panel.innerHTML = `<p class="dm-label">${D.CONCEPT[asm]}</p><h3>${escapeHtml(info.name)}</h3><p class="dm-kicker">${escapeHtml(info.is)}</p><dl><dt>What it does</dt><dd>${escapeHtml(info.does)}</dd><dt>Why you need it</dt><dd>${escapeHtml(info.why)}</dd><dt>Without it</dt><dd>${escapeHtml(info.without)}</dd><dt>In code</dt><dd><code>${escapeHtml(info.code)}</code></dd></dl><a class="dm-lesson" href="${info.lesson.href}">Lesson: ${escapeHtml(info.lesson.title)} →</a>`;
+  panel.innerHTML = `<p class="dm-label">${D.CONCEPT[asm]}</p><h3>${escapeHtml(info.name)}</h3><p class="dm-kicker">${breakable(info.is)}</p><dl><dt>What it does</dt><dd>${breakable(info.does)}</dd><dt>Why you need it</dt><dd>${breakable(info.why)}</dd><dt>Without it</dt><dd>${breakable(info.without)}</dd><dt>In code</dt><dd><code>${breakable(info.code)}</code></dd></dl><a class="dm-lesson" href="${info.lesson.href}">Lesson: ${escapeHtml(info.lesson.title)} →</a>`;
   kick();
 }
 $$("[data-dm-part]").forEach((button) => button.addEventListener("click", () => inspect(state.selected === button.dataset.dmPart ? null : button.dataset.dmPart)));
