@@ -177,3 +177,30 @@ test('a storage getter that throws falls back to memory', () => {
   store.record('rope', 'submit', 2, 2);
   assert.equal(store.status('rope'), 'solved');
 });
+
+test('a later code save does not bring back a stale progress record', () => {
+  const storage = memoryStorage();
+  const store = Store.create({ localStorage: storage, now: () => NOON });
+  store.record('rope', 'run', 0, 1);
+  const setItem = storage.setItem;
+  storage.setItem = (key, value) => {
+    if (key === Store.STORAGE_KEY) throw new Error('quota');
+    setItem(key, value);
+  };
+  store.record('rope', 'submit', 3, 3);
+  assert.equal(store.saveCode('rope', 'x = 1'), true);
+  assert.equal(store.status('rope'), 'solved');
+  assert.equal(store.writable(), false);
+});
+
+test('a changed task version asks for a new pass', () => {
+  const store = Store.create({ localStorage: memoryStorage(), now: () => NOON });
+  store.open('rope', 'v1');
+  store.record('rope', 'submit', 4, 4);
+  store.open('rope', 'v1');
+  assert.equal(store.status('rope'), 'solved');
+  store.open('rope', 'v2');
+  assert.equal(store.status('rope'), 'attempted');
+  store.record('rope', 'submit', 5, 5);
+  assert.equal(store.status('rope'), 'solved');
+});

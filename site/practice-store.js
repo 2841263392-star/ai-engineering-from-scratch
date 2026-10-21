@@ -103,6 +103,7 @@
     var memory = emptyState();
     var memoryCode = {};
     var writable = true;
+    var codeWritable = true;
     var listeners = [];
 
     function readRaw(key) {
@@ -197,7 +198,14 @@
         return update(function (state) {
           var item = entry(state, id);
           item.openedAt = now();
-          if (typeof version === 'string') item.version = version.slice(0, 32);
+          if (typeof version === 'string') {
+            var next = version.slice(0, 32);
+            if (item.version && item.version !== next && item.status === 'solved') {
+              item.status = 'attempted';
+              item.solvedAt = 0;
+            }
+            item.version = next;
+          }
           state.lastOpened = id;
         }).problems[id];
       },
@@ -234,8 +242,8 @@
         check(id);
         var text = String(code == null ? '' : code).slice(0, MAX_CODE);
         memoryCode[id] = text;
-        writable = writeRaw(CODE_PREFIX + id, JSON.stringify({ code: text, savedAt: now() }));
-        return writable;
+        codeWritable = writeRaw(CODE_PREFIX + id, JSON.stringify({ code: text, savedAt: now() }));
+        return codeWritable;
       },
       loadCode: function (id) {
         check(id);
@@ -299,7 +307,7 @@
         return pool[Math.min(pool.length - 1, Math.floor(pick() * pool.length))];
       },
       writable: function () {
-        return writable;
+        return writable && codeWritable;
       },
       subscribe: function (fn) {
         listeners.push(fn);
