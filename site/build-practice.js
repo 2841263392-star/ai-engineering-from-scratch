@@ -181,7 +181,7 @@ function citationHtml(paper) {
 }
 
 function lessonHref(lesson) {
-  return `/lesson?path=${lesson}`;
+  return `/lesson?path=${encodeURIComponent(lesson)}`;
 }
 
 function footer() {

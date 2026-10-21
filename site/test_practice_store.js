@@ -169,3 +169,11 @@ test('a full storage keeps the newest progress and code in memory', () => {
   assert.equal(store.saveCode('rope', 'new'), false);
   assert.equal(store.loadCode('rope'), 'new');
 });
+
+test('a storage getter that throws falls back to memory', () => {
+  const env = { now: () => NOON };
+  Object.defineProperty(env, 'localStorage', { get() { throw new Error('SecurityError'); } });
+  const store = Store.create(env);
+  store.record('rope', 'submit', 2, 2);
+  assert.equal(store.status('rope'), 'solved');
+});

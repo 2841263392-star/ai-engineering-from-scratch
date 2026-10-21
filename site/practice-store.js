@@ -1,7 +1,7 @@
 (function (root, factory) {
   var api = factory();
   if (typeof module === 'object' && module.exports) module.exports = api;
-  if (root && root.localStorage !== undefined) {
+  if (root) {
     try {
       root.AIFSPracticeStore = api.create(root);
     } catch (_) {
