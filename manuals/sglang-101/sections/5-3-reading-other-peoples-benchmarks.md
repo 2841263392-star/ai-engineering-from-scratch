@@ -300,7 +300,9 @@ The GB10 gave the same pattern with Qwen3-30B-A3B, against a default run on the 
 
 One caveat applies. The SGLang default run on the L4 was from 2026-10-18, three days before the mixed-chunk run. The median clocks were 1,425 to 1,508 MHz with the flag and 1,440 to 1,485 MHz without it. The clock does not explain the gap.
 
-This is one model, one GPU, and four workloads. It agrees with the field reports on the main point: on a dense model with unique prompts, the engines were within 6 percent on throughput. It adds the part that a throughput chart hides. When the pool is full, you choose between a fast first token and a smooth stream, and the two engines chose differently by default. With mixed prompt lengths, vLLM was ahead by default on throughput and stream smoothness. SGLang still gave the first token at the same time or sooner. One SGLang flag, `--enable-mixed-chunk`, removed that lead.
+This is one model, one GPU, and four workloads. It agrees with the field reports on the main point: on a dense model with unique prompts, the engines were within 6 percent on throughput. 
+
+The sweep adds the part that a throughput chart hides. When the pool is full, you choose between a fast first token and a smooth stream, and the two engines chose differently by default. With mixed prompt lengths, vLLM was ahead by default on throughput and stream smoothness. SGLang still gave the first token at the same time or sooner. One SGLang flag, `--enable-mixed-chunk`, removed that lead.
 
 ## Our position
 
