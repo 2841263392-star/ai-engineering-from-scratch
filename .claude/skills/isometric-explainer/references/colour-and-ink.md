@@ -7,8 +7,8 @@ This is the look for every machine page. Colour shows what each part is made of.
 - Warm paper behind the stage: `#f2efe7` in light, `#1f1c18` in dark.
 - Flat colour with three tones for each material: light, mid and dark. The tone of a face comes from the direction it faces. There are no gradients.
 - One body colour for the stations, picked with the swatches. The carriage or other main mover uses a second colour so that it stands out.
-- A heavy ink outline round each main body, about 2.6 px. Inner edges are about 1.1 px, and seams and grooves are about 0.7 px in a soft ink.
-- A flat blue cast shadow on the bench, short and joined to the part that casts it.
+- Dark navy ink. A heavy outline round each main body, about 2.6 px. Inner edges are 1.2 px, and seams and grooves are about 0.7 px in a soft ink.
+- A flat, hard-edged warm grey cast shadow on the bench, short and joined to the part that casts it. Never blue or purple, and never blurred.
 - Glass where a station shows something inside: a light tint and one or two white streaks.
 - Status lights: green when a station finished and red when it failed or reported a gap.
 - Pill labels with leader lines, and a "Hand-drawn wobble" slider.

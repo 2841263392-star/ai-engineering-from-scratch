@@ -8,7 +8,7 @@ export const PALETTES = {
   blush: ["#f3a6bb", "#d8869c", "#4b2430"],
 };
 
-export const LIGHT = [-0.14, 0.42];
+export const LIGHT = [-0.09, 0.26];
 
 export function inkSolid(paths, style = {}) {
   const material = style.material || style.tone || "hi";
@@ -68,8 +68,8 @@ export function blend(a, b, t) {
 }
 
 export const INK_CSS = `
-.iso-ink{--paper:#f2efe7;--ink:#231e16;--ink-soft:rgba(35,30,22,.55);--body-l:#93d3b0;--body-m:#71b693;--body-d:#1f4034;--ride-l:#f4b829;--ride-m:#d49c1f;--ride-d:#4e4a18;--ceramic-l:#fbfaf3;--ceramic-m:#e3e0d2;--ceramic-d:#bdb8a6;--metal-l:#eef0f0;--metal-m:#c6ccce;--metal-d:#8f989b;--board-l:#e6e1d4;--board-m:#cfc8b8;--board-d:#aaa293;--glass:#cfe9f0;--cast:#41538f;--cast-opacity:.38;--ok:#43c25c;--bad:#e2483d;--pill:#fff4d6;--pill-on:var(--anatomy-lit,#3553ff);--hot-top:var(--anatomy-lit-top,#f1f3ff)}
-:root[data-theme="dark"] .iso-ink,.iso-ink[data-theme="dark"]{--paper:#1f1c18;--ink:#efe6d3;--ink-soft:rgba(239,230,211,.5);--ceramic-l:#6d685d;--ceramic-m:#57534a;--ceramic-d:#3b3832;--metal-l:#5d6366;--metal-m:#484d50;--metal-d:#33373a;--board-l:#3d3831;--board-m:#312d27;--board-d:#24211c;--glass:#6f9aa6;--cast:#070a18;--cast-opacity:.55;--pill:#3a352c;--hot-top:#3d4f9c}
+.iso-ink{--paper:#f2efe7;--ink:#1b2340;--ink-soft:rgba(27,35,64,.55);--body-l:#93d3b0;--body-m:#71b693;--body-d:#1f4034;--ride-l:#f4b829;--ride-m:#d49c1f;--ride-d:#4e4a18;--ceramic-l:#fbfaf3;--ceramic-m:#e3e0d2;--ceramic-d:#bdb8a6;--metal-l:#eef0f0;--metal-m:#c6ccce;--metal-d:#8f989b;--board-l:#e6e1d4;--board-m:#cfc8b8;--board-d:#aaa293;--glass:#cfe9f0;--cast:#8a7f6e;--cast-opacity:.42;--ok:#43c25c;--bad:#e2483d;--pill:#fff4d6;--pill-on:var(--anatomy-lit,#3553ff);--hot-top:var(--anatomy-lit-top,#f1f3ff)}
+:root[data-theme="dark"] .iso-ink,.iso-ink[data-theme="dark"]{--paper:#1f1c18;--ink:#efe6d3;--ink-soft:rgba(239,230,211,.5);--ceramic-l:#6d685d;--ceramic-m:#57534a;--ceramic-d:#3b3832;--metal-l:#5d6366;--metal-m:#484d50;--metal-d:#33373a;--board-l:#3d3831;--board-m:#312d27;--board-d:#24211c;--glass:#6f9aa6;--cast:#0b0907;--cast-opacity:.55;--pill:#3a352c;--hot-top:#3d4f9c}
 .iso-ink .m-mid{--c-l:var(--body-l);--c-m:var(--body-m);--c-d:var(--body-d)}
 .iso-ink .m-ride{--c-l:var(--ride-l);--c-m:var(--ride-m);--c-d:var(--ride-d)}
 .iso-ink .m-hi{--c-l:var(--ceramic-l);--c-m:var(--ceramic-m);--c-d:var(--ceramic-d)}
@@ -89,7 +89,7 @@ export const INK_CSS = `
 .iso-ink .m-glass>.iso-top{fill:var(--glass);opacity:.14}
 .iso-ink .m-glass>.iso-edge{stroke-width:.8;opacity:.7}
 .iso-ink .streak{fill:none;stroke:#fff;stroke-width:1.6;opacity:.38;stroke-linecap:round}
-.iso-ink path.iso-edge{stroke:var(--ink);stroke-width:1.1}
+.iso-ink path.iso-edge{stroke:var(--ink);stroke-width:1.2}
 .iso-ink path.iso-line:not(.iso-edge){stroke:var(--ink-soft);stroke-width:.7}
 .iso-ink path.iso-crease,.iso-ink path.iso-bevel{stroke:var(--ink-soft);stroke-width:.6}
 .iso-ink .sil{fill:none;stroke:var(--ink);stroke-width:2.6;stroke-linejoin:round;vector-effect:non-scaling-stroke}

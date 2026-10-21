@@ -5,7 +5,10 @@ import * as k from "../agent-machine/kit/iso-kit.mjs";
 import * as ink from "../agent-machine/kit/ink.mjs";
 import * as Gm from "./geometry.mjs";
 import * as M from "./model.mjs";
-import { CONCEPT, INFO, PART_ORDER, SCENARIOS } from "./content.mjs";
+import { CONCEPT, INFO, PART_ORDER, READY_HINT, SCENARIOS } from "./content.mjs";
+import { FIXTURE } from "./fixture.mjs";
+import * as Ck from "./clock.mjs";
+import * as Pt from "./parts.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..", "..");
@@ -34,7 +37,7 @@ const body = Gm.items.map((item) => `<g data-i="${item.id}" data-asm="${item.asm
 const LABEL =
   "A decompiler built as a machine on a bench, drawn in isometric view. A carriage rides one straight rail past nine stations in order: a tape reel with a magic gauge for the file header, a section cabinet with a symbol index, a decode bed with a moving cursor for disassembly, a block board with a drop bin for the control-flow graph, a lift press with an IR stack, a board of type pins, a structuring jig with two jaws, a pseudocode printer, and an evidence ledger with four trays.";
 const FILTER = ink.wobbleFilter("dm-hand", 1.8);
-const svg = k.figureSvg({ width: Gm.W, height: Gm.H, label: LABEL, body: `${FILTER}<g data-layer filter="url(#dm-hand)">${body}</g><g data-pills></g>`, className: "dm-svg" }).replace("<svg ", "<svg data-dm-svg ");
+const svg = k.figureSvg({ width: Gm.W, height: Gm.H, label: LABEL, body: `${FILTER}<g data-layer filter="url(#dm-hand)">${body}</g><g data-pills></g><g data-sfx></g>`, className: "dm-svg" }).replace("<svg ", "<svg data-dm-svg ");
 
 const BREAK_NOTES = [
   "Broke the symbols: the name and the end of the function are unknown.",
@@ -43,6 +46,46 @@ const BREAK_NOTES = [
   "Data in code: the sweep decodes four data bytes and misses 0x14.",
   "Data in code with descent: the jump skips the data, then the lifter stops.",
 ];
+
+function selfCheck() {
+  const rows = [];
+  const check = (what, shown, model) => rows.push({ what, ok: String(shown) === String(model), shown, model });
+  for (const program of M.PROGRAMS)
+    for (const symbols of [true, false])
+      for (const sweep of M.SWEEPS)
+        for (const opt of program === "trap" ? ["O2"] : M.OPTS) {
+          const config = { program, symbols, sweep, opt };
+          const tag = `${M.keyOf(config)} ${symbols ? "named" : "stripped"} ${sweep}`;
+          const sim = M.simulate(config);
+          const fx = FIXTURE[M.keyOf(config)];
+          const header = sim.events.find((ev) => ev.type === "header");
+          check(`${tag}: card magic`, "7f 45 4c 46", header.magic);
+          check(`${tag}: card E_SHNUM`, fx.header.shnum, (header.trace.match(/(\d+) section headers/) || [])[1]);
+          check(`${tag}: drawers`, fx.sections.length, Pt.drawersSvg(fx.sections).match(/data-name=/g).length);
+          const { run } = M.decodeOf(config);
+          const decode = sim.events.find((ev) => ev.type === "decode");
+          check(`${tag}: tiles`, run.insns.length, decode.insns.length);
+          const graph = Pt.graphSvg(run).match(/(\d+) BLOCKS? · (\d+) EDGES?/);
+          const cfg = sim.events.find((ev) => ev.type === "cfg");
+          check(`${tag}: board blocks`, graph[1], cfg.live);
+          check(`${tag}: board edges`, graph[2], run.edges.filter((edge) => run.blocks.some((b) => b.live && b.s === edge.f) && run.blocks.some((b) => b.live && b.s === edge.t)).length);
+          const slots = Pt.slotList(fx.lift).length;
+          check(`${tag}: slots`, slots, fx.lift.error ? 0 : fx.lift.params.length + fx.lift.locals.length + 1);
+          const trays = M.tallyOf(sim.events[sim.events.length - 1].ledger);
+          check(`${tag}: trays`, Object.values(trays).reduce((a, b) => a + b, 0), sim.ledger.length);
+          for (const ev of sim.events) {
+            const real = Ck.realOf(config, ev.type);
+            if (["ledger", "exit"].includes(ev.type)) check(`${tag}: ${ev.type} has no real time`, real, null);
+            else check(`${tag}: ${ev.type} real time`, real && real.seconds > 0, true);
+          }
+        }
+  const bad = rows.filter((row) => !row.ok);
+  bad.forEach((row) => console.error("self-check mismatch:", row.what, "shown", row.shown, "model", row.model));
+  return { checked: rows.length, bad: bad.length };
+}
+const SELF = selfCheck();
+console.log(`self-check: ${SELF.checked} machine numbers read from the model, ${SELF.bad} disagree`);
+if (SELF.bad) process.exit(1);
 
 const DATA = {
   LABELS: Gm.LABELS,
@@ -60,6 +103,8 @@ const script = [
   module("content.mjs", "C"),
   module("fixture.mjs", "F"),
   module("model.mjs", "M", [['import { FIXTURE } from "./fixture.mjs";', "const { FIXTURE } = F;"]]),
+  module("timing.mjs", "Tm"),
+  module("clock.mjs", "Ck", [['import { TIMING } from "./timing.mjs";', "const { TIMING } = Tm;"], ['import { keyOf } from "./model.mjs";', "const { keyOf } = M;"]]),
   `const D = ${JSON.stringify(DATA)};`,
   readFileSync(join(HERE, "live.js"), "utf8"),
 ].join("\n");
@@ -80,7 +125,7 @@ const plate = k.plateHtml({
   title: "Decompiler bench",
   hint: "Click a part · Space runs · → steps",
   readout: "ready",
-  body: `<div class="dm-stage" data-dm-stage tabindex="0" role="group" aria-label="Decompiler machine. Space or Enter runs or pauses. Right arrow advances one step. E explodes the machine. B breaks one stage. R repairs it. Click a part to inspect it.">${svg}</div>`,
+  body: `<div class="dm-stage" data-dm-stage tabindex="0" role="group" aria-label="Decompiler machine. Space or Enter runs or pauses. Right arrow advances one step. E explodes the machine. B breaks one stage. R repairs it. Click a part to inspect it.">${svg}<span class="dm-badge" data-dm-badge hidden></span><div class="dm-cut" data-dm-cut hidden><p class="dm-cut-t" data-dm-cut-title>Inside</p><div class="dm-cut-row"><code data-dm-cut-cause></code><span class="dm-cut-arrow" aria-hidden="true">→</span><code data-dm-cut-result></code></div></div></div>`,
 });
 
 const html = `<!DOCTYPE html>
@@ -199,7 +244,17 @@ const html = `<!DOCTYPE html>
       </div>
 
       <div class="dm-center">
-        <div class="dm-figure iso iso-ink">${plate}</div>
+        <div class="dm-work">
+          <nav class="dm-steps" aria-label="Steps">
+            <div class="dm-mode" role="group" aria-label="Run mode"><button type="button" data-dm-mode="manual" aria-pressed="true">Manual</button><button type="button" data-dm-mode="auto" aria-pressed="false">Auto</button></div>
+            <ol class="dm-steplist" data-dm-steplist></ol>
+            <a href="#" class="dm-restart" data-dm-restart>Start over</a>
+          </nav>
+          <div class="dm-figure-col">
+            <p class="dm-hint" data-dm-hint aria-live="polite">${escape(READY_HINT)}</p>
+            <div class="dm-figure iso iso-ink">${plate}</div>
+          </div>
+        </div>
         <p class="dm-flash" data-dm-flash aria-live="polite"></p>
         <div class="dm-readouts" aria-label="Live readouts">
           <div class="dm-readout dm-readout--wide"><span>Stage</span><strong data-dm-stage-name>Ready</strong></div>
@@ -229,7 +284,7 @@ const html = `<!DOCTYPE html>
           <ol class="dm-listing" data-dm-listing></ol>
           <p class="dm-label">Output <span class="dm-status" data-dm-status data-status="idle">waiting</span></p>
           <pre class="dm-output" data-dm-output>No pseudocode yet.</pre>
-          <p class="dm-honest">This is a simulation. The page does not run a decompiler in your browser. Every byte, instruction, block, IR line and line of pseudocode on this page was captured from the course lessons' own tools on the fixture objects. The motion and its pace are set by the page, not measured.</p>
+          <p class="dm-honest">This is a simulation. The page does not run a decompiler in your browser. Every byte, instruction, block, IR line and line of pseudocode on this page was captured from the course lessons' own tools on the fixture objects. The motion is slowed down so you can see it. The speed badge compares each step with the real time of the lesson's Python code for that step, ${escape(Ck.SOURCE.method)} on one machine (${escape(Ck.SOURCE.machine)}); a badge with ≈ shares one timed call with the steps next to it. The 16-byte window on the decoder chip is a common x86 fetch width that this page uses to group the bytes; it is not from the fixture. Self-check at build: ${SELF.checked} numbers on the machine read from the model, ${SELF.bad} disagree.</p>
           <div class="dm-share">
             <button type="button" class="dm-btn" data-dm-share>Copy link to this setup</button>
           </div>

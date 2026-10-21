@@ -118,3 +118,20 @@ export const SCENARIOS = [
   { label: "Data in code, linear sweep", note: "Data decoded, a real instruction missed.", config: { program: "trap", sweep: "linear" } },
   { label: "Data in code, descent", note: "The jump skips the data.", config: { program: "trap" } },
 ];
+
+export const STEPS = {
+  header: { label: "Read the header", hint: "The machine reads the first bytes. They say: this is a program file.", sound: "tap tap" },
+  sections: { label: "Open the sections", hint: "It opens the drawer that holds the code.", sound: "skreek" },
+  decode: { label: "Decode the bytes", hint: "It reads the bytes and turns them into small commands.", sound: "tik tik" },
+  cfg: { label: "Join the blocks", hint: "It puts the commands in blocks and draws the roads between them.", sound: "plok" },
+  prune: { label: "Drop dead blocks", hint: "A block that no road reaches falls in the bin.", sound: "thud" },
+  lift: { label: "Lift to plain steps", hint: "It turns each command into a plain, simple step.", sound: "shff" },
+  refuse: { label: "Stop and refuse", hint: "It stops. It does not know what these bytes do.", sound: "bzzt" },
+  types: { label: "Find the types", hint: "It looks at each box and guesses what kind of number it holds.", sound: "tink" },
+  structure: { label: "Find the if", hint: "It finds the place where the code goes one way or the other.", sound: "clack" },
+  emit: { label: "Print the code", hint: "It prints code that a person can read.", sound: "brrr" },
+  ledger: { label: "Sort the evidence", hint: "It puts what it saw in one tray and what it guessed in another.", sound: "flap" },
+  exit: { label: "Finish", hint: "Done. A green lamp means it worked. A red lamp means it stopped.", sound: "ding" },
+};
+
+export const READY_HINT = "Press step 1. The machine reads one small program, one step at a time.";

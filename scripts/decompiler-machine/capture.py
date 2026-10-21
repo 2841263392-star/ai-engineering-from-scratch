@@ -1,13 +1,16 @@
 import hashlib
 import importlib.util
 import json
+import platform
 import sys
+import timeit
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 LESSONS = ROOT / "phases" / "13-tools-and-protocols"
 OUT = HERE / "fixture.mjs"
+TIMING = HERE / "timing.mjs"
 
 
 def lesson(folder: str, alias: str):
@@ -134,7 +137,55 @@ def build() -> str:
     return "export const FIXTURE = " + json.dumps(data, separators=(",", ":"), sort_keys=True) + ";\n"
 
 
+def seconds(call) -> float:
+    timer = timeit.Timer(call)
+    loops, _ = timer.autorange()
+    best = min(timer.repeat(repeat=5, number=loops)) / loops
+    return float(f"{best:.2g}")
+
+
+def lift_call(path: Path, name: str):
+    def call():
+        try:
+            L34.lift_function(L34.read_object(path), name)
+        except L34.DecodeError:
+            pass
+    return call
+
+
+def timing(key: str):
+    file, name = PROGRAMS[key]
+    path = FIXTURES / file
+    data = path.read_bytes()
+    elf33 = L33.ElfObject(data)
+    text = elf33.section(".text")
+    start, end, gap = elf33.function_extent(name)
+    out = {"parse": seconds(lambda: L32.ElfFile(data)), "decode": {}, "cfg": {}, "lift": seconds(lift_call(path, name))}
+    for symbols, bound in (("named", gap), ("stripped", text.size)):
+        out["decode"][symbols] = {
+            "descent": seconds(lambda: L33.recursive_descent(text.data, [start], bound)),
+            "linear": seconds(lambda: L33.linear_sweep(text.data, start, bound)),
+        }
+        out["cfg"][symbols] = {}
+        for method in ("descent", "linear"):
+            if method == "linear":
+                listing = L33.linear_sweep(text.data, start, bound).instructions
+            else:
+                listing = L33.recursive_descent(text.data, [start], bound).sorted_instructions()
+            out["cfg"][symbols][method] = seconds(lambda: L33.ControlFlowGraph(start, listing).reachable())
+    return out
+
+
+def write_timing() -> int:
+    data = {"machine": f"{platform.system()} {platform.machine()}, Python {platform.python_version()}", "method": "best of 5 timeit repeats", "programs": {key: timing(key) for key in PROGRAMS}}
+    TIMING.write_text("export const TIMING = " + json.dumps(data, separators=(",", ":"), sort_keys=True) + ";\n", encoding="utf-8")
+    print("wrote", rel(TIMING))
+    return 0
+
+
 def main(argv):
+    if "--time" in argv:
+        return write_timing()
     text = build()
     if "--check" in argv:
         same = OUT.exists() and OUT.read_text(encoding="utf-8") == text

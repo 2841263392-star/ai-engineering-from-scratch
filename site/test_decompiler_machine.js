@@ -110,6 +110,24 @@ test('the header card and the slots show only facts the fixtures hold', async ()
   for (const hook of ['data-live="drawers"', 'data-live="lanes"', 'data-live="slots"', 'data-live="elfline"', '7F 45 4C 46']) assert.ok(html.includes(hook), hook);
 });
 
+test('every timed step has a real time and the badge is computed from it', async () => {
+  const M = await import(path.join(dir, 'model.mjs'));
+  const Ck = await import(path.join(dir, 'clock.mjs'));
+  for (const program of M.PROGRAMS)
+    for (const symbols of [true, false])
+      for (const sweep of M.SWEEPS) {
+        const config = { program, symbols, sweep, opt: 'O2' };
+        for (const ev of M.simulate(config).events) {
+          const real = Ck.realOf(config, ev.type);
+          if (ev.type === 'ledger' || ev.type === 'exit') assert.equal(real, null);
+          else assert.ok(real.seconds > 0 && real.seconds < 0.1, ev.type);
+        }
+      }
+  const badge = Ck.badgeOf(1.5, { seconds: 5e-5, shared: null });
+  assert.equal(badge.text, '×1/30,000');
+  assert.equal(Ck.badgeOf(1, { seconds: 1, shared: null }), null);
+});
+
 test('the share URL round-trips every setting', async () => {
   const M = await load();
   assert.equal(M.encode(M.DEFAULTS), '');
@@ -158,7 +176,7 @@ test('the published page is the output of the build script', () => {
 
 test('the page carries every control, readout and social tag', () => {
   const html = fs.readFileSync(page, 'utf8');
-  for (const hook of ['data-dm-run', 'data-dm-step', 'data-dm-break', 'data-dm-repair', 'data-dm-explode', 'data-dm-reset', 'id="dm-program"', 'id="dm-symbols"', 'id="dm-sweep"', 'id="dm-opt"', 'data-dm-stage-name', 'data-dm-decoded', 'data-dm-blocks', 'data-dm-names', 'data-dm-unknowns', 'data-dm-evidence', 'data-dm-ledger', 'data-dm-trace', 'aria-live="polite"', 'id="dm-wobble"', 'id="dm-labels"', 'data-dm-pal="mint"', 'data-pills', 'id="dm-hand"', 'The big idea', 'get("labels") === "0"']) {
+  for (const hook of ['data-dm-run', 'data-dm-step', 'data-dm-break', 'data-dm-repair', 'data-dm-explode', 'data-dm-reset', 'id="dm-program"', 'id="dm-symbols"', 'id="dm-sweep"', 'id="dm-opt"', 'data-dm-stage-name', 'data-dm-decoded', 'data-dm-blocks', 'data-dm-names', 'data-dm-unknowns', 'data-dm-evidence', 'data-dm-ledger', 'data-dm-trace', 'aria-live="polite"', 'id="dm-wobble"', 'id="dm-labels"', 'data-dm-pal="mint"', 'data-pills', 'id="dm-hand"', 'The big idea', 'get("labels") === "0"', 'data-dm-steplist', 'data-dm-mode="manual"', 'data-dm-mode="auto"', 'data-dm-restart', 'data-dm-hint', 'data-dm-badge', 'data-dm-cut', 'data-sfx', 'window.seek = seekTime', 'has("render")', 'localStorage.getItem("dm-mode")', 'Self-check at build:']) {
     assert.ok(html.includes(hook), hook);
   }
   assert.match(html, /This is a simulation\./);

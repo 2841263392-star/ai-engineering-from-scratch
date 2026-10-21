@@ -278,3 +278,46 @@
 .dm-figure .iso-plate { padding: 30px 10px 30px; }
 .dm-figure .iso-plate-corners { display: none; }
 .dm-figure .iso-plate { padding: 14px 8px; }
+.dm-work { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 172px minmax(0, 1fr); gap: 12px; }
+.dm-figure-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; min-height: 0; }
+.dm-steps { display: flex; flex-direction: column; gap: 8px; min-height: 0; min-width: 0; }
+.dm-mode { display: grid; grid-template-columns: 1fr 1fr; border: 1.2px solid var(--ink); border-radius: 999px; overflow: hidden; }
+.dm-mode button { min-height: 32px; display: grid; place-items: center; line-height: 1; padding: 0; border: 0; background: var(--bg); color: var(--ink); font: 600 0.7rem var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; }
+.dm-mode button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.dm-steplist { list-style: none; margin: 0; padding: 2px 8px 2px 2px; display: flex; flex-direction: column; gap: 4px; overflow: auto; min-height: 0; }
+.dm-stepbtn { width: 100%; display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 2px 10px 2px 3px; border: 1.2px solid var(--ink); border-radius: 999px; background: var(--bg); color: var(--ink); font: 600 0.68rem/1.1 var(--font-mono); text-align: left; cursor: default; transition: opacity 0.3s ease, background-color 0.2s ease; }
+.dm-num { flex: none; width: 25px; height: 25px; border-radius: 50%; border: 1.2px solid var(--ink); display: grid; place-items: center; font-size: 0.78rem; background: var(--bg-surface); }
+.dm-stepbtn[data-state="wait"] { opacity: 0.55; }
+.dm-stepbtn[data-state="done"] { opacity: 0.35; }
+.dm-stepbtn[data-state="next"] { cursor: pointer; background: #fff4d6; color: #1b2340; animation: dm-pulse 1.4s ease-in-out infinite; }
+.dm-stepbtn[data-state="next"] .dm-num { background: #1b2340; color: #fff4d6; border-color: #1b2340; }
+.dm-stepbtn[data-state="running"] { background: var(--anatomy-lit, #3553ff); border-color: var(--anatomy-lit, #3553ff); color: #fff; }
+.dm-stepbtn[data-state="running"] .dm-num { background: #fff; color: #1b2340; border-color: #fff; }
+:root[data-theme="dark"] .dm-stepbtn[data-state="running"] { color: #10142a; }
+@keyframes dm-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(53, 83, 255, 0.5); } 50% { box-shadow: 0 0 0 6px rgba(53, 83, 255, 0); } }
+.dm-restart { font: 0.74rem var(--font-mono); color: var(--ink-soft); text-decoration: underline; text-underline-offset: 3px; align-self: flex-start; padding: 4px 2px; }
+.dm-hint { margin: 0; font-size: 1rem; line-height: 1.35; color: var(--ink); min-height: 2.7em; }
+.dm-stage { position: relative; }
+.dm-badge { position: absolute; top: 4px; right: 6px; padding: 3px 10px; border: 1.2px solid #1b2340; border-radius: 999px; background: #fff4d6; color: #1b2340; font: 700 0.72rem var(--font-mono); pointer-events: none; }
+.dm-cut { position: absolute; left: 8px; bottom: 6px; max-width: min(48%, 440px); padding: 5px 10px 7px; border: 1.2px dashed var(--ink); background: var(--bg); font-family: var(--font-mono); pointer-events: none; }
+.dm-cut-t { margin: 0 0 3px; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blueprint); }
+.dm-cut-row { display: flex; align-items: baseline; gap: 4px 8px; white-space: nowrap; font-size: 0.78rem; color: var(--ink); }
+.dm-cut-row code { font-family: inherit; overflow-wrap: break-word; }
+.dm-cut-row code:first-child { padding: 0 4px; background: #f4b829; color: #1b2340; }
+.dm-sfx { font-family: "Bradley Hand", "Segoe Print", "Chalkboard SE", cursive; font-size: 17px; font-weight: 700; fill: var(--ink, #1b2340); pointer-events: none; }
+:root[data-render] .dm-stepbtn { animation: none; transition: none; }
+@media (prefers-reduced-motion: reduce) { .dm-stepbtn[data-state="next"] { animation: none; } }
+@media (max-width: 1100px) {
+  .dm-work { grid-template-columns: minmax(0, 1fr); }
+  .dm-steps { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .dm-mode { width: 170px; }
+  .dm-steplist { order: 3; flex: 1 1 100%; flex-direction: row; overflow-x: auto; padding-bottom: 6px; }
+  .dm-stepbtn { width: auto; white-space: nowrap; }
+}
+@media (max-width: 640px) {
+  .dm-cut { position: static; max-width: none; margin-top: 7%; }
+  .dm-badge { top: -2px; right: 0; }
+  .dm-hint { font-size: 0.95rem; }
+}
+:root[data-poster] .dm-steps, :root[data-poster] .dm-hint, :root[data-poster] .dm-cut, :root[data-poster] .dm-badge { display: none !important; }
+:root[data-poster] .dm-work { display: block; }

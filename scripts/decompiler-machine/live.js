@@ -183,11 +183,34 @@ function beatsFor(sim) {
         break;
     }
     beats[mark].event = index;
+    for (let i = mark; i < beats.length; i++) beats[i].sound = beats[i].d === "travel" ? "whirr" : C.STEPS[ev.type].sound;
   });
   return beats;
 }
 
+function durationsOf(beats) {
+  const out = [];
+  let cx = D.HOME_X;
+  let current = 0;
+  for (const beat of beats) {
+    if (beat.event !== undefined) current = beat.event;
+    let d = beat.d;
+    if (d === "travel") {
+      d = Math.min(1.3, 0.35 + Math.abs(beat.to.cx - cx) / 150);
+      cx = beat.to.cx;
+    }
+    out[current] = (out[current] || 0) + d;
+  }
+  return out;
+}
+
 const startParams = new URLSearchParams(location.search);
+const renderMode = startParams.has("render");
+if (renderMode) document.documentElement.setAttribute("data-render", "");
+let mode = "manual";
+try {
+  if (!renderMode && localStorage.getItem("dm-mode") === "auto") mode = "auto";
+} catch (error) {}
 const startPalette = startParams.get("pal");
 const state = { config: M.decode(location.search), sim: null, beats: [], bi: 0, bt: 0, pose: null, playing: false, stopAt: -1, shown: -1, done: false, speed: 1, selected: null, explode: { target: 0, shares: {} } };
 D.ASSEMBLIES.forEach((asm) => (state.explode.shares[asm] = { x: 0, v: 0 }));
@@ -196,6 +219,7 @@ function load(config, { autoplay = false } = {}) {
   state.config = M.configOf(config);
   state.sim = M.simulate(state.config);
   state.beats = beatsFor(state.sim);
+  state.durations = durationsOf(state.beats);
   state.variant = variantOf(state.config);
   state.program = programOf(state.config);
   state.order = state.sim.events.find((event) => event.type === "decode").order;
@@ -214,6 +238,7 @@ function load(config, { autoplay = false } = {}) {
   live("bin").style.display = "none";
   lastSheet = -1;
   lastDrawer = -1;
+  buildSteps();
   syncControls();
   writeUrl();
   render(-1);
@@ -228,6 +253,7 @@ function begin(beat) {
   for (const key of Object.keys(beat.to)) beat._from[key] = state.pose[key];
   beat._dur = beat.d === "travel" ? Math.min(1.3, 0.35 + Math.abs(beat.to.cx - state.pose.cx) / 150) : beat.d;
   state.pose.hot = beat.hot || [];
+  state.pose.sound = beat.sound || "";
 }
 function apply(beat, t) {
   for (const [key, target] of Object.entries(beat.to)) state.pose[key] = lerp(beat._from[key], target, ease(t));
@@ -241,6 +267,7 @@ function advance(dt) {
       if (state.stopAt >= 0 && beat.event !== undefined && beat.event > state.stopAt) {
         state.playing = false;
         state.stopAt = -1;
+        state.pose.sound = "";
         syncButtons();
         return;
       }
@@ -263,7 +290,9 @@ function advance(dt) {
     state.done = true;
     state.playing = false;
     state.pose.hot = [];
+    state.pose.sound = "";
     render(state.sim.events.length - 1);
+    if (mode === "auto" && !renderMode) setTimeout(() => mode === "auto" && state.done && load(state.config, { autoplay: true }), 1800);
     const o = state.sim.outcome;
     const t = state.sim.totals;
     $("[data-dm-live]").textContent = `Run finished: ${o.status}. ${t.observed} observed, ${t.derived} derived, ${t.inferred} inferred, ${t.unknown} unknown.`;
@@ -280,6 +309,10 @@ const dropOf = (pose) => D.HEAD.home - (D.STACK.z0 + Math.min(pose.plates, 8) * 
 let lastOrder = "";
 let lastPills = "";
 const pillLayer = svg.querySelector("[data-pills]");
+const sfxLayer = svg.querySelector("[data-sfx]");
+let lastSfx = "";
+let lastSteps = "";
+let lastGuide = "";
 let lastSheet = -1;
 let lastDrawer = -1;
 let lastLanes = "";
@@ -403,6 +436,14 @@ function draw() {
     pillLayer.innerHTML = pills;
     lastPills = pills;
   }
+  const spot = K.iso([pose.cx + 14, 46, 0], P).map((v) => v.toFixed(1));
+  const sfx = pose.sound ? `<text class="dm-sfx" x="${spot[0]}" y="${spot[1]}" transform="rotate(-8 ${spot.join(" ")})">${pose.sound}</text>` : "";
+  if (sfx !== lastSfx) {
+    sfxLayer.innerHTML = sfx;
+    lastSfx = sfx;
+  }
+  syncSteps();
+  syncGuide();
   const off = state.config.program === "trap" ? new Set(["types", "structure", "pseudocode"]) : new Set();
   for (const item of D.items) {
     const node = nodes[item.id];
@@ -442,6 +483,7 @@ function tick(now) {
   if (!frame) last = 0;
 }
 function kick() {
+  if (renderMode) return draw();
   if (!frame && visible) frame = requestAnimationFrame(tick);
 }
 new IntersectionObserver((entries) => {
@@ -487,6 +529,148 @@ function toggleExplode() {
   syncButtons();
   kick();
 }
+
+function buildSteps() {
+  const list = $("[data-dm-steplist]");
+  list.innerHTML = state.sim.events.map((ev, i) => `<li><button type="button" class="dm-stepbtn" data-dm-n="${i}" data-state="wait" disabled><span class="dm-num">${i + 1}</span><span class="dm-step-l">${escapeHtml(C.STEPS[ev.type].label)}</span></button></li>`).join("");
+  list.querySelectorAll("[data-dm-n]").forEach((button) =>
+    button.addEventListener("click", () => {
+      if (Number(button.dataset.dmN) === state.shown + 1 && !state.playing) step();
+    }),
+  );
+  lastSteps = "";
+}
+function syncSteps() {
+  const key = `${state.shown}|${state.playing}|${state.bt > 0}|${state.done}|${mode}|${state.sim.events.length}`;
+  if (key === lastSteps) return;
+  lastSteps = key;
+  $$("[data-dm-n]").forEach((button) => {
+    const i = Number(button.dataset.dmN);
+    const busy = state.shown >= 0 && !state.done && (state.playing || state.bt > 0);
+    const running = i === state.shown && busy;
+    const finished = i < state.shown || (i === state.shown && !running);
+    const next = mode === "manual" && !busy && !state.done && i === state.shown + 1;
+    button.dataset.state = running ? "running" : finished ? "done" : next ? "next" : "wait";
+    button.disabled = !next;
+    running ? button.setAttribute("aria-current", "step") : button.removeAttribute("aria-current");
+  });
+  $$("[data-dm-mode]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.dmMode === mode)));
+  const list = $("[data-dm-steplist]");
+  const focus = list.querySelector('[data-state="running"], [data-state="next"]');
+  if (focus && list.scrollWidth > list.clientWidth + 1) list.scrollLeft = focus.parentElement.offsetLeft - list.offsetLeft - 8;
+}
+function cutOf(ev, pose) {
+  const fx = F.FIXTURE[M.keyOf(state.config)];
+  const lift = fx.lift;
+  const clip = (text, n = 30) => (text.length > n ? text.slice(0, n - 1) + "…" : text);
+  const branch = state.decode.insns.find((insn) => insn.flow !== "next" && insn.flow !== "return") || state.decode.insns[0];
+  switch (ev.type) {
+    case "header":
+      return [fx.ident.slice(0, 17), `ELF64 · LSB · ${fx.header.typeName} · ${fx.header.machineName}`];
+    case "sections": {
+      const text = fx.sections.find((section) => section.name === ".text");
+      return [`.text @ ${M.hex(text.offset)}`, `${text.size} bytes of code`];
+    }
+    case "decode": {
+      const at = state.order[Math.max(0, pose.tiles - 1)];
+      const insn = ev.insns.find((item) => item.a === at) || ev.insns[0];
+      return [insn.hex, insn.text];
+    }
+    case "cfg":
+      return [`${branch.text}`, ev.trace.split(" from ")[0]];
+    case "prune":
+      return [`no road from ${M.hex(state.decode.range[0])}`, `${ev.dropped} block${ev.dropped === 1 ? "" : "s"} in the bin`];
+    case "refuse":
+    {
+      const m = ev.error.match(/^(0x[0-9a-f]+): .*?opcode ([0-9a-f ]+?) is (.*)$/);
+      return m ? [`${m[2]} @ ${m[1]}`, clip(`stop: ${m[3].replace("the fixture ", "")}`)] : [M.hex(state.decode.range[0]), clip(`stop: ${ev.error}`)];
+    }
+    case "lift": {
+      const lines = ev.ir.filter((line) => line.startsWith("  "));
+      return [`${ev.decoded} instructions`, clip(lines[Math.max(0, Math.min(lines.length, pose.ir) - 1)].trim())];
+    }
+    case "types": {
+      const slots = Pt.slotList(lift);
+      const slot = slots[Math.max(0, Math.min(slots.length, pose.pins) - 1)];
+      const type = slot.name === "return" ? lift.returns : [...lift.params, ...lift.locals].find((item) => item.name === slot.name).type;
+      return [slot.label, `${slot.name}: ${type}`];
+    }
+    case "structure":
+      return [branch.text, ev.shape];
+    case "emit":
+      return [`${lift.irCount} IR lines`, clip(ev.lines[Math.max(0, Math.min(ev.lines.length, pose.printed) - 1)].trim())];
+    case "ledger": {
+      const t = ev.tally;
+      return [`${ev.ledger.length} claims`, `${t.observed} obs · ${t.derived} der · ${t.inferred} inf · ${t.unknown} unk`];
+    }
+    default:
+      return [`${ev.ledger.length} claims`, ev.outcome.status];
+  }
+}
+function syncGuide() {
+  const sim = state.sim;
+  const midStep = state.shown >= 0 && !state.done && (state.playing || state.bt > 0);
+  const running = midStep ? sim.events[state.shown] : null;
+  const nextEvent = sim.events[state.shown + 1];
+  const hint = state.shown < 0 && !state.playing ? C.READY_HINT : running ? C.STEPS[running.type].hint : state.done ? C.STEPS.exit.hint : nextEvent ? C.STEPS[nextEvent.type].hint : "";
+  const shownEvent = state.shown >= 0 ? sim.events[state.shown] : null;
+  const real = running ? Ck.realOf(state.config, running.type) : null;
+  const slow = state.speed * (still.matches && !renderMode ? 40 : 1);
+  const badge = running ? Ck.badgeOf(state.durations[state.shown] / slow, real) : null;
+  const cut = shownEvent ? cutOf(shownEvent, state.pose) : null;
+  const key = [hint, badge && badge.text, cut && cut.join("|"), shownEvent && shownEvent.station].join("#");
+  if (key === lastGuide) return;
+  lastGuide = key;
+  $("[data-dm-hint]").textContent = hint;
+  const badgeNode = $("[data-dm-badge]");
+  badgeNode.hidden = !badge;
+  if (badge) {
+    badgeNode.textContent = `${badge.text} · ${badge.real}`;
+    badgeNode.title = badge.ratio > 1 ? "Shown slower than the real code runs" : "Shown faster than the real code runs";
+  }
+  const cutNode = $("[data-dm-cut]");
+  cutNode.hidden = !cut;
+  if (cut) {
+    $("[data-dm-cut-title]").textContent = `Inside: ${D.CONCEPT[shownEvent.station]}`;
+    $("[data-dm-cut-cause]").textContent = cut[0];
+    $("[data-dm-cut-result]").textContent = cut[1];
+  }
+}
+function setMode(next) {
+  mode = next;
+  try {
+    localStorage.setItem("dm-mode", next);
+  } catch (error) {}
+  if (mode === "auto" && !state.playing) play();
+  if (mode === "manual" && state.playing) pause();
+  lastSteps = "";
+  draw();
+}
+$$("[data-dm-mode]").forEach((button) => button.addEventListener("click", () => setMode(button.dataset.dmMode)));
+$("[data-dm-restart]").addEventListener("click", (event) => {
+  event.preventDefault();
+  state.explode.target = 0;
+  load(state.config, { autoplay: mode === "auto" });
+});
+function seekTime(t) {
+  Object.values(state.explode.shares).forEach((share) => Object.assign(share, { x: 0, v: 0, goal: 0, wait: 0 }));
+  state.explode.target = 0;
+  load(state.config);
+  state.playing = true;
+  advance(Math.max(0, t));
+  state.playing = false;
+  draw();
+  syncButtons();
+}
+const tourLength = () => state.durations.reduce((a, b) => a + b, 0);
+function explodeAt(t) {
+  Object.values(state.explode.shares).forEach((share) => Object.assign(share, { x: 0, v: 0, goal: 0, wait: 0 }));
+  state.explode.target = 1;
+  for (let left = t; left > 1e-9; left -= 1 / 120) stepExplode(Math.min(1 / 120, left));
+  draw();
+}
+window.seek = seekTime;
+window.tourLength = tourLength;
 
 function syncControls() {
   const c = state.config;
@@ -687,6 +871,10 @@ window.__machine = {
   repair,
   toggleExplode,
   inspect,
+  seekTime,
+  explodeAt,
+  tourLength,
+  setMode,
   seek: (n) => {
     state.stopAt = n;
     state.playing = true;
@@ -734,6 +922,6 @@ new IntersectionObserver((entries) => {
   const entry = entries[entries.length - 1];
   if (entry.isIntersecting && !started && !still.matches && !/[?&]still\b/.test(location.search)) {
     started = true;
-    setTimeout(() => state.shown < 0 && !state.playing && play(), 900);
+    setTimeout(() => mode === "auto" && state.shown < 0 && !state.playing && play(), 900);
   }
 }, { threshold: 0.35 }).observe(stage);

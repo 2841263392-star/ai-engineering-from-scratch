@@ -45,7 +45,7 @@ This skill makes a single-page interactive figure. The figure is a solid isometr
 7. Build the static geometry once. Each part becomes one SVG group with a depth key. Movers get a `data-live` hook. See `references/geometry.md`.
 8. Animate by translation. Move a part by changing its `transform` only. Rebuild a path only when its shape changes, such as a rod that gets longer.
 9. Paint from back to front. Sort groups by depth key plus the depth of their current offset. Reorder the DOM only when the order changes.
-10. Paint with colour and ink. Each material has three flat tones, the main bodies have a heavy ink silhouette, and each body casts a flat blue shadow on the bench. Exactly one accent colour marks the active part and its pill label. See `references/colour-and-ink.md`.
+10. Paint with colour and ink. Each material has three flat tones, the main bodies have a heavy ink silhouette, and each body casts a short, flat, warm grey shadow on the bench. Exactly one accent colour marks the active part and its pill label. See `references/colour-and-ink.md`.
 11. Add controls that change the model. Run, step, break, repair, reset and the config switches all act on a real `simulate` run. Write the config to the URL. See `references/live.md`.
 12. Verify the page in a headless browser. Take screenshots at desktop and phone width in both themes. Add 4x close-ups, a line-end check, a scenario sweep with zero console errors and a contact sheet. See `references/verify.md`.
 

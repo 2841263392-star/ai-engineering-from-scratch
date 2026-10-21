@@ -56,7 +56,7 @@ export const topText = (x, y, z, text, size) => k.faceTextSvg(k.topMatrix([x, y]
 export function drawersSvg(sections) {
   const x = XS.sections;
   const top = CAB.z1 - 1.2;
-  const pitch = (top - (CAB.z0 + 1)) / sections.length;
+  const pitch = (top - (CAB.z0 + 7)) / sections.length;
   const size = Math.min(3, pitch * 0.66);
   const fronts = sections.map((section, i) => {
     const z1 = top - i * pitch;
