@@ -273,6 +273,7 @@
     ensureNavigationLink(nav, 'projects.html', 'Projects', '');
     ensureNavigationLink(nav, 'manuals.html', 'Manuals', '');
     ensureNavigationLink(nav, '/cheatsheets', 'Cheat Sheets', '');
+    ensureNavigationLink(nav, '/practice', 'Practice', '');
     ensureNavigationLink(nav, 'skills.html', 'Skills', '');
     ensureNavigationLink(nav, 'highlights.html', 'My Highlights', '');
     ensureNavigationLink(nav, '/blogs', 'Blogs & Guides', '');
@@ -441,6 +442,7 @@
     for (var j = 0; j < footers.length; j++) {
       ensureNavigationLink(footers[j], '/blogs', 'Blogs & Guides', '');
       ensureNavigationLink(footers[j], 'skills.html', 'Skills', '');
+      ensureNavigationLink(footers[j], '/practice', 'Practice', '');
       ensureNavigationLink(footers[j], 'highlights.html', 'My Highlights', '');
     }
     loadStars();
