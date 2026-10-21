@@ -122,6 +122,9 @@ site/sitemap-phases.xml
 site/sitemap-cheatsheets.xml
 site/cheatsheets/
 site/cheatsheet-map.json
+site/sitemap-practice.xml
+site/practice/
+site/practice-map.json
 site/manual-*.html
 site/manuals-data.js
 site/manuals.html

@@ -1,0 +1,8 @@
+[
+  {"id": "deep-learning-core", "title": "Deep learning core", "summary": "Losses, backpropagation, normalization and optimizers."},
+  {"id": "llm-inference", "title": "LLM inference", "summary": "Tokenizers, sampling, beam search, the KV cache and LoRA."},
+  {"id": "rl-basics", "title": "RL basics", "summary": "Returns, advantages and the PPO objective."},
+  {"id": "papers-to-code", "title": "Papers to code", "summary": "Implement the core method of a research paper and test it against the paper's equations."},
+  {"id": "train-tiny-models", "title": "Train tiny models", "summary": "Train a small model in your browser to a target score inside a step budget."},
+  {"id": "experiment-labs", "title": "Experiment labs", "summary": "Change one variable, measure the effect, and answer with numbers."}
+]
