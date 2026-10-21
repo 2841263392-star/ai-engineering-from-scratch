@@ -124,6 +124,10 @@ flash-attention-memory
 
 ## Build It
 
+```figure
+iso-machine {"machine":"kv-cache"}
+```
+
 See `code/main.py`. We implement:
 
 1. A naive $O(N^2)$ incremental decoder.

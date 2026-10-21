@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="style.css?v=20261015a">
   <link rel="stylesheet" href="certifications.css?v=20260925a">
   <link rel="stylesheet" href="highlights.css?v=20261018a">
+  <link rel="stylesheet" href="lesson-walkthrough.css?v=20261021b">
   <style>
     .scroll-progress {
       position: fixed;
@@ -2801,6 +2802,7 @@
   <script src="highlights-anchor.js?v=20261018a"></script>
   <script src="highlights-store.js?v=20261018a"></script>
   <script src="highlights.js?v=20261018a"></script>
+  <script src="lesson-walkthrough.js?v=20261021b"></script>
   <script id="learningPathProgressRuntime">
     (function (root) {
       'use strict';
@@ -2903,7 +2905,7 @@
   <script src="header.js?v=20261018a" defer></script>
   <script src="cmdpalette.js?v=20260821a" defer></script>
   <script src="lesson-figures.js?v=843871fd2942"></script>
-  <script src="figure-manifest.js?v=7a6920409faa"></script>
+  <script src="figure-manifest.js?v=49adfab3cb07"></script>
   <script>
     (function () {
       var root = document.documentElement;
@@ -3933,6 +3935,7 @@
 
       function disposeRenderedLesson(root) {
         if (window.AIFSHighlights) window.AIFSHighlights.unmount();
+        if (window.AIFSWalkthrough) window.AIFSWalkthrough.unmount();
         if (window.AIFSFigureRuntime && root) window.AIFSFigureRuntime.disposeRoot(root);
         disposeTocRuntime();
         mermaidRenderSeq++;
@@ -3993,6 +3996,7 @@
           });
         }
         restoreHeadingHash();
+        if (window.AIFSWalkthrough) window.AIFSWalkthrough.mount(article, { path: lessonPath });
 
         document.querySelectorAll('a[href^="#"]').forEach(function (link) {
           link.addEventListener('click', function (e) {
