@@ -1052,8 +1052,8 @@ function checkLinks(built, root = REPO_ROOT) {
       if (phase) continue;
       const manual = /^\/manual-([a-z0-9-]+)$/.exec(target);
       if (manual && manuals.has(manual[1])) continue;
-      const page = /^\/(inside-[a-z0-9-]+)$/.exec(target);
-      if (page && fs.existsSync(path.join(root, 'site', `${page[1]}.html`))) continue;
+      const explainer = /^\/(inside-[a-z0-9-]+)$/.exec(target);
+      if (explainer && fs.existsSync(path.join(root, 'site', `${explainer[1]}.html`))) continue;
       broken.push({ page: page.href, href });
     }
   }

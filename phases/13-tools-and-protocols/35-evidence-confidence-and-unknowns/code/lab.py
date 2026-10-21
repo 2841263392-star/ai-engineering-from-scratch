@@ -1,3 +1,8 @@
+"""Graded lab for docs/en.md: five questions about the fixtures of this lesson.
+The expected values come from main.py run on the committed files in fixtures/.
+Write answers into lab_answers.json, then run `python3 lab.py` from this folder
+or `python3 code/lab.py` from the lesson folder. It exits 0 when all five pass.
+"""
 import json
 import re
 import sys
