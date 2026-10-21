@@ -7,14 +7,17 @@ const AGENT_X = 270;
 const TRAY = [380, 612];
 const TOWER = { cx: 80, oy: 594, size: 44 };
 
-function pill(f, x, y, w, title, lines, hue) {
+function pill(f, x, y, w, title, lines, hue, laterBeat) {
   const h = 26 + lines.length * 15;
   f.rect(x, y, w, h, { hue });
   f.text(x + 10, y + 18, title, { size: 12.5, weight: 700, max: w - 20 });
+  const now = f.current;
   lines.forEach(([kind, content], index) => {
     const tone = { done: 'green', wait: 'amber' }[kind];
+    if (laterBeat) f.beat(kind === 'wait' ? now : laterBeat);
     f.text(x + 10, y + 34 + index * 15, content, { size: 11, serif: !tone, hue: tone || 'ink-soft', max: w - 20 });
   });
+  if (laterBeat) f.beat(now);
   return { x, y, w, h, bottom: y + h };
 }
 
@@ -54,7 +57,7 @@ module.exports = figure('plate-planner-run', {
 
   const unit = (view, cx, size, h, hue, z) => {
     const [xc, yc] = view.at(cx, 0);
-    return f.isoBlock(view, { x: xc - size / 2, y: yc - size / 2, w: size, d: size, h, z, hue });
+    return f.isoBlock(view, { x: xc - size / 2, y: yc - size / 2, w: size, d: size, h, z, hue, edges: h > 6 });
   };
 
   const agent = (lane, title, sub, hue) => {
@@ -73,11 +76,14 @@ module.exports = figure('plate-planner-run', {
     f.arrow([machine.P(46, 0, 0)[0] + 2, lane.oy - 20], [TRAY[0] - 2, lane.oy - 20], { style: 'state' });
     f.isoBeam(lane.view, { sx0: TRAY[0], sx1: TRAY[1], c: 22, back: 44, h: 3, z: 6, hue: 'paper', inkHue: 'amber', ink: 1, shadow: false });
     const placed = [unit(lane.view, slips[0][0], 30, 4, slips[0][1], 9)];
+    const label = pill(f, TRAY[0], lane.top, TRAY[1] - TRAY[0], `task ${id}`, lines, 'amber', doneBeat);
+    f.leader([slips[0][0], label.bottom], [placed[0].top[0], placed[0].top[1]], { hue: slips[0][1] });
     if (doneBeat) f.beat(doneBeat);
-    const label = pill(f, TRAY[0], lane.top, TRAY[1] - TRAY[0], `task ${id}`, lines, 'amber');
-    if (slips[1]) placed.push(unit(lane.view, slips[1][0], 30, 4, slips[1][1], 9));
-    slips.forEach(([sx, hue], index) => f.leader([sx, label.bottom], [placed[index].top[0], placed[index].top[1]], { hue }));
-    if (placed.length === 2) f.arrow([slips[0][0] + 28, lane.oy - 11], [slips[1][0] - 28, lane.oy - 11], { style: 'state' });
+    if (slips[1]) {
+      placed.push(unit(lane.view, slips[1][0], 30, 4, slips[1][1], 9));
+      f.leader([slips[1][0], label.bottom], [placed[1].top[0], placed[1].top[1]], { hue: slips[1][1] });
+      f.arrow([slips[0][0] + 28, lane.oy - 11], [slips[1][0] - 28, lane.oy - 11], { style: 'state' });
+    }
     return placed;
   };
 

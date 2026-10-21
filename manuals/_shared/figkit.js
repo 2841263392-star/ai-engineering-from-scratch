@@ -287,7 +287,7 @@ class Figure {
       if (tone) this.polygon(face, { fill: color(tone), fillOpacity: TONE[tone] });
     }
     const near = P(x1, y1, z1);
-    for (const far of [P(x1, y, z1), P(x, y1, z1), P(x1, y1, z)]) {
+    if (options.edges !== false) for (const far of [P(x1, y, z1), P(x, y1, z1), P(x1, y1, z)]) {
       this.emit(`<polyline${attrs({ points: pointList([near, far]), fill: 'none', stroke: ink, 'stroke-width': 0.8, 'stroke-opacity': 0.6 })}/>`);
     }
     this.polygon(outline, { stroke: ink, strokeWidth: options.ink || 1.5, dash: options.dash });

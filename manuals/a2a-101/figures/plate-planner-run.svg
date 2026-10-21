@@ -99,9 +99,6 @@
   <polygon points="474.02,173 500,188 500,184 474.02,169" fill="var(--m-green-fill, #e5f0e4)"/>
   <polygon points="525.98,173 500,188 500,184 525.98,169" fill="var(--m-green-fill, #e5f0e4)"/>
   <polygon points="525.98,173 500,188 500,184 525.98,169" fill="var(--m-shade, #1a1a1a)" fill-opacity="0.16"/>
-  <polyline points="500,184 525.98,169" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="0.8" stroke-opacity="0.6"/>
-  <polyline points="500,184 474.02,169" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="0.8" stroke-opacity="0.6"/>
-  <polyline points="500,184 500,188" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="0.8" stroke-opacity="0.6"/>
   <polygon points="500,154 525.98,169 525.98,173 500,188 474.02,173 474.02,169" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="1.5" stroke-linejoin="round"/>
   <rect x="380" y="32" width="232" height="56" fill="var(--m-amber-fill, #f5ecd9)" stroke="var(--m-amber-ink, #85590c)"/>
   <text x="390" y="50" font-size="12.5" font-weight="700">task 954267b7</text>
@@ -154,17 +151,20 @@
   <polygon points="424.02,377 450,392 450,388 424.02,373" fill="var(--m-amber-fill, #f5ecd9)"/>
   <polygon points="475.98,377 450,392 450,388 475.98,373" fill="var(--m-amber-fill, #f5ecd9)"/>
   <polygon points="475.98,377 450,392 450,388 475.98,373" fill="var(--m-shade, #1a1a1a)" fill-opacity="0.16"/>
-  <polyline points="450,388 475.98,373" fill="none" stroke="var(--m-amber-ink, #85590c)" stroke-width="0.8" stroke-opacity="0.6"/>
-  <polyline points="450,388 424.02,373" fill="none" stroke="var(--m-amber-ink, #85590c)" stroke-width="0.8" stroke-opacity="0.6"/>
-  <polyline points="450,388 450,392" fill="none" stroke="var(--m-amber-ink, #85590c)" stroke-width="0.8" stroke-opacity="0.6"/>
   <polygon points="450,358 475.98,373 475.98,377 450,392 424.02,377 424.02,373" fill="none" stroke="var(--m-amber-ink, #85590c)" stroke-width="1.5" stroke-linejoin="round"/>
-  </g>
-  <g data-beat="6"><animate attributeName="opacity" values="0;0;1" keyTimes="0;0.87;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="3.45s" begin="indefinite" fill="freeze"/><animateTransform attributeName="transform" type="translate" values="0 4;0 4;0 0" keyTimes="0;0.87;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="3.45s" begin="indefinite" fill="freeze"/>
   <rect x="380" y="236" width="232" height="71" fill="var(--m-amber-fill, #f5ecd9)" stroke="var(--m-amber-ink, #85590c)"/>
   <text x="390" y="254" font-size="12.5" font-weight="700">task 80bc7784</text>
   <text x="390" y="270" font-size="11" fill="var(--m-amber-ink, #85590c)">TASK_STATE_INPUT_REQUIRED</text>
+  </g>
+  <g data-beat="6"><animate attributeName="opacity" values="0;0;1" keyTimes="0;0.87;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="3.45s" begin="indefinite" fill="freeze"/><animateTransform attributeName="transform" type="translate" values="0 4;0 4;0 0" keyTimes="0;0.87;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="3.45s" begin="indefinite" fill="freeze"/>
   <text x="390" y="285" font-size="11" fill="var(--m-green-ink, #336b40)">TASK_STATE_COMPLETED</text>
   <text x="390" y="300" font-size="11" class="m-serif" fill="var(--m-ink-soft, #4a4a4a)">review.json: 1 finding</text>
+  </g>
+  <g data-beat="4"><animate attributeName="opacity" values="0;0;1" keyTimes="0;0.8;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="2.25s" begin="indefinite" fill="freeze"/><animateTransform attributeName="transform" type="translate" values="0 4;0 4;0 0" keyTimes="0;0.8;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="2.25s" begin="indefinite" fill="freeze"/>
+  <polyline points="450,307 450,373" fill="none" stroke="var(--m-amber-ink, #85590c)" stroke-width="0.8" stroke-dasharray="2 3"/>
+  <circle cx="450" cy="373" r="2" fill="var(--m-amber-ink, #85590c)"/>
+  </g>
+  <g data-beat="6"><animate attributeName="opacity" values="0;0;1" keyTimes="0;0.87;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="3.45s" begin="indefinite" fill="freeze"/><animateTransform attributeName="transform" type="translate" values="0 4;0 4;0 0" keyTimes="0;0.87;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="3.45s" begin="indefinite" fill="freeze"/>
   <polygon points="524.02,377 550,362 552.81,362.78 578.79,377.78 552.81,392.78 550,392" fill="var(--m-accent, #3553ff)" fill-opacity="0.12"/>
   <polygon points="550,358 575.98,373 575.98,377 550,392 524.02,377 524.02,373" fill="var(--m-panel, #f3f1e8)"/>
   <polygon points="550,358 575.98,373 550,388 524.02,373" fill="var(--m-green-fill, #e5f0e4)"/>
@@ -172,12 +172,7 @@
   <polygon points="524.02,377 550,392 550,388 524.02,373" fill="var(--m-green-fill, #e5f0e4)"/>
   <polygon points="575.98,377 550,392 550,388 575.98,373" fill="var(--m-green-fill, #e5f0e4)"/>
   <polygon points="575.98,377 550,392 550,388 575.98,373" fill="var(--m-shade, #1a1a1a)" fill-opacity="0.16"/>
-  <polyline points="550,388 575.98,373" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="0.8" stroke-opacity="0.6"/>
-  <polyline points="550,388 524.02,373" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="0.8" stroke-opacity="0.6"/>
-  <polyline points="550,388 550,392" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="0.8" stroke-opacity="0.6"/>
   <polygon points="550,358 575.98,373 575.98,377 550,392 524.02,377 524.02,373" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="1.5" stroke-linejoin="round"/>
-  <polyline points="450,307 450,373" fill="none" stroke="var(--m-amber-ink, #85590c)" stroke-width="0.8" stroke-dasharray="2 3"/>
-  <circle cx="450" cy="373" r="2" fill="var(--m-amber-ink, #85590c)"/>
   <polyline points="550,307 550,373" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="0.8" stroke-dasharray="2 3"/>
   <circle cx="550" cy="373" r="2" fill="var(--m-green-ink, #336b40)"/>
   <line x1="478" y1="375" x2="522" y2="375" stroke="var(--m-amber-ink, #85590c)" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#plate-planner-run-head-amber)"/>
@@ -231,17 +226,20 @@
   <polygon points="424.02,581 450,596 450,592 424.02,577" fill="var(--m-amber-fill, #f5ecd9)"/>
   <polygon points="475.98,581 450,596 450,592 475.98,577" fill="var(--m-amber-fill, #f5ecd9)"/>
   <polygon points="475.98,581 450,596 450,592 475.98,577" fill="var(--m-shade, #1a1a1a)" fill-opacity="0.16"/>
-  <polyline points="450,592 475.98,577" fill="none" stroke="var(--m-amber-ink, #85590c)" stroke-width="0.8" stroke-opacity="0.6"/>
-  <polyline points="450,592 424.02,577" fill="none" stroke="var(--m-amber-ink, #85590c)" stroke-width="0.8" stroke-opacity="0.6"/>
-  <polyline points="450,592 450,596" fill="none" stroke="var(--m-amber-ink, #85590c)" stroke-width="0.8" stroke-opacity="0.6"/>
   <polygon points="450,562 475.98,577 475.98,581 450,596 424.02,581 424.02,577" fill="none" stroke="var(--m-amber-ink, #85590c)" stroke-width="1.5" stroke-linejoin="round"/>
-  </g>
-  <g data-beat="10"><animate attributeName="opacity" values="0;0;1" keyTimes="0;0.923;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="5.85s" begin="indefinite" fill="freeze"/><animateTransform attributeName="transform" type="translate" values="0 4;0 4;0 0" keyTimes="0;0.923;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="5.85s" begin="indefinite" fill="freeze"/>
   <rect x="380" y="440" width="232" height="71" fill="var(--m-amber-fill, #f5ecd9)" stroke="var(--m-amber-ink, #85590c)"/>
   <text x="390" y="458" font-size="12.5" font-weight="700">task a31361b3</text>
   <text x="390" y="474" font-size="11" fill="var(--m-amber-ink, #85590c)">TASK_STATE_AUTH_REQUIRED</text>
+  </g>
+  <g data-beat="10"><animate attributeName="opacity" values="0;0;1" keyTimes="0;0.923;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="5.85s" begin="indefinite" fill="freeze"/><animateTransform attributeName="transform" type="translate" values="0 4;0 4;0 0" keyTimes="0;0.923;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="5.85s" begin="indefinite" fill="freeze"/>
   <text x="390" y="489" font-size="11" fill="var(--m-green-ink, #336b40)">TASK_STATE_COMPLETED</text>
   <text x="390" y="504" font-size="11" class="m-serif" fill="var(--m-ink-soft, #4a4a4a)">build live on staging</text>
+  </g>
+  <g data-beat="8"><animate attributeName="opacity" values="0;0;1" keyTimes="0;0.903;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="4.65s" begin="indefinite" fill="freeze"/><animateTransform attributeName="transform" type="translate" values="0 4;0 4;0 0" keyTimes="0;0.903;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="4.65s" begin="indefinite" fill="freeze"/>
+  <polyline points="450,511 450,577" fill="none" stroke="var(--m-amber-ink, #85590c)" stroke-width="0.8" stroke-dasharray="2 3"/>
+  <circle cx="450" cy="577" r="2" fill="var(--m-amber-ink, #85590c)"/>
+  </g>
+  <g data-beat="10"><animate attributeName="opacity" values="0;0;1" keyTimes="0;0.923;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="5.85s" begin="indefinite" fill="freeze"/><animateTransform attributeName="transform" type="translate" values="0 4;0 4;0 0" keyTimes="0;0.923;1" calcMode="spline" keySplines="0 0 1 1;0.23 1 0.32 1" dur="5.85s" begin="indefinite" fill="freeze"/>
   <polygon points="524.02,581 550,566 552.81,566.78 578.79,581.78 552.81,596.78 550,596" fill="var(--m-accent, #3553ff)" fill-opacity="0.12"/>
   <polygon points="550,562 575.98,577 575.98,581 550,596 524.02,581 524.02,577" fill="var(--m-panel, #f3f1e8)"/>
   <polygon points="550,562 575.98,577 550,592 524.02,577" fill="var(--m-green-fill, #e5f0e4)"/>
@@ -249,12 +247,7 @@
   <polygon points="524.02,581 550,596 550,592 524.02,577" fill="var(--m-green-fill, #e5f0e4)"/>
   <polygon points="575.98,581 550,596 550,592 575.98,577" fill="var(--m-green-fill, #e5f0e4)"/>
   <polygon points="575.98,581 550,596 550,592 575.98,577" fill="var(--m-shade, #1a1a1a)" fill-opacity="0.16"/>
-  <polyline points="550,592 575.98,577" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="0.8" stroke-opacity="0.6"/>
-  <polyline points="550,592 524.02,577" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="0.8" stroke-opacity="0.6"/>
-  <polyline points="550,592 550,596" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="0.8" stroke-opacity="0.6"/>
   <polygon points="550,562 575.98,577 575.98,581 550,596 524.02,581 524.02,577" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="1.5" stroke-linejoin="round"/>
-  <polyline points="450,511 450,577" fill="none" stroke="var(--m-amber-ink, #85590c)" stroke-width="0.8" stroke-dasharray="2 3"/>
-  <circle cx="450" cy="577" r="2" fill="var(--m-amber-ink, #85590c)"/>
   <polyline points="550,511 550,577" fill="none" stroke="var(--m-green-ink, #336b40)" stroke-width="0.8" stroke-dasharray="2 3"/>
   <circle cx="550" cy="577" r="2" fill="var(--m-green-ink, #336b40)"/>
   <line x1="478" y1="579" x2="522" y2="579" stroke="var(--m-amber-ink, #85590c)" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#plate-planner-run-head-amber)"/>
