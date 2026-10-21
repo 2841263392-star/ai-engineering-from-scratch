@@ -26,6 +26,8 @@ TASKS = [
 
 
 def normal(value):
+    if isinstance(value, bool):
+        return ("bool", value)
     if isinstance(value, str):
         text = value.strip()
         if re.fullmatch(r"0x[0-9a-fA-F]+", text):
