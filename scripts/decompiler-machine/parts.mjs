@@ -184,7 +184,8 @@ export function graphSvg(variant) {
   const pos = graphLayout(variant);
   const live = variant.blocks.filter((block) => block.live);
   const dead = variant.blocks.filter((block) => !block.live);
-  const routed = variant.edges.filter((edge) => pos[edge.f] && pos[edge.t] && edge.f !== edge.t);
+  const kept = variant.edges.filter((edge) => pos[edge.f] && pos[edge.t]);
+  const routed = kept.filter((edge) => edge.f !== edge.t);
   const edges = routed
     .map((edge, i) => {
       const [fx, fy] = pos[edge.f];
@@ -193,8 +194,8 @@ export function graphSvg(variant) {
       return k.onTop([[fx, fy], [fx, lane], [tx, lane], [tx, ty]], BOARD.z + 0.05, P);
     })
     .join("");
-  const count = `${live.length} BLOCK${live.length === 1 ? "" : "S"} · ${routed.length} EDGE${routed.length === 1 ? "" : "S"}`;
-  const out = [topText(x, BOARD.y0 + 1.6, BOARD.z, count, 2.6), `<g data-edges style="display:none">${Ln(edges, { tone: "hi" })}</g>`];
+  const count = `${live.length} BLOCK${live.length === 1 ? "" : "S"} · ${kept.length} EDGE${kept.length === 1 ? "" : "S"}`;
+  const out = [`<g data-count style="display:none">${topText(x, BOARD.y0 + 1.6, BOARD.z, count, 2.6)}</g>`, `<g data-edges style="display:none">${Ln(edges, { tone: "hi" })}</g>`];
   const cubes = live
     .map((block) => [pos[block.s], block])
     .sort((a, b) => depth([a[0][0], a[0][1], 0]) - depth([b[0][0], b[0][1], 0]))

@@ -58,14 +58,20 @@ function beatsFor(sim) {
 const state = { config: M.decode(location.search), sim: null, beats: [], bi: 0, bt: 0, pose: null, playing: false, stopAt: -1, shown: -1, done: false, explode: { target: 0, shares: {} } };
 Object.keys(D.EXPLODE).forEach((asm) => (state.explode.shares[asm] = { x: 0, v: 0 }));
 
+function writeUrl() {
+  const params = new URLSearchParams(M.encode(state.config));
+  if (document.documentElement.classList.contains("iso-nolabels")) params.set("labels", "0");
+  const query = params.toString();
+  history.replaceState(null, "", location.pathname + (query ? "?" + query : "") + location.hash);
+}
+
 function load(config, { autoplay = false } = {}) {
   state.config = M.configOf(config);
   state.sim = M.simulate(state.config);
   state.beats = beatsFor(state.sim);
   Object.assign(state, { pose: freshPose(), bi: 0, bt: 0, shown: -1, done: false, stopAt: -1 });
   $("#ie-cache").checked = state.config.cache;
-  const query = M.encode(state.config);
-  history.replaceState(null, "", location.pathname + (query ? "?" + query : "") + location.hash);
+  writeUrl();
   readouts(null);
   draw();
   autoplay ? play() : pause();
@@ -276,10 +282,18 @@ stage.addEventListener("keydown", (event) => {
   event.preventDefault();
 });
 
-$("#ie-wobble").addEventListener("input", (event) => svg.querySelector("[data-wobble]").setAttribute("scale", event.target.value));
-const setLabels = (on) => (document.documentElement.classList.toggle("iso-nolabels", !on), ($("#ie-labels").checked = on));
+function setWobble(value) {
+  svg.querySelector("[data-wobble]").setAttribute("scale", String(value));
+  value > 0 ? layer.setAttribute("filter", "url(#iso-hand)") : layer.removeAttribute("filter");
+}
+$("#ie-wobble").addEventListener("input", (event) => setWobble(Number(event.target.value)));
+function setLabels(on) {
+  document.documentElement.classList.toggle("iso-nolabels", !on);
+  $("#ie-labels").checked = on;
+  writeUrl();
+}
 $("#ie-labels").addEventListener("change", (event) => setLabels(event.target.checked));
-if (new URLSearchParams(location.search).get("labels") === "0") setLabels(false);
+if (new URLSearchParams(location.search).get("labels") === "0") document.documentElement.classList.add("iso-nolabels"), ($("#ie-labels").checked = false);
 window.__machine = { state, load, play, pause, step, toggleExplode, seek: (n) => ((state.stopAt = n), (state.playing = true), advance(1e6), (state.playing = false), draw()), finish: () => ((state.playing = true), advance(1e6), draw()) };
 load(state.config);
 if (!still.matches && !/[?&]still\b/.test(location.search)) setTimeout(() => state.shown < 0 && play(), 900);

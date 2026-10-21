@@ -187,6 +187,8 @@ function beatsFor(sim) {
   return beats;
 }
 
+const startParams = new URLSearchParams(location.search);
+const startPalette = startParams.get("pal");
 const state = { config: M.decode(location.search), sim: null, beats: [], bi: 0, bt: 0, pose: null, playing: false, stopAt: -1, shown: -1, done: false, speed: 1, selected: null, explode: { target: 0, shares: {} } };
 D.ASSEMBLIES.forEach((asm) => (state.explode.shares[asm] = { x: 0, v: 0 }));
 
@@ -373,6 +375,8 @@ function draw() {
   });
   const edges = graph.querySelector("[data-edges]");
   if (edges) edges.style.display = pose.edges ? "" : "none";
+  const count = graph.querySelector("[data-count]");
+  if (count) count.style.display = pose.edges ? "" : "none";
   const dead = graph.querySelector("[data-dead]");
   if (dead) dead.style.display = pose.dead === 1 ? "" : "none";
   live("bin").style.display = pose.dead === 2 ? "" : "none";
@@ -505,6 +509,7 @@ function syncButtons() {
 function writeUrl() {
   const params = new URLSearchParams(M.encode(state.config));
   if (document.documentElement.classList.contains("iso-nolabels")) params.set("labels", "0");
+  if (typeof palette === "string" && palette !== "mint") params.set("pal", palette);
   const query = params.toString();
   const keep = /[?&]still\b/.test(location.search) ? (query ? "&still" : "still") : "";
   history.replaceState(null, "", location.pathname + (query || keep ? "?" + query + keep : "") + location.hash);
@@ -643,7 +648,7 @@ stage.addEventListener("keydown", (event) => {
 const PALETTES = Ink.PALETTES;
 const figure = document.querySelector(".dm-figure");
 const blend = Ink.blend;
-let palette = PALETTES[new URLSearchParams(location.search).get("pal")] ? new URLSearchParams(location.search).get("pal") : "mint";
+var palette = startPalette && Object.hasOwn(PALETTES, startPalette) ? startPalette : "mint";
 function paint() {
   const dark = document.documentElement.getAttribute("data-theme") === "dark";
   const [l, m, d] = PALETTES[palette].map((hex) => (dark ? blend(hex, "#1f1c18", 0.38) : hex));
@@ -655,7 +660,7 @@ function paint() {
     button.setAttribute("aria-pressed", String(button.dataset.dmPal === palette));
   });
 }
-$$("[data-dm-pal]").forEach((button) => button.addEventListener("click", () => ((palette = button.dataset.dmPal), paint())));
+$$("[data-dm-pal]").forEach((button) => button.addEventListener("click", () => ((palette = button.dataset.dmPal), paint(), writeUrl())));
 new MutationObserver(paint).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 paint();
 const wobble = svg.querySelector("[data-wobble]");
@@ -670,7 +675,7 @@ function setLabels(on) {
   writeUrl();
 }
 $("#dm-labels").addEventListener("change", (event) => setLabels(event.target.checked));
-if (new URLSearchParams(location.search).get("labels") === "0") document.documentElement.classList.add("iso-nolabels"), ($("#dm-labels").checked = false);
+if (startParams.get("labels") === "0") document.documentElement.classList.add("iso-nolabels"), ($("#dm-labels").checked = false);
 
 window.__machine = {
   state,
@@ -697,12 +702,24 @@ window.__machine = {
 };
 load(state.config);
 function fitView() {
-  const box = layer.getBBox();
-  const tags = pillLayer.getBBox();
-  const x0 = Math.min(box.x, tags.width ? tags.x : box.x) - 6;
-  const y0 = Math.min(box.y, tags.height ? tags.y : box.y) - 6;
-  const x1 = Math.max(box.x + box.width, tags.x + tags.width) + 6;
-  const y1 = box.y + box.height + 4;
+  const root = document.documentElement;
+  const hidden = root.classList.contains("iso-nolabels");
+  root.classList.remove("iso-nolabels");
+  const shares = Object.values(state.explode.shares);
+  const saved = shares.map((share) => share.x);
+  const boxes = [0, 1].map((x) => {
+    shares.forEach((share) => (share.x = x));
+    draw();
+    return [layer.getBBox(), pillLayer.getBBox()];
+  });
+  shares.forEach((share, i) => (share.x = saved[i]));
+  draw();
+  if (hidden) root.classList.add("iso-nolabels");
+  const all = boxes.flat().filter((box) => box.width && box.height);
+  const x0 = Math.min(...all.map((box) => box.x)) - 6;
+  const y0 = Math.min(...all.map((box) => box.y)) - 6;
+  const x1 = Math.max(...all.map((box) => box.x + box.width)) + 6;
+  const y1 = Math.max(...boxes.map(([box]) => box.y + box.height)) + 4;
   svg.setAttribute("viewBox", `${x0.toFixed(1)} ${y0.toFixed(1)} ${(x1 - x0).toFixed(1)} ${(y1 - y0).toFixed(1)}`);
 }
 fitView();

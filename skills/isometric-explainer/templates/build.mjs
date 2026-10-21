@@ -103,7 +103,6 @@ body{margin:0;color:var(--anatomy-text);font:14px/1.5 ui-sans-serif,system-ui,sa
 [data-hot] .iso-top{fill:var(--anatomy-lit-top)}
 [data-hot] .iso-shade{fill:var(--anatomy-lit-shade)}
 [data-hot] .iso-face-text{fill:var(--anatomy-lit)}
-[data-off]{opacity:.35}
 @media (max-width:640px){.ie{height:auto}.ie-stage .iso-svg{height:auto}.ie-readouts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 `;
 

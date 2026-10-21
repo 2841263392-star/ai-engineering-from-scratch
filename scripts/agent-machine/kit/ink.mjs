@@ -106,6 +106,7 @@ export const INK_CSS = `
 .iso-ink .pill text{fill:var(--ink);font-family:var(--font-mono,var(--anatomy-mono,Menlo,Consolas,monospace));font-weight:700;letter-spacing:.04em}
 .iso-ink .pill.on rect{fill:var(--pill-on)}
 .iso-ink .pill.on text{fill:#fff}
+:root[data-theme="dark"] .iso-ink .pill.on text,.iso-ink[data-theme="dark"] .pill.on text{fill:var(--paper)}
 .iso-ink .pill.on path.lead{stroke:var(--pill-on)}
 .iso-ink .pill.on .lead-dot{fill:var(--pill-on)}
 :root.iso-nolabels .iso-ink [data-pills]{display:none}

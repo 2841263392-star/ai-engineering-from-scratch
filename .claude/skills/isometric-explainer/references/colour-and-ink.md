@@ -61,7 +61,7 @@ A part that a setting switches off keeps its shape and takes the board colours: 
 - Point the pills outward into empty space, above the machine. They must not cover a moving part or printed text. Long rows of stations need two or three rows of pills: compute each pill height from a fixed point on the station roof, and step the rows in turn.
 - Aim for 3 to 6 labels. A pipeline with more stations than that can have one pill for each station when the pills sit in clear space. Check every event of a run in the sweep frames.
 - The pill turns the accent colour while its station is hot.
-- Draw the pills in a `<g data-pills>` group after the depth-sorted layer, and redraw them only when their text changes.
+- Draw the pills in a `<g data-pills>` group after the depth-sorted layer, and redraw them when their text, their projected anchor or their hot state changes. The anchor moves when the machine explodes.
 - Give the page a Labels switch, and read `?labels=0`. The class `iso-nolabels` on the root hides them.
 
 ## Wobble and colour controls
