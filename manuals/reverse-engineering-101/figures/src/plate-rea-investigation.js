@@ -99,8 +99,8 @@ module.exports = figure('plate-rea-investigation', {
   const size = 46;
   const base = { x: ax - size / 2, y: ay - size / 2, w: size, d: size };
   const segments = [
-    { name: '__LINKEDIT', bytes: 1104, hue: 'grey' },
-    { name: '__DATA_CONST', bytes: 16384, hue: 'teal' },
+    { name: '__LINKEDIT', bytes: 1104, hue: 'green' },
+    { name: '__DATA_CONST', bytes: 16384, hue: 'green' },
     { name: '__TEXT', bytes: 16384, hue: 'green' },
   ];
   const heights = segments.map(segment => Math.max(3, segment.bytes * SEGMENT_SCALE));
