@@ -33,7 +33,7 @@ const items = Gm.items.map((item) => ({ id: item.id, asm: item.asm, key: round(i
 const body = Gm.items.map((item) => `<g data-i="${item.id}" data-asm="${item.asm}">${item.svg}</g>`).join("");
 const LABEL =
   "A decompiler built as a machine on a bench, drawn in isometric view. A carriage rides one straight rail past nine stations in order: a tape reel with a magic gauge for the file header, a section cabinet with a symbol index, a decode bed with a moving cursor for disassembly, a block board with a drop bin for the control-flow graph, a lift press with an IR stack, a board of type pins, a structuring jig with two jaws, a pseudocode printer, and an evidence ledger with four trays.";
-const FILTER = ink.wobbleFilter("dm-hand", 2.4);
+const FILTER = ink.wobbleFilter("dm-hand", 1.8);
 const svg = k.figureSvg({ width: Gm.W, height: Gm.H, label: LABEL, body: `${FILTER}<g data-layer filter="url(#dm-hand)">${body}</g><g data-pills></g>`, className: "dm-svg" }).replace("<svg ", "<svg data-dm-svg ");
 
 const BREAK_NOTES = [
@@ -45,7 +45,6 @@ const BREAK_NOTES = [
 ];
 
 const DATA = {
-  NEEDLE: RIG.needle,
   LABELS: Gm.LABELS,
   EXPLODE: Gm.EXPLODE,
   ASSEMBLIES: Gm.ASSEMBLIES,
@@ -152,16 +151,24 @@ const html = `<!DOCTYPE html>
     </section>
 
     <section class="dm-app" aria-label="The machine">
-      <div class="dm-toolbar" role="group" aria-label="Machine controls">
-        <div class="dm-buttons">
+      <div class="dm-toolbar">
+        <div class="dm-group" role="group" aria-labelledby="dm-g-run">
+          <span class="dm-group-k" id="dm-g-run">Run</span>
           <button type="button" class="dm-btn dm-btn--primary" data-dm-run aria-pressed="false">Run</button>
           <button type="button" class="dm-btn" data-dm-step>Step</button>
           <button type="button" class="dm-btn dm-btn--break" data-dm-break>Break</button>
           <button type="button" class="dm-btn" data-dm-repair>Repair</button>
           <button type="button" class="dm-btn" data-dm-explode aria-pressed="false">Explode</button>
           <button type="button" class="dm-btn" data-dm-reset>Reset</button>
+          <div class="dm-speed" role="group" aria-label="Animation speed">
+            <button type="button" data-dm-speed="0.5" aria-pressed="false">½×</button>
+            <button type="button" data-dm-speed="1" aria-pressed="true">1×</button>
+            <button type="button" data-dm-speed="2" aria-pressed="false">2×</button>
+            <button type="button" data-dm-speed="4" aria-pressed="false">4×</button>
+          </div>
         </div>
-        <div class="dm-switches">
+        <div class="dm-group" role="group" aria-labelledby="dm-g-setup">
+          <span class="dm-group-k" id="dm-g-setup">Setup</span>
           <label class="dm-select"><span>Program</span>
             <select id="dm-program">
               <option value="ledger">percent_change</option>
@@ -181,46 +188,35 @@ const html = `<!DOCTYPE html>
               <option value="O0">-O0</option>
             </select>
           </label>
-          <div class="dm-speed" role="group" aria-label="Animation speed">
-            <span>Speed</span>
-            <button type="button" data-dm-speed="0.5" aria-pressed="false">½×</button>
-            <button type="button" data-dm-speed="1" aria-pressed="true">1×</button>
-            <button type="button" data-dm-speed="2" aria-pressed="false">2×</button>
-            <button type="button" data-dm-speed="4" aria-pressed="false">4×</button>
-          </div>
+        </div>
+        <div class="dm-group" role="group" aria-labelledby="dm-g-look">
+          <span class="dm-group-k" id="dm-g-look">Look</span>
+          <label class="dm-range">Wobble <input type="range" id="dm-wobble" min="0" max="6" step="0.1" value="1.8"></label>
+          <span class="dm-swatches" role="group" aria-label="Body colour">${["mint", "cobalt", "mustard", "tomato", "blush"].map((name) => `<button type="button" class="dm-sw" data-dm-pal="${name}" aria-label="${name}" aria-pressed="${name === "mint"}"></button>`).join("")}</span>
+          <label class="dm-switch"><input type="checkbox" id="dm-labels" checked><span>Labels</span></label>
         </div>
         <p class="dm-sr" data-dm-live aria-live="polite"></p>
       </div>
 
-      <aside class="dm-left" aria-label="Scenarios">
-        <h2>Try to break it</h2>
-        <p class="dm-muted">Each one sets the switches and decompiles the same bytes again.</p>
-        <div class="dm-scenarios">${scenarios}</div>
-      </aside>
-
       <div class="dm-center">
         <div class="dm-figure iso iso-ink">${plate}</div>
         <p class="dm-flash" data-dm-flash aria-live="polite"></p>
-        <p class="dm-idea"><strong>The big idea</strong>A decompiler only ever reads bytes. Every station after the bytes adds a claim, and the ledger keeps what the bytes showed apart from what the machine guessed.</p>
-        <div class="dm-look" role="group" aria-label="Figure style">
-          <label>Hand-drawn wobble <input type="range" id="dm-wobble" min="0" max="6" step="0.1" value="2.4"></label>
-          <span class="dm-swatches" role="group" aria-label="Body colour">Colour ${["mint", "cobalt", "mustard", "tomato", "blush"].map((name) => `<button type="button" class="dm-sw" data-dm-pal="${name}" aria-label="${name}" aria-pressed="${name === "mint"}"></button>`).join("")}</span>
-          <label class="dm-switch"><input type="checkbox" id="dm-labels" checked><span>Labels</span></label>
-        </div>
         <div class="dm-readouts" aria-label="Live readouts">
           <div class="dm-readout dm-readout--wide"><span>Stage</span><strong data-dm-stage-name>Ready</strong></div>
           <div class="dm-readout"><span>Instructions</span><strong data-dm-decoded>0</strong></div>
           <div class="dm-readout"><span>Blocks</span><strong data-dm-blocks>0</strong></div>
-          <div class="dm-readout dm-readout--names"><span>Names and types</span><strong data-dm-names>none yet</strong></div>
+          <div class="dm-readout"><span>Names and types</span><strong data-dm-names>none yet</strong></div>
           <div class="dm-readout"><span>Unknowns</span><strong data-dm-unknowns>0</strong></div>
           <div class="dm-readout"><span>Evidence</span><strong data-dm-evidence>0 observed</strong></div>
           <div class="dm-readout"><span>Steps</span><strong data-dm-steps>0</strong></div>
         </div>
+        <p class="dm-idea"><strong>The big idea</strong>A decompiler only ever reads bytes. Every station after the bytes adds a claim, and the ledger keeps what the bytes showed apart from what the machine guessed.</p>
       </div>
 
       <aside class="dm-right" aria-label="Run details">
         <div class="dm-tabs" role="tablist" aria-label="Details">
           <button type="button" role="tab" id="dm-tab-run" aria-controls="dm-panel-run" aria-selected="true" data-dm-tab="run">Run</button>
+          <button type="button" role="tab" id="dm-tab-try" aria-controls="dm-panel-try" aria-selected="false" tabindex="-1" data-dm-tab="try">Try</button>
           <button type="button" role="tab" id="dm-tab-ledger" aria-controls="dm-panel-ledger" aria-selected="false" tabindex="-1" data-dm-tab="ledger">Ledger</button>
           <button type="button" role="tab" id="dm-tab-inspect" aria-controls="dm-panel-inspect" aria-selected="false" tabindex="-1" data-dm-tab="inspect">Inspect</button>
           <button type="button" role="tab" id="dm-tab-trace" aria-controls="dm-panel-trace" aria-selected="false" tabindex="-1" data-dm-tab="trace">Trace</button>
@@ -238,6 +234,10 @@ const html = `<!DOCTYPE html>
             <button type="button" class="dm-btn" data-dm-share>Copy link to this setup</button>
           </div>
           <a class="dm-btn dm-poster" href="anatomy/${SLUG}-poster.png" download>Download poster</a>
+        </div>
+        <div class="dm-panel" id="dm-panel-try" role="tabpanel" aria-labelledby="dm-tab-try" data-dm-panel="try" hidden>
+          <p class="dm-muted">Try to break it. Each one sets the switches and decompiles the same bytes again.</p>
+          <div class="dm-scenarios">${scenarios}</div>
         </div>
         <div class="dm-panel" id="dm-panel-ledger" role="tabpanel" aria-labelledby="dm-tab-ledger" data-dm-panel="ledger" hidden>
           <p class="dm-muted">Each station files its findings. Observed: read from the bytes. Derived: computed from observed facts. Inferred: a claim that no observation states yet. Unknown: a gap that the machine could not close.</p>

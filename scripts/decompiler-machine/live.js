@@ -13,7 +13,6 @@ D.RAIL_Y = Pt.RAIL_Y;
 D.HEAD = Pt.HEAD;
 D.STACK = Pt.STACK;
 D.BED = Pt.BED;
-D.PINS = Pt.PINS.slots;
 D.STAGES = M.STAGES;
 D.INFO = C.INFO;
 D.CONCEPT = C.CONCEPT;
@@ -35,7 +34,7 @@ const escapeHtml = (text) => String(text).replace(/&/g, "&amp;").replace(/</g, "
 const breakable = (text) => escapeHtml(text).replace(/([(,])/g, "$1<wbr>").replace(/(-O\d)/g, '<span class="dm-nobr">$1</span>');
 
 function freshPose() {
-  const pose = { lamps: {}, cx: D.HOME_X, plates: 0, needle: 0, drawer: 0, lock: 0, cursor: 0, tiles: 0, marks: 0, blocks: 0, edges: 0, dead: 0, ir: 0, bolt: 0, pins: 0, jawA: 0, jawB: 0, printed: 0, trays: [0, 0, 0, 0], hot: [] };
+  const pose = { lamps: {}, cx: D.HOME_X, plates: 0, drawer: 0, lock: 0, cursor: 0, tiles: 0, marks: 0, blocks: 0, edges: 0, dead: 0, ir: 0, bolt: 0, pins: 0, jawA: 0, jawB: 0, printed: 0, trays: [0, 0, 0, 0], hot: [] };
   STATIONS.forEach((name) => (pose["h_" + name] = 0));
   return pose;
 }
@@ -64,7 +63,6 @@ function programOf(config) {
   const ir = lift.error ? 0 : lift.irCount;
   return (programs[key] = { ir, irSvg: Pt.irSvg(ir), pins: lift.error ? 0 : lift.params.length + lift.locals.length + 1, lines, sheets: {}, bytes: fx.fileBytes });
 }
-const drawers = {};
 
 function beatsFor(sim) {
   const beats = [];
@@ -89,7 +87,7 @@ function beatsFor(sim) {
       case "header":
         travel("header");
         pressDown("header", 0.55);
-        b(0.6, { needle: 1 }, { hot: ["header"] });
+        b(0.6, {}, { hot: ["header"] });
         file();
         pressUp("header");
         stamp("header");
@@ -201,6 +199,13 @@ function load(config, { autoplay = false } = {}) {
   state.order = state.sim.events.find((event) => event.type === "decode").order;
   Object.assign(state, { pose: freshPose(), bi: 0, bt: 0, shown: -1, done: false, stopAt: -1 });
   live("tiles").innerHTML = state.variant.tiles;
+  const fx = F.FIXTURE[M.keyOf(state.config)];
+  live("drawers").innerHTML = Pt.drawersSvg(fx.sections);
+  state.textDrawer = live("drawers").querySelector('[data-name=".text"]');
+  live("elfline").innerHTML = Pt.frontText(D.XS.header, Pt.CARD.y1, Pt.CARD.z1 - 24, `E_SHNUM ${fx.header.shnum}`, 3.2);
+  live("slots").innerHTML = Pt.slotsSvg(Pt.slotList(fx.lift));
+  state.decode = state.sim.events.find((event) => event.type === "decode");
+  lastLanes = "";
   live("graph").innerHTML = state.variant.graph;
   live("bin").innerHTML = state.variant.bin;
   live("irstack").innerHTML = state.program.irSvg;
@@ -275,6 +280,30 @@ let lastPills = "";
 const pillLayer = svg.querySelector("[data-pills]");
 let lastSheet = -1;
 let lastDrawer = -1;
+let lastLanes = "";
+function windowOf(visited) {
+  const ev = state.decode;
+  const start = ev.range[0];
+  const at = visited > 0 ? ev.order[visited - 1] : ev.order[0];
+  return start + Math.floor((at - start) / 16) * 16;
+}
+const laneKey = (visited) => `${windowOf(visited)}|${visited}`;
+function laneStates(visited) {
+  const ev = state.decode;
+  const base = windowOf(visited);
+  const seen = new Set(ev.order.slice(0, visited));
+  const extra = new Set(ev.extra);
+  return Array.from({ length: 16 }, (_, i) => {
+    const b = base + i;
+    if (b >= ev.range[1]) return "none";
+    const index = ev.insns.findIndex((insn) => insn.a <= b && b < insn.a + insn.n);
+    if (index < 0) return "gap";
+    const insn = ev.insns[index];
+    if (!seen.has(insn.a)) return "wait";
+    if (extra.has(insn.a)) return "x";
+    return index % 2 ? "b" : "a";
+  });
+}
 const rodCache = {};
 function draw() {
   const pose = state.pose;
@@ -319,17 +348,18 @@ function draw() {
     const x = D.XS[name];
     const key = `${name}|${drop}`;
     const z0 = D.HEAD.home + D.HEAD.h - drop - 0.2;
-    node.setAttribute("d", rodCache[key] || (rodCache[key] = K.segment([x - 3, D.RAIL_Y, z0], [x - 3, D.RAIL_Y, D.HEAD.armZ], P) + K.segment([x + 3, D.RAIL_Y, z0], [x + 3, D.RAIL_Y, D.HEAD.armZ], P)));
+    node.setAttribute("d", rodCache[key] || (rodCache[key] = K.segment([x - 2, D.RAIL_Y, z0], [x - 2, D.RAIL_Y, D.HEAD.armZ], P) + K.segment([x + 2, D.RAIL_Y, z0], [x + 2, D.RAIL_Y, D.HEAD.armZ], P)));
   }
-  const needle = live("needle");
-  const a = -Math.PI * 0.6 + pose.needle * Math.PI * 0.6;
-  const [nx, ny, nz] = D.NEEDLE;
-  needle.setAttribute("d", K.lineOnTop([nx, ny], [nx + Math.sin(a) * 2.8, ny - Math.cos(a) * 2.8], nz, P));
-
   const open = Math.round(pose.drawer * 18) / 2;
-  if (open !== lastDrawer) {
-    live("drawer").innerHTML = drawers[open] || (drawers[open] = Pt.drawerSvg(D.XS.sections, open));
+  if (open !== lastDrawer && state.textDrawer) {
+    open ? state.textDrawer.setAttribute("transform", K.translateAlong(P, [0, open, 0])) : state.textDrawer.removeAttribute("transform");
+    state.textDrawer.querySelector("[data-tray]").style.display = open > 0.4 ? "" : "none";
     lastDrawer = open;
+  }
+  const lanesKey = laneKey(pose.tiles);
+  if (lanesKey !== lastLanes) {
+    live("lanes").innerHTML = Pt.lanesSvg(laneStates(pose.tiles));
+    lastLanes = lanesKey;
   }
   live("lock").style.display = pose.lock ? "" : "none";
   const tiles = live("tiles");
@@ -348,7 +378,7 @@ function draw() {
   live("bin").style.display = pose.dead === 2 ? "" : "none";
   live("irstack").querySelectorAll("[data-ir]").forEach((node, i) => (node.style.display = i < pose.ir ? "" : "none"));
   live("bolt").style.display = pose.bolt > 0.01 ? "" : "none";
-  for (let i = 0; i < D.PINS; i++) live(`pin${i}`).style.display = i < pose.pins ? "" : "none";
+  live("slots").querySelectorAll("[data-pin]").forEach((node) => (node.style.display = Number(node.dataset.pin) < pose.pins ? "" : "none"));
   if (pose.printed !== lastSheet) {
     const sheets = state.program.sheets;
     live("sheet").innerHTML = sheets[pose.printed] === undefined ? (sheets[pose.printed] = Pt.sheetSvg(state.program.lines, pose.printed)) : sheets[pose.printed];
@@ -666,6 +696,16 @@ window.__machine = {
   },
 };
 load(state.config);
+function fitView() {
+  const box = layer.getBBox();
+  const tags = pillLayer.getBBox();
+  const x0 = Math.min(box.x, tags.width ? tags.x : box.x) - 6;
+  const y0 = Math.min(box.y, tags.height ? tags.y : box.y) - 6;
+  const x1 = Math.max(box.x + box.width, tags.x + tags.width) + 6;
+  const y1 = box.y + box.height + 4;
+  svg.setAttribute("viewBox", `${x0.toFixed(1)} ${y0.toFixed(1)} ${(x1 - x0).toFixed(1)} ${(y1 - y0).toFixed(1)}`);
+}
+fitView();
 let started = false;
 if (document.documentElement.hasAttribute("data-poster")) {
   started = true;

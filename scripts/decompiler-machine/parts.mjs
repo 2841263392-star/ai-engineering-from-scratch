@@ -2,21 +2,26 @@ import * as k from "../agent-machine/kit/iso-kit.mjs";
 import * as ink from "../agent-machine/kit/ink.mjs";
 
 export const W = 1000;
-export const H = 470;
-export const AZIMUTH = 60;
+export const H = 440;
+export const AZIMUTH = 72;
 
 export const PLATE = { x: -250, y: -82, w: 500, d: 132, r: 8 };
 export const PLATE_H = 8;
 export const FOOT_H = 4;
-export const RAIL = { x0: -240, x1: 240, y0: 13, y1: 21, z: 1.6 };
-export const RAIL_Y = 17;
+export const RAIL = { x0: -240, x1: 240, y0: 22, y1: 30, z: 1.6 };
+export const RAIL_Y = 26;
 export const STATIONS = ["header", "sections", "disasm", "cfg", "lift", "types", "structure", "pseudocode", "ledger"];
 export const XS = Object.fromEntries(STATIONS.map((asm, i) => [asm, -208 + i * 52]));
 export const HOME_X = -240 + 12;
-export const SLED = { w: 22, y0: 11, y1: 23, z0: RAIL.z, z1: RAIL.z + 3 };
-export const STACK = { z0: SLED.z1, step: 1.15, t: 0.9, slots: 9 };
-export const HEAD = { home: 21, h: 4.4, armZ: 31, armTop: 34 };
-export const BED = { half: 17, y0: -40, y1: -24, z: 13.8 };
+export const SLED = { w: 20, y0: 20, y1: 32, z0: RAIL.z, z1: RAIL.z + 3 };
+export const STACK = { z0: SLED.z1, step: 0.9, t: 0.7, slots: 9 };
+export const HEAD = { home: 18, h: 3.2, armZ: 25, armTop: 27.4 };
+export const BED = { half: 16, y0: -60, y1: -48, z: 10.2 };
+export const CHIP = { half: 11, y0: -43, y1: -23, z0: 3.4, z1: 7.4 };
+export const LANES = { count: 16, x0: -9.6, w: 1.2, y0: -41.4, y1: -29.4 };
+export const CAB = { half: 17, y0: -60, y1: -18, z0: 2.4, z1: 42 };
+export const CARD = { half: 14.5, y0: -41.4, y1: -40, z0: 6, z1: 37 };
+export const SLOTS = { front: { y0: -33, y1: -21, z: 12, face: -16, label: 5.2 }, back: { y0: -55, y1: -43, z: 17, face: -38, label: 13.5 } };
 export const BOARD = { y0: -62, y1: -12, z: 9 };
 export const IR = { y0: -46, y1: -30, z: 20, t: 0.62, gap: 0.08 };
 export const PINS = { z: 15, rise: 5, r: 1.5, slots: 8 };
@@ -26,10 +31,10 @@ export const TRAYS = { y0: -50, y1: -30, z: 18.8, t: 0.7, step: 0.85, slots: 10,
 export const stackTop = (n) => STACK.z0 + n * STACK.step;
 
 export const P = k.fitProjection(
-  [...k.boxCorners(PLATE, -PLATE_H - FOOT_H, 0), [-250, -96, 58], [250, -96, 58], [-250, -20, 62], [250, -20, 62], [250, 56, 20]],
+  [...k.boxCorners(PLATE, -PLATE_H - FOOT_H, 0), [-250, -84, 78], [250, -84, 58], [250, 56, 14]],
   W,
   H,
-  { pad: 8, headroom: 34, azimuth: AZIMUTH },
+  { pad: 8, azimuth: AZIMUTH },
 );
 export const V = [k.depthOf([1, 0, 0], P), k.depthOf([0, 1, 0], P), k.depthOf([0, 0, 1], P)];
 export const at = (p) => k.iso(p, P);
@@ -45,32 +50,63 @@ export const screws = (points, size = 0.42, tone = "mid") => Dots(points.map(at)
 export const seam = (plan, z, steps = 3) => Ln(k.sideSeam(plan, z, P, steps), { tone: "faint" });
 export const plan = (x0, y0, x1, y1, r = 0.6) => ({ x: x0, y: y0, w: x1 - x0, d: y1 - y0, r });
 
-export const DRAWERS = [[4.4, 12.2], [13, 20.8], [21.6, 29.4], [30.2, 38]];
-export const TEXT_DRAWER = 2;
-export function drawerSvg(x, open) {
-  const [z0, z1] = DRAWERS[TEXT_DRAWER];
-  const out = [];
-  const y = -16 + open;
-  if (open > 0.4) {
-    out.push(box(x - 12.4, -16.4, z0 + 0.6, x + 12.4, y, z1 - 1.4, { tone: "lo" }, { r: 0, steps: 1 }));
-    const tops = [];
-    for (let i = 0; i < 5; i++) {
-      const ly = y - 1.6 - i * 2.2;
-      if (ly < -15.6) break;
-      tops.push(k.lineOnTop([x - 10, ly], [x + 10, ly], z1 - 1.4, P));
-    }
-    out.push(Ln(tops.join(""), { tone: "mid" }));
-  }
-  out.push(box(x - 13, y, z0, x + 13, y + 1.2, z1, { tone: "mid" }, { r: 0.4 }));
-  out.push(box(x - 4, y + 1.2, z0 + 2.6, x + 4, y + 2.8, z0 + 4.2, { tone: "hi" }, { r: 0.4 }));
-  return out.join("");
+export const frontText = (x, y, z, text, size, anchor = "middle") => k.faceTextSvg(k.sideMatrix([x, y + 0.06], z, P, "left"), text, { size, tone: "hi", anchor });
+export const topText = (x, y, z, text, size) => k.faceTextSvg(k.topMatrix([x, y], z + 0.02, P, "x"), text, { size, tone: "hi", anchor: "middle" });
+
+export function drawersSvg(sections) {
+  const x = XS.sections;
+  const top = CAB.z1 - 1.2;
+  const pitch = (top - (CAB.z0 + 1)) / sections.length;
+  const size = Math.min(3, pitch * 0.66);
+  const fronts = sections.map((section, i) => {
+    const z1 = top - i * pitch;
+    const z0 = z1 - pitch + 0.3;
+    const mid = (z0 + z1) / 2;
+    const isText = section.name === ".text";
+    const tray = isText ? `<g data-tray style="display:none">${box(x - 14, CAB.y1 - 9, z0 + 0.2, x + 14, CAB.y1, z1 - 0.4, { tone: "lo" }, { r: 0, steps: 1 })}</g>` : "";
+    const svg = `<g data-drawer="${i}" data-name="${section.name}">${tray}${box(x - 15.4, CAB.y1, z0, x + 15.4, CAB.y1 + 1.1, z1, { tone: "hi", material: isText ? "ride" : "hi" }, { r: 0.2, steps: 2 })}${frontText(x - 14.2, CAB.y1 + 1.1, mid - size * 0.36, section.name, size, "start")}${box(x + 10, CAB.y1 + 1.1, mid - pitch * 0.18, x + 14, CAB.y1 + 1.7, mid + pitch * 0.18, { tone: "lo" }, { r: 0, steps: 1 })}</g>`;
+    return [isText, svg];
+  });
+  return fronts.filter(([isText]) => !isText).map(([, svg]) => svg).join("") + fronts.filter(([isText]) => isText).map(([, svg]) => svg).join("");
 }
 
-export function cursorSvg(cx) {
-  return box(cx - 1.4, -43.6, 15, cx + 1.4, -42, 21, { tone: "hi" }, { r: 0.3 })
-    + box(cx - 1.4, -22, 15, cx + 1.4, -20.4, 21, { tone: "hi" }, { r: 0.3 })
-    + box(cx - 1.6, -43.6, 21, cx + 1.6, -20.4, 23, { tone: "hi" }, { r: 0.5, bevel: 0.3 })
-    + box(cx - 0.5, -32.8, 16.4, cx + 0.5, -31.2, 21, { tone: "hi" }, { r: 0 , steps: 1 });
+export function lanesSvg(states) {
+  const x = XS.disasm;
+  const material = { a: "ride", b: "hi", x: "lo", wait: "board", gap: "chip" };
+  return states
+    .map((state, i) => {
+      if (state === "none") return "";
+      const x0 = x + LANES.x0 + i * LANES.w + 0.12;
+      return box(x0, LANES.y0, CHIP.z1, x0 + LANES.w - 0.24, LANES.y1, CHIP.z1 + (state === "gap" ? 0.08 : 0.5), { tone: "hi", material: material[state] }, { r: 0, steps: 1 });
+    })
+    .join("");
+}
+
+export function slotList(lift) {
+  if (!lift || lift.error) return [];
+  const regs = lift.params.map((param) => ({ row: "front", label: param.register.toUpperCase(), name: param.name }));
+  const stack = lift.locals.map((local) => ({ row: "back", label: "RBP-" + local.name.split("_")[1].toUpperCase(), name: local.name }));
+  return [...regs, ...stack, { row: "front", label: "RAX", name: "return" }];
+}
+
+export function slotsSvg(slots) {
+  const x = XS.types;
+  const out = [];
+  const tokens = [];
+  for (const row of ["front", "back"]) {
+    const list = slots.map((slot, i) => [slot, i]).filter(([slot]) => slot.row === row);
+    const geo = SLOTS[row];
+    if (!list.length && row === "back") out.push(frontText(x, geo.face, geo.label, slots.length ? "NO STACK SLOTS" : "", 2.6));
+    const width = 30 / Math.max(3, list.length);
+    list.forEach(([slot, i], j) => {
+      const x0 = x - 15 + j * width + 0.8;
+      const x1 = x0 + width - 1.6;
+      out.push(box(x0, geo.y0, geo.z - 0.4, x1, geo.y1, geo.z + 0.04, { tone: "lo", material: "chip" }, { r: 0, steps: 1 }));
+      out.push(row === "front" ? topText((x0 + x1) / 2, -17.6, geo.z, slot.label, 2.4) : frontText((x0 + x1) / 2, geo.face, geo.label, slot.label, slot.label.length > 4 ? 2.5 : 3.2));
+      tokens.push([i, `<g data-pin="${i}" style="display:none">${box(x0 + 0.8, geo.y0 + 1.6, geo.z, x1 - 0.8, geo.y1 - 1.6, geo.z + 3, { tone: "hi", material: "ride" }, { r: 0.4, steps: 2 })}</g>`]);
+    });
+  }
+  return out.join("") + tokens.sort((a, b) => a[0] - b[0]).map(([, svg]) => svg).join("");
 }
 
 export function sheetSvg(lines, printed) {
@@ -148,11 +184,17 @@ export function graphSvg(variant) {
   const pos = graphLayout(variant);
   const live = variant.blocks.filter((block) => block.live);
   const dead = variant.blocks.filter((block) => !block.live);
-  const edges = variant.edges
-    .filter((edge) => pos[edge.f] && pos[edge.t] && edge.f !== edge.t)
-    .map((edge) => k.lineOnTop(pos[edge.f], pos[edge.t], BOARD.z, P))
+  const routed = variant.edges.filter((edge) => pos[edge.f] && pos[edge.t] && edge.f !== edge.t);
+  const edges = routed
+    .map((edge, i) => {
+      const [fx, fy] = pos[edge.f];
+      const [tx, ty] = pos[edge.t];
+      const lane = (fy + ty) / 2 + (i % 2 ? 1.2 : -1.2);
+      return k.onTop([[fx, fy], [fx, lane], [tx, lane], [tx, ty]], BOARD.z + 0.05, P);
+    })
     .join("");
-  const out = [`<g data-edges style="display:none">${Ln(edges, { tone: "hi" })}</g>`];
+  const count = `${live.length} BLOCK${live.length === 1 ? "" : "S"} · ${routed.length} EDGE${routed.length === 1 ? "" : "S"}`;
+  const out = [topText(x, BOARD.y0 + 1.6, BOARD.z, count, 2.6), `<g data-edges style="display:none">${Ln(edges, { tone: "hi" })}</g>`];
   const cubes = live
     .map((block) => [pos[block.s], block])
     .sort((a, b) => depth([a[0][0], a[0][1], 0]) - depth([b[0][0], b[0][1], 0]))
@@ -184,7 +226,7 @@ export function irSvg(count) {
   const out = [];
   for (let i = 0; i < count; i++) {
     const z = IR.z + 0.6 + i * (IR.t + IR.gap);
-    out.push(`<g data-ir="${i}" style="display:none">${box(x - 9, IR.y0, z, x + 9, IR.y1, z + IR.t, { tone: "hi" }, { r: 0.4, steps: 2 })}</g>`);
+    out.push(`<g data-ir="${i}" style="display:none">${box(x - 9, IR.y0, z, x + 9, IR.y1, z + IR.t, { tone: "hi", material: i % 2 ? "hi" : "ride" }, { r: 0.4, steps: 2 })}</g>`);
   }
   return out.join("");
 }
@@ -194,3 +236,13 @@ export const castShadowSvg = (points, z0 = 0) => ink.castShadowSvg(points, P, z0
 export const glassSvg = (x0, y0, z0, x1, y1, z1) => ink.glassSvg(x0, y0, z0, x1, y1, z1, P);
 export const silhouetteSvg = (points) => ink.silhouetteSvg(points, P);
 export const pillSvg = ink.pillSvg;
+
+export function cursorSvg(cx) {
+  const y0 = BED.y0 - 1.6;
+  const y1 = BED.y1 + 1.6;
+  const z = BED.z + 3.4;
+  return box(cx - 1.2, y0, BED.z - 0.6, cx + 1.2, y0 + 1.4, z, { tone: "hi" }, { r: 0.3 })
+    + box(cx - 1.2, y1 - 1.4, BED.z - 0.6, cx + 1.2, y1, z, { tone: "hi" }, { r: 0.3 })
+    + box(cx - 1.4, y0, z, cx + 1.4, y1, z + 1.6, { tone: "hi" }, { r: 0.4, bevel: 0.3 })
+    + box(cx - 0.45, (y0 + y1) / 2 - 0.7, BED.z + 2.2, cx + 0.45, (y0 + y1) / 2 + 0.7, z, { tone: "hi" }, { r: 0, steps: 1 });
+}

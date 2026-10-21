@@ -69,12 +69,15 @@ export function blend(a, b, t) {
 
 export const INK_CSS = `
 .iso-ink{--paper:#f2efe7;--ink:#231e16;--ink-soft:rgba(35,30,22,.55);--body-l:#93d3b0;--body-m:#71b693;--body-d:#1f4034;--ride-l:#f4b829;--ride-m:#d49c1f;--ride-d:#4e4a18;--ceramic-l:#fbfaf3;--ceramic-m:#e3e0d2;--ceramic-d:#bdb8a6;--metal-l:#eef0f0;--metal-m:#c6ccce;--metal-d:#8f989b;--board-l:#e6e1d4;--board-m:#cfc8b8;--board-d:#aaa293;--glass:#cfe9f0;--cast:#41538f;--cast-opacity:.38;--ok:#43c25c;--bad:#e2483d;--pill:#fff4d6;--pill-on:var(--anatomy-lit,#3553ff);--hot-top:var(--anatomy-lit-top,#f1f3ff)}
-:root[data-theme="dark"] .iso-ink,.iso-ink[data-theme="dark"]{--paper:#1f1c18;--ink:#efe6d3;--ink-soft:rgba(239,230,211,.5);--ceramic-l:#6d685d;--ceramic-m:#57534a;--ceramic-d:#3b3832;--metal-l:#5d6366;--metal-m:#484d50;--metal-d:#33373a;--board-l:#3d3831;--board-m:#312d27;--board-d:#24211c;--glass:#6f9aa6;--cast:#070a18;--cast-opacity:.55;--pill:#3a352c}
+:root[data-theme="dark"] .iso-ink,.iso-ink[data-theme="dark"]{--paper:#1f1c18;--ink:#efe6d3;--ink-soft:rgba(239,230,211,.5);--ceramic-l:#6d685d;--ceramic-m:#57534a;--ceramic-d:#3b3832;--metal-l:#5d6366;--metal-m:#484d50;--metal-d:#33373a;--board-l:#3d3831;--board-m:#312d27;--board-d:#24211c;--glass:#6f9aa6;--cast:#070a18;--cast-opacity:.55;--pill:#3a352c;--hot-top:#3d4f9c}
 .iso-ink .m-mid{--c-l:var(--body-l);--c-m:var(--body-m);--c-d:var(--body-d)}
 .iso-ink .m-ride{--c-l:var(--ride-l);--c-m:var(--ride-m);--c-d:var(--ride-d)}
 .iso-ink .m-hi{--c-l:var(--ceramic-l);--c-m:var(--ceramic-m);--c-d:var(--ceramic-d)}
 .iso-ink .m-lo,.iso-ink .m-faint{--c-l:var(--metal-l);--c-m:var(--metal-m);--c-d:var(--metal-d)}
 .iso-ink .m-board{--c-l:var(--board-l);--c-m:var(--board-m);--c-d:var(--board-d)}
+.iso-ink .m-chip{--c-l:#4d4943;--c-m:#3a3732;--c-d:#26241f}
+.iso-ink .iso-face-text{fill:var(--ink);font-weight:700}
+.iso-ink .on-dark .iso-face-text{fill:#efe6d3}
 .iso-ink .m-lamp{--c-l:#8d8a80;--c-m:#6f6c63;--c-d:#4c4a43}
 .iso-ink [data-state="ok"] .m-lamp{--c-l:var(--ok);--c-m:#33a04a;--c-d:#1d6b2e}
 .iso-ink [data-state="bad"] .m-lamp{--c-l:var(--bad);--c-m:#c23a30;--c-d:#7a221c}
@@ -82,7 +85,8 @@ export const INK_CSS = `
 .iso-ink .iso-top,.iso-ink .iso-shade[data-shade="3"]{fill:var(--c-l)}
 .iso-ink .iso-shade[data-shade="2"],.iso-ink .iso-shade[data-shade="1"]{fill:var(--c-m)}
 .iso-ink .iso-shade[data-shade="0"]{fill:color-mix(in srgb,var(--c-m) 62%,var(--c-d))}
-.iso-ink .m-glass>.iso-fill,.iso-ink .m-glass>.iso-shade,.iso-ink .m-glass>.iso-top{fill:var(--glass);opacity:.32}
+.iso-ink .m-glass>.iso-fill,.iso-ink .m-glass>.iso-shade{fill:var(--glass);opacity:.26}
+.iso-ink .m-glass>.iso-top{fill:var(--glass);opacity:.14}
 .iso-ink .m-glass>.iso-edge{stroke-width:.8;opacity:.7}
 .iso-ink .streak{fill:none;stroke:#fff;stroke-width:1.6;opacity:.38;stroke-linecap:round}
 .iso-ink path.iso-edge{stroke:var(--ink);stroke-width:1.1}

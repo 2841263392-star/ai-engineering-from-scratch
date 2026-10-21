@@ -96,6 +96,20 @@ test('every configuration ends with an exit, a trace on each step and a growing 
   }
 });
 
+test('the header card and the slots show only facts the fixtures hold', async () => {
+  const { FIXTURE } = await fixture();
+  for (const program of Object.values(FIXTURE)) {
+    assert.ok(program.ident.startsWith('7f 45 4c 46 02 01'));
+    assert.equal(program.header.type, 1);
+    assert.equal(program.header.machine, 62);
+  }
+  assert.deepEqual(FIXTURE['ledger-O2'].lift.params.map((param) => param.register), ['rdi', 'rsi']);
+  assert.deepEqual(FIXTURE['ledger-O0'].lift.locals.map((local) => local.name), ['local_4', 'local_8', 'local_c']);
+  assert.deepEqual(FIXTURE['ledger-O2'].lift.locals, []);
+  const html = fs.readFileSync(page, 'utf8');
+  for (const hook of ['data-live="drawers"', 'data-live="lanes"', 'data-live="slots"', 'data-live="elfline"', '7F 45 4C 46']) assert.ok(html.includes(hook), hook);
+});
+
 test('the share URL round-trips every setting', async () => {
   const M = await load();
   assert.equal(M.encode(M.DEFAULTS), '');

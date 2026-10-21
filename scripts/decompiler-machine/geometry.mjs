@@ -1,14 +1,14 @@
 import * as k from "../agent-machine/kit/iso-kit.mjs";
 import * as G from "../agent-machine/kit/lathe.mjs";
 import { CONCEPT, PART_ORDER } from "./content.mjs";
-import { castShadowSvg, glassSvg, silhouetteSvg, W, H, PLATE, PLATE_H, FOOT_H, RAIL, RAIL_Y, XS, HOME_X, SLED, STACK, HEAD, BED, BOARD, IR, PINS, SHEET, TRAYS, stackTop, P, V, at, depth, S, Ln, Dots, box, post, screws, seam, plan, DRAWERS, TEXT_DRAWER, cursorSvg } from "./parts.mjs";
+import { castShadowSvg, glassSvg, silhouetteSvg, W, H, PLATE, PLATE_H, FOOT_H, RAIL, RAIL_Y, XS, HOME_X, SLED, STACK, HEAD, BED, BOARD, IR, PINS, SHEET, TRAYS, stackTop, P, V, at, depth, S, Ln, Dots, box, post, screws, seam, plan, cursorSvg, CHIP, LANES, CAB, CARD, SLOTS, frontText, topText } from "./parts.mjs";
 
 export * from "./parts.mjs";
 
 export const items = [];
-export const EXPLODE = { base: [0, 0, 0], rail: [0, 0, 0], carriage: [0, 8, 12] };
+export const EXPLODE = { base: [0, 0, 0], rail: [0, 0, 0], carriage: [0, 8, 8] };
 PART_ORDER.forEach((asm, i) => {
-  if (asm !== "carriage") EXPLODE[asm] = [(i - 4) * 3, -16 - (i % 2) * 8, 10 + (i % 3) * 4];
+  if (asm !== "carriage") EXPLODE[asm] = [(i - 4) * 3, -12 - (i % 2) * 6, 6 + (i % 3) * 3];
 });
 export const ASSEMBLIES = Object.keys(EXPLODE);
 
@@ -18,9 +18,9 @@ function put(id, asm, ref, svg, { bias = 0 } = {}) {
 
 const corners3 = (x0, y0, z0, x1, y1, z1) => [[x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0], [x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]];
 export const BODIES = {
-  header: [-15, -52, 2.4, 15, -21, 30],
-  sections: [-16, -60, 2.4, 16, -16, 45],
-  disasm: [-19, -56, 2.4, 19, -14, 15],
+  header: [-16.5, -46, 2.4, 16.5, -35, 37],
+  sections: [-17, -60, 2.4, 17, -17, 49],
+  disasm: [-18.4, -64, 2.4, 18.4, -12, 14],
   cfg: [-19, -62, 2.4, 19, -12, 12],
   lift: [-16, -60, 2.4, 16, -16, 35],
   types: [-17, -58, 2.4, 17, -16, 20],
@@ -36,7 +36,7 @@ function shadows() {
   }
   put("shadows", "base", [0, 0, -90], out.join(""), { bias: -900 });
 }
-const BODY_TOP = { sections: 40, disasm: 13, cfg: 9, lift: 20, types: 15, structure: 12, pseudocode: 24, ledger: 18 };
+const BODY_TOP = { header: 6, sections: 42, disasm: 3.4, cfg: 9, lift: 20, types: 12, structure: 12, pseudocode: 24, ledger: 18 };
 const bodyInk = (asm) => inkHull(XS[asm] + BODIES[asm][0], BODIES[asm][1], BODIES[asm][2], XS[asm] + BODIES[asm][3], BODIES[asm][4], BODY_TOP[asm]);
 const inkHull = (x0, y0, z0, x1, y1, z1) => silhouetteSvg(corners3(x0, y0, z0, x1, y1, z1));
 
@@ -99,86 +99,93 @@ function nameplate(asm) {
 
 function press(asm) {
   const x = XS[asm];
-  const cx = x + 16;
+  const cx = x + 15;
+  const cy = RAIL_Y - 9;
   const out = [];
-  out.push(post(cx, 7, 3.4, 0, 1.4, { tone: "lo" }, 24));
-  out.push(post(cx, 7, 2.2, 1.4, HEAD.armZ, { tone: "mid", crease: "none" }, 20));
-  out.push(Ln([10, 20].map((z) => k.sideArc(cx, 7, 2.2, z, P, 14)).join(""), { tone: "faint" }));
-  put(`${asm}-column`, asm, [cx, 7, 24], out.join(""), { bias: 2 });
-  const arm = box(x - 6, 4, HEAD.armZ, cx + 3, 22, HEAD.armTop, { tone: "mid" }, { r: 1, bevel: 0.4, inner: seam(plan(x - 6, 4, cx + 3, 22, 1), HEAD.armZ + 2, 3) })
-    + screws([[x - 3, 19, HEAD.armTop], [x + 3, 19, HEAD.armTop], [cx, 7, HEAD.armTop]], 0.42);
-  put(`${asm}-arm`, asm, [x + 4, 13, HEAD.armZ + 2], arm, { bias: 14 });
-  put(`${asm}-rod`, asm, [x, RAIL_Y, HEAD.armZ - 6], `<path class="iso-line" data-tone="mid" data-live="rod-${asm}" style="stroke-width:1.2" d=""/>`, { bias: 15 });
+  out.push(post(cx, cy, 3, 0, 1.2, { tone: "lo" }, 22));
+  out.push(post(cx, cy, 1.8, 1.2, HEAD.armZ, { tone: "mid", crease: "none" }, 18));
+  put(`${asm}-column`, asm, [cx, cy, 14], out.join(""), { bias: 2 });
+  const arm = box(x - 4.5, cy - 2, HEAD.armZ, cx + 2.2, RAIL_Y + 4, HEAD.armTop, { tone: "mid" }, { r: 0.8, bevel: 0.3 })
+    + screws([[x - 2, RAIL_Y + 2, HEAD.armTop], [x + 2, RAIL_Y + 2, HEAD.armTop], [cx, cy, HEAD.armTop]], 0.38);
+  put(`${asm}-arm`, asm, [x + 4, RAIL_Y - 4, HEAD.armZ + 1], arm, { bias: 14 });
+  put(`${asm}-rod`, asm, [x, RAIL_Y, HEAD.armZ - 4], `<path class="iso-line" data-tone="mid" data-live="rod-${asm}" style="stroke-width:1.2" d=""/>`, { bias: 15 });
   put(`${asm}-head`, asm, [x, RAIL_Y, HEAD.home + 2], headSvg(x), { bias: 16 });
 }
 
 export function headSvg(x) {
   const z0 = HEAD.home;
   const z1 = z0 + HEAD.h;
-  return box(x - 6.5, RAIL_Y - 5.5, z0 + 1.2, x + 6.5, RAIL_Y + 5.5, z1, { tone: "hi" }, { r: 1.2, bevel: 0.4 })
-    + box(x - 7.5, RAIL_Y - 4.5, z0, x + 7.5, RAIL_Y + 4.5, z0 + 1.2, { tone: "mid" }, { r: 0.5 })
-    + Dots(k.dotGrid(x - 4.4, RAIL_Y - 3.6, 5, 4, 2.2, z1, P), { size: 0.34, tone: "lo" });
+  return box(x - 4.5, RAIL_Y - 3.5, z0 + 0.9, x + 4.5, RAIL_Y + 3.5, z1, { tone: "hi" }, { r: 0.8, bevel: 0.3 })
+    + box(x - 5.2, RAIL_Y - 3, z0, x + 5.2, RAIL_Y + 3, z0 + 0.9, { tone: "mid" }, { r: 0.4 });
 }
 
 function header() {
   const x = XS.header;
   const out = [stationBase(x)];
-  out.push(box(x - 15, -52, 2.4, x - 11.5, -38, 30, { tone: "mid" }, { r: 0.6 }));
-  out.push(box(x + 11.5, -52, 2.4, x + 15, -38, 30, { tone: "mid" }, { r: 0.6 }));
-  out.push(screws([[x - 13.2, -45, 30], [x + 13.2, -45, 30]], 0.42));
-  put("header", "header", [x, -45, 14], out.join(""));
-  const reel = G.frameAlong([x - 11.5, -45, 24], [1, 0, 0]);
-  const drum = S(G.disc(0, 23, 8, reel, P, { steps: 48 }), { tone: "hi", inner: k.fadedSvg(G.ribsOf(reel, 0, 23, 8, 28, P, { fade: [0.1, 0.55], seams: true }), { tone: "lo" }) })
-    + S(G.disc(3, 5, 9.6, reel, P, { steps: 48 }), { tone: "mid" }) + S(G.disc(18, 20, 9.6, reel, P, { steps: 48 }), { tone: "mid" });
-  put("header-reel", "header", [x, -45, 24], drum, { bias: 2 });
-  const tape = box(x - 6, -40, 2.4, x + 6, -9.5, 2.9, { tone: "hi" }, { r: 0, steps: 1 })
-    + Ln(Array.from({ length: 13 }, (_, i) => k.lineOnTop([x - 6, -38 + i * 2.2], [x + 6, -38 + i * 2.2], 2.9, P)).join(""), { tone: "faint" });
-  put("header-tape", "header", [x, -25, 2.6], tape, { bias: 1 });
-  const reader = box(x - 9, -31, 2.9, x + 9, -21, 11, { tone: "mid" }, { r: 1, bevel: 0.4, inner: seam(plan(x - 9, -31, x + 9, -21, 1), 6, 3) })
-    + S(k.cylinder(x, -26, 3.6, 11, 1.2, P, 32), { tone: "hi" })
-    + Ln(k.radialTicks(x, -26, 3.2, 12, 3, 12.2, [0.5, 0.9], P, -Math.PI * 0.6, Math.PI * 0.6).major, { tone: "mid" })
-    + Ln(k.ring(x, -26, 0.6, 12.2, P, 12), { tone: "mid" })
-    + `<path class="iso-line" data-tone="hi" data-free="end" data-live="needle" style="stroke-width:1" d=""/>`;
-  put("header-reader", "header", [x, -26, 8], reader, { bias: 3 });
-  RIG.needle = [x, -26, 12.3];
+  out.push(box(x - 16.5, -46, 2.4, x + 16.5, -35, 6, { tone: "lo" }, { r: 0.8, bevel: 0.3 }));
+  out.push(box(x - 16.5, -36, 6, x + 16.5, -35, 9, { tone: "lo" }, { r: 0.2 }));
+  out.push(screws([[x - 14.5, -44, 6], [x + 14.5, -44, 6]], 0.45));
+  out.push(inkHull(x - 16.5, -46, 2.4, x + 16.5, -35, 6));
+  put("header", "header", [x, -40, 4], out.join(""));
+  const card = box(x - CARD.half, CARD.y0, CARD.z0, x + CARD.half, CARD.y1, CARD.z1, { tone: "hi" }, { r: 0.6, steps: 2 })
+    + box(x - CARD.half + 1.4, CARD.y1, CARD.z1 - 8.2, x + CARD.half - 1.4, CARD.y1 + 0.1, CARD.z1 - 1.6, { tone: "hi", material: "ride" }, { r: 0.3, steps: 2 })
+    + frontText(x, CARD.y1 + 0.1, CARD.z1 - 6, "7F 45 4C 46", 3.5)
+    + frontText(x, CARD.y1, CARD.z1 - 13.4, "ELF64 · LSB", 3.2)
+    + frontText(x, CARD.y1, CARD.z1 - 18.4, "REL · X86-64", 3.2)
+    + `<g data-live="elfline"></g>`
+    + silhouetteSvg([[x - CARD.half, CARD.y0, CARD.z0], [x + CARD.half, CARD.y0, CARD.z0], [x - CARD.half, CARD.y1, CARD.z0], [x + CARD.half, CARD.y1, CARD.z0], [x - CARD.half, CARD.y0, CARD.z1], [x + CARD.half, CARD.y0, CARD.z1], [x - CARD.half, CARD.y1, CARD.z1], [x + CARD.half, CARD.y1, CARD.z1]]);
+  put("header-card", "header", [x, -40, 22], card, { bias: 4 });
+  const tape = box(x - 6, -34, 2.4, x + 6, -9.5, 2.9, { tone: "hi" }, { r: 0, steps: 1 })
+    + Ln(Array.from({ length: 11 }, (_, i) => k.lineOnTop([x - 6, -32 + i * 2.2], [x + 6, -32 + i * 2.2], 2.9, P)).join(""), { tone: "faint" });
+  put("header-tape", "header", [x, -22, 2.6], tape, { bias: 1 });
 }
 
 function sections() {
   const x = XS.sections;
   const out = [stationBase(x)];
-  const cab = plan(x - 16, -60, x + 16, -16, 1.4);
-  out.push(S(k.slabOf(cab, 2.4, 37.6, P, 3, 0.8), { tone: "mid", inner: seam(cab, 21.2, 3) }));
-  DRAWERS.forEach(([z0, z1], i) => {
-    if (i === TEXT_DRAWER) {
-      out.push(box(x - 13, -16.2, z0, x + 13, -16, z1, { tone: "lo" }, { r: 0, steps: 1 }));
-      return;
-    }
-    out.push(box(x - 13, -16, z0, x + 13, -14.8, z1, { tone: "mid" }, { r: 0.4 }));
-    out.push(box(x - 4, -14.8, z0 + 2.6, x + 4, -13.2, z0 + 4.2, { tone: "hi" }, { r: 0.4 }));
-  });
-  const index = plan(x - 11, -52, x + 11, -30, 1);
-  out.push(S(k.slabOf(index, 40, 5, P, 3, 0.4), { tone: "mid" }));
-  out.push(Ln(Array.from({ length: 6 }, (_, i) => k.lineOnTop([x - 9, -49 + i * 3.4], [x + 9, -49 + i * 3.4], 45, P)).join(""), { tone: "lo" }));
+  const cab = plan(x - CAB.half, CAB.y0, x + CAB.half, CAB.y1, 1.4);
+  out.push(S(k.slabOf(cab, CAB.z0, CAB.z1 - CAB.z0, P, 3, 0.8), { tone: "mid" }));
+  out.push(box(x - 15.6, CAB.y1 - 0.25, CAB.z0 + 0.8, x + 15.6, CAB.y1 + 0.01, CAB.z1 - 1, { tone: "lo", material: "chip" }, { r: 0, steps: 1 }));
+  const index = plan(x - 11, -54, x + 11, -32, 1);
+  out.push(S(k.slabOf(index, CAB.z1, 5, P, 3, 0.4), { tone: "mid" }));
+  out.push(Ln(Array.from({ length: 6 }, (_, i) => k.lineOnTop([x - 9, -51 + i * 3.4], [x + 9, -51 + i * 3.4], CAB.z1 + 5, P)).join(""), { tone: "lo" }));
+  out.push(frontText(x, -32, CAB.z1 + 1.4, ".SYMTAB", 2.6));
   out.push(bodyInk("sections"));
   put("sections", "sections", [x, -38, 22], out.join(""));
-  put("drawer", "sections", [x, -10, DRAWERS[TEXT_DRAWER][0] + 4], `<g data-live="drawer"></g>`, { bias: 2 });
-  const lock = box(x - 13, -43, 45, x + 13, -39.5, 47.4, { tone: "hi" }, { r: 0.6, bevel: 0.3 }) + post(x - 13.6, -41.2, 1.4, 40, 47.6, { tone: "mid" }, 14) + post(x + 13.6, -41.2, 1.4, 40, 47.6, { tone: "mid" }, 14);
-  put("lock", "sections", [x, -41, 46], `<g data-live="lock" style="display:none">${lock}</g>`, { bias: 9 });
+  put("drawers", "sections", [x, CAB.y1 + 1, 22], `<g data-live="drawers"></g>`, { bias: 3 });
+  const lock = box(x - 13, -45, CAB.z1 + 5, x + 13, -41.5, CAB.z1 + 7.4, { tone: "hi" }, { r: 0.6, bevel: 0.3 }) + post(x - 13.6, -43.2, 1.4, CAB.z1, CAB.z1 + 7.6, { tone: "mid" }, 14) + post(x + 13.6, -43.2, 1.4, CAB.z1, CAB.z1 + 7.6, { tone: "mid" }, 14);
+  put("lock", "sections", [x, -43, CAB.z1 + 6], `<g data-live="lock" style="display:none">${lock}</g>`, { bias: 9 });
 }
 
 function disasm() {
   const x = XS.disasm;
   const out = [stationBase(x)];
-  const body = plan(x - 19, -56, x + 19, -14, 1.6);
-  out.push(S(k.slabOf(body, 2.4, 10.6, P, 3, 0.8), { tone: "mid", inner: seam(body, 8, 3) }));
-  out.push(box(x - BED.half - 0.6, BED.y0, 13, x + BED.half + 0.6, BED.y1, BED.z, { tone: "lo" }, { r: 0.3, steps: 2 }));
-  out.push(box(x - 18, -44, 13, x + 18, -42.6, 15, { tone: "mid" }, { r: 0.3 }));
-  out.push(box(x - 18, -21.4, 13, x + 18, -20, 15, { tone: "mid" }, { r: 0.3 }));
-  out.push(bodyInk("disasm"));
-  put("disasm", "disasm", [x, -35, 8], out.join(""));
-  put("tiles", "disasm", [x, -32, BED.z + 0.5], `<g data-live="tiles"></g>`, { bias: 6 });
-  put("bed-glass", "disasm", [x, -32, 16.2], glassSvg(x - BED.half - 0.4, BED.y0 + 0.6, 16.1, x + BED.half + 0.4, BED.y1 - 0.6, 16.4), { bias: 7 });
-  put("cursor", "disasm", [x, -32, 20], `<g data-live="cursor">${cursorSvg(x - BED.half)}</g>`, { bias: 8 });
+  const pcb = plan(x - 18.4, -64, x + 18.4, -12, 1.2);
+  out.push(S(k.slabOf(pcb, 2.4, 1, P, 3, 0.3), { tone: "mid" }));
+  out.push(Ln([-6, -2, 2, 6].map((dx) => k.lineOnTop([x + dx, CHIP.y1 + 1], [x + dx, -13], 3.4, P)).join(""), { tone: "lo" }));
+  out.push(box(x - BED.half - 1, BED.y0 - 2, 3.4, x + BED.half + 1, BED.y1 + 2, BED.z, { tone: "mid" }, { r: 0.6 }));
+  out.push(box(x - BED.half - 0.4, BED.y0 - 0.4, BED.z, x + BED.half + 0.4, BED.y1 + 0.4, BED.z + 0.3, { tone: "lo" }, { r: 0.2, steps: 2 }));
+  out.push(inkHull(x - BED.half - 1, BED.y0 - 2, 3.4, x + BED.half + 1, BED.y1 + 2, BED.z));
+  out.push(box(x - 3, BED.y1 + 2, 3.4, x + 3, CHIP.y0, 6.4, { tone: "lo" }, { r: 0.3 }));
+  out.push(inkHull(x - 18.4, -64, 2.4, x + 18.4, -12, 3.4));
+  put("disasm", "disasm", [x, -38, 5], out.join(""));
+  const chip = [];
+  for (let i = 0; i < 11; i++) {
+    const px = x - 10 + i * 2;
+    chip.push(box(px - 0.45, CHIP.y1, CHIP.z0, px + 0.45, CHIP.y1 + 1.4, CHIP.z0 + 1.1, { tone: "lo" }, { r: 0, steps: 1 }));
+  }
+  chip.push(box(x - CHIP.half, CHIP.y0, CHIP.z0, x + CHIP.half, CHIP.y1, CHIP.z1, { tone: "lo", material: "chip" }, { r: 0.8, bevel: 0.3 }));
+  chip.push(box(x - CHIP.half - 0.01, -36, CHIP.z0 + 1.2, x - CHIP.half + 0.4, -30, CHIP.z1 - 1, { tone: "lo", material: "board" }, { r: 0, steps: 1 }));
+  chip.push(topText(x, CHIP.y1 - 3.2, CHIP.z1, "DECODE · 16 BYTES", 2.2));
+  chip.push(silhouetteSvg([[x - CHIP.half, CHIP.y0, CHIP.z0], [x + CHIP.half, CHIP.y0, CHIP.z0], [x - CHIP.half, CHIP.y1, CHIP.z0], [x + CHIP.half, CHIP.y1, CHIP.z0], [x - CHIP.half, CHIP.y0, CHIP.z1], [x + CHIP.half, CHIP.y0, CHIP.z1], [x - CHIP.half, CHIP.y1, CHIP.z1], [x + CHIP.half, CHIP.y1, CHIP.z1]]));
+  put("chip", "disasm", [x, -33, CHIP.z1], `<g class="on-dark">${chip.join("")}</g>`, { bias: 4 });
+  const strip = box(x - 18.4, -35.5, 3.4, x - CHIP.half, -30.5, 3.9, { tone: "hi" }, { r: 0, steps: 1 })
+    + Ln(Array.from({ length: 6 }, (_, i) => k.lineOnTop([x - 18 + i * 1.2, -35.5], [x - 18 + i * 1.2, -30.5], 3.9, P)).join(""), { tone: "lo" });
+  put("byte-strip", "disasm", [x - 15, -33, 3.6], strip, { bias: 3 });
+  put("lanes", "disasm", [x, -33, CHIP.z1 + 0.3], `<g data-live="lanes"></g>`, { bias: 6 });
+  put("tiles", "disasm", [x, (BED.y0 + BED.y1) / 2, BED.z + 0.6], `<g data-live="tiles"></g>`, { bias: 6 });
+  put("bed-glass", "disasm", [x, (BED.y0 + BED.y1) / 2, BED.z + 2.5], glassSvg(x - BED.half - 0.4, BED.y0 + 0.4, BED.z + 2.4, x + BED.half + 0.4, BED.y1 - 0.4, BED.z + 2.7), { bias: 7 });
+  put("cursor", "disasm", [x, (BED.y0 + BED.y1) / 2, BED.z + 4], `<g data-live="cursor">${cursorSvg(x - BED.half)}</g>`, { bias: 8 });
 }
 
 function cfg() {
@@ -211,28 +218,15 @@ function lift() {
   put("bolt", "lift", [x, -38, 34], `<g data-live="bolt" style="display:none">${bolt}</g>`, { bias: 9 });
 }
 
-export function pinSlot(i) {
-  const x = XS.types;
-  return [x - 9 + (i % 4) * 6, i < 4 ? -44 : -32];
-}
 function types() {
   const x = XS.types;
   const out = [stationBase(x)];
-  const body = plan(x - 17, -58, x + 17, -16, 1.4);
-  out.push(S(k.slabOf(body, 2.4, PINS.z - 2.4, P, 3, 0.8), { tone: "mid", inner: seam(body, 9, 3) }));
-  const rings = [];
-  for (let i = 0; i < PINS.slots; i++) {
-    const [px, py] = pinSlot(i);
-    rings.push(k.ring(px, py, PINS.r + 0.6, PINS.z, P, 20));
-  }
-  out.push(Ln(rings.join(""), { tone: "lo" }));
-  out.push(bodyInk("types"));
+  out.push(box(x - 17, -58, 2.4, x + 17, SLOTS.back.face, SLOTS.back.z, { tone: "mid" }, { r: 1, bevel: 0.4 }));
+  out.push(inkHull(x - 17, -58, 2.4, x + 17, SLOTS.back.face, SLOTS.back.z));
+  out.push(box(x - 17, SLOTS.back.face, 2.4, x + 17, SLOTS.front.face, SLOTS.front.z, { tone: "mid" }, { r: 1, bevel: 0.4 }));
+  out.push(inkHull(x - 17, SLOTS.back.face, 2.4, x + 17, SLOTS.front.face, SLOTS.front.z));
   put("types", "types", [x, -37, 8], out.join(""));
-  for (let i = 0; i < PINS.slots; i++) {
-    const [px, py] = pinSlot(i);
-    const pin = post(px, py, PINS.r, PINS.z, PINS.z + PINS.rise, { tone: "hi" }, 18) + S(k.cylinder(px, py, PINS.r + 0.5, PINS.z + PINS.rise, 0.8, P, 18), { tone: "hi" });
-    put(`pin${i}`, "types", [px, py, PINS.z + 2], `<g data-live="pin${i}" style="display:none">${pin}</g>`, { bias: 8 + i * 0.01 });
-  }
+  put("slots", "types", [x, -37, SLOTS.front.z + 1], `<g data-live="slots"></g>`, { bias: 8 });
 }
 
 function structure() {
@@ -275,6 +269,7 @@ function ledger() {
     out.push(box(tx - 3.8, TRAYS.y0 - 1, 18, tx + 3.8, TRAYS.y1 + 1, TRAYS.z, { tone: "lo" }, { r: 0.4 }));
     out.push(box(tx - 3.8, TRAYS.y0 - 1, TRAYS.z, tx + 3.8, TRAYS.y0, TRAYS.z + 2.4, { tone: "mid" }, { r: 0.2 }));
   }
+  ["OBSERVED", "DERIVED", "INFERRED", "UNKNOWN"].forEach((word, i) => out.push(frontText(trayX(i), -14, 9.4, word.slice(0, 3), 3)));
   out.push(bodyInk("ledger"));
   put("ledger", "ledger", [x, -38, 10], out.join(""));
   for (let i = 0; i < 4; i++) {
@@ -294,29 +289,29 @@ function carriage() {
   const out = [];
   out.push(box(x - SLED.w / 2, SLED.y0, SLED.z0, x + SLED.w / 2, SLED.y1, SLED.z1, { tone: "mid", material: "ride" }, { r: 1.2, bevel: 0.4 }));
   out.push(box(x - SLED.w / 2 - 1, RAIL_Y - 3, 0.6, x + SLED.w / 2 + 1, RAIL_Y + 3, SLED.z0 + 0.6, { tone: "lo" }, { r: 0.6 }));
-  out.push(box(x + 8.4, SLED.y0 + 1, SLED.z1, x + 10, SLED.y1 - 1, SLED.z1 + 11.6, { tone: "mid" }, { r: 0.3 }));
+  out.push(box(x + 7.6, SLED.y0 + 1, SLED.z1, x + 9.2, SLED.y1 - 1, SLED.z1 + 8.4, { tone: "mid" }, { r: 0.3 }));
   out.push(screws([[x - 9, SLED.y0 + 1.4, SLED.z1], [x - 9, SLED.y1 - 1.4, SLED.z1]], 0.4));
   put("carriage", "carriage", [x, RAIL_Y, SLED.z1], out.join(""), { bias: 0 });
   for (let i = 0; i < STACK.slots; i++) {
     const z = stackTop(i);
-    put(`card${i}`, "carriage", [x, RAIL_Y, z + 0.5], `<g data-live="card${i}" style="display:none">${box(x - 8, SLED.y0 + 1.6, z, x + 8, SLED.y1 - 1.6, z + STACK.t, { tone: "hi" }, { r: 0.4, steps: 2 })}</g>`, { bias: 0.2 + i * 0.02 });
+    put(`card${i}`, "carriage", [x, RAIL_Y, z + 0.5], `<g data-live="card${i}" style="display:none">${box(x - 7, SLED.y0 + 1.6, z, x + 7, SLED.y1 - 1.6, z + STACK.t, { tone: "hi" }, { r: 0.4, steps: 2 })}</g>`, { bias: 0.2 + i * 0.02 });
   }
 }
 
 export const RIG = {};
 const ANCHORS = {
-  header: [XS.header, -26, 12],
-  sections: [XS.sections, -41, 45],
-  disasm: [XS.disasm, -32, 16.4],
+  header: [XS.header, -40.6, 37],
+  sections: [XS.sections, -43, 47],
+  disasm: [XS.disasm, -34, 7.9],
   cfg: [XS.cfg - 6, -44, 13],
   lift: [XS.lift, -38, 34],
-  types: [XS.types, -38, 20],
+  types: [XS.types, -27, 13],
   structure: [XS.structure, -37, 19],
   pseudocode: [XS.pseudocode, -35, 26],
   ledger: [XS.ledger, -40, 22],
 };
 export const LABELS = Object.entries(ANCHORS).map(([asm, point], i) => {
-  const roof = at([XS[asm], -62, 46])[1] - [62, 38, 14][i % 3];
+  const roof = at([XS[asm], -62, 46])[1] - [44, 26, 8][i % 3];
   return { asm, at: point, dx: 0, dy: Math.round(roof - at(point)[1]) };
 });
 
