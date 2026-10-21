@@ -1,102 +1,75 @@
 # Evidence: cheatsheets/inference-optimization.md
 
-Abbreviations: KV = phases/07-transformers-deep-dive/12-kv-cache-flash-attention/docs/en.md, IO = phases/10-llms-from-scratch/12-inference-optimization/docs/en.md, QZ = phases/10-llms-from-scratch/11-quantization/docs/en.md, VL = phases/17-infrastructure-and-production/04-vllm-serving-internals/docs/en.md, EG = phases/17-infrastructure-and-production/05-eagle3-speculative-decoding/docs/en.md, MT = phases/17-infrastructure-and-production/08-inference-metrics-goodput/docs/en.md, PQ = phases/17-infrastructure-and-production/09-production-quantization/docs/en.md.
+Abbreviations: A = phases/07-transformers-deep-dive/12-kv-cache-flash-attention/code, B = phases/10-llms-from-scratch/11-quantization/code, C = phases/17-infrastructure-and-production/04-vllm-serving-internals/code, D = phases/10-llms-from-scratch/12-inference-optimization/code, E = phases/10-llms-from-scratch/12-inference-optimization/outputs.
 
-## Tasks (task-table, 8)
-- --enable-prefix-caching: KV:199
-- --kv-cache-dtype fp8: KV:200
-- --tensor-parallel-size 4: KV:197
-- --max-model-len 32768: KV:198
-- --gpu-memory-utilization 0.9 (default 0.9): VL:33
-- speculative_config with "method": "eagle3": VL:61, EG:25,49
-- spec_decode_metrics.accepted_tokens_per_request: EG:50
-- attn_implementation="flash_attention_2": KV:186
+## Architecture: Inference path (architecture, 6 nodes)
+- Request, prompt and output lengths: C/main.py:32-33
+- Scheduler, admit on free blocks: C/main.py:133-136
+- Prefill, prompt slices: C/main.py:147-151
+- KV cache, K and V per layer: D/main.py:21-25
+- Decode, one token per request: C/main.py:155-156
+- Quantized weights, scale and round: B/main.py:82-90
 
-## Serve a model (annotated-code, 6 lines)
-- pip install vllm and vllm serve command: KV:195-200
-- FP8 KV affects attention accuracy: PQ:84
+## One decode step (flow, 5 steps)
+- Scheduler admits when free blocks fit: C/main.py:133-136
+- Prefill slices by chunk size: C/main.py:147-151
+- Cache append stores K and V: A/main.py:93
+- Attention scores and softmax: A/main.py:26-27, 94
+- Release frees finished blocks: C/main.py:170-173
 
-## Offline batch in Python (annotated-code, 10 lines)
-- LLM(...) and SamplingParams and llm.generate: IO:695-706
-- gpu_memory_utilization as HBM share for KV blocks: VL:33
-- continuous batching inside the engine: IO:204 (vLLM: PagedAttention, continuous batching)
+## Cached decode loop (annotated-code, 5 lines)
+- Loop over queries, K and V: A/main.py:92
+- Append K and V to the cache: A/main.py:93
+- Attend over the cache: A/main.py:94
+- Cost grows with cache length: A/main.py:95
+- Collect outputs: A/main.py:96
 
-## Formulas (concepts, 8)
-- KV cache size formula: IO:86
-- Llama 3 70B 320 KB, 1.28 GB, 40 GB: IO:92-94
-- ops:byte definition and ~1 at decode batch 1: IO:55,58
-- TTFT formula: MT:27
-- E2E formula: MT:41
-- spec speedup and K=5, alpha=0.7 gives 4.1x: EG:31
-- INT8 scale and clamp: QZ:100-101
-- goodput: MT:53-55
+## Run the code (task-table, 7 rows)
+- decode_naive: A/main.py:72
+- decode_cached: A/main.py:87
+- tiled_softmax_dot: A/main.py:35
+- kv_cache_bytes: A/main.py:100
+- quantize_symmetric: B/main.py:82
+- quantize_per_channel: B/main.py:97
+- simulate_continuous: C/main.py:123
 
-## Serving engine (architecture, 7 nodes, 6 edges)
-- Waiting queue, new requests: VL:42, VL:78
-- Scheduler, runs every decode step: VL:39
-- RUNNING list, prefill and decode: VL:39, 45
-- KV block pool, 16-token blocks: VL:31
-- Block table, logical to physical: VL:31
-- Fused forward, one GPU call: VL:91
-- Draft head proposes K tokens, target verifies: EG:21
+## Default settings (defaults, 6 rows)
+- dtype 2: A/main.py:100
+- tile 4: A/main.py:35
+- num_bits 8: B/main.py:82
+- CHUNK_SIZE 512: C/main.py:24
+- KV_BLOCK_SIZE 16: C/main.py:25
+- KV_BLOCKS_AVAILABLE 1800: C/main.py:26
 
-## One scheduler iteration (flow, 7)
-- 1, scheduler removes finished sequences: VL:41, VL:75
-- 2, allocator returns blocks to the pool: VL:31, VL:76
-- 3, scheduler admits waiting sequences: VL:42, VL:78-81
-- 4, prefill chunk of 512 tokens: VL:51, VL:87
-- 5, one decode token for every other sequence: VL:89
-- 6, one fused forward: VL:91
-- 7, allocator adds a block on growth: VL:31
+## Static vs continuous batching (comparison, 4 rows)
+- Output length, static pads to max output: C/main.py:106 (static); C/main.py:170-173 (continuous)
+- Admission, static fixed windows: C/main.py:101-103 (static); C/main.py:133-136 (continuous)
+- Finished requests, static kept to window end: C/main.py:115-119 (static); C/main.py:170-173 (continuous)
+- Prefill, static pads prompt, continuous chunked: C/main.py:105 (static); C/main.py:149 (continuous)
 
-## Defaults worth knowing (defaults, 7)
-- PagedAttention block 16 tokens, under 4 percent: VL:31,33
-- chunked prefill 512 tokens, P99 ITL: VL:51,14
-- --gpu-memory-utilization 0.9: VL:33
-- speculative_config opt-in: EG:25
-- GGUF Q4_K_M production default: PQ:38
-- AWQ datacenter default unless multi-LoRA: PQ:3,52
-- PTQ calibration data 128-1024 examples: QZ:154
+## Key formulas (concepts, 3)
+- KV bytes formula: A/main.py:102
+- Quantization scale: B/main.py:88
+- Rounding and clipping: B/main.py:89
 
-## Pick a quantization format (command-table, 6)
-- GGUF Q4_K_M CPU/edge llama.cpp: PQ:29,38
-- GPTQ multi-LoRA, Marlin: PQ:30,44-46
-- AWQ ~741 tok/s on 7B: PQ:50-52
-- FP8 near-lossless, reasoning, medical, code: PQ:56
-- NVFP4 Blackwell, validate per model: PQ:34,58-65
-- FP8 KV separate choice: PQ:84
+## Troubleshooting (troubleshooting, 4 rows)
+- Decode at batch 1 is memory-bound: E/skill-inference-optimization.md:66
+- Contiguous KV blocks waste memory: E/skill-inference-optimization.md:67
+- Only throughput measured: E/skill-inference-optimization.md:70
+- High temperature lowers acceptance: E/skill-inference-optimization.md:71
 
-## Troubleshooting (8)
-- P99 ITL on long prompts, chunked prefill: VL:49-51
-- alpha below 0.55: EG:35,51
-- mean ITL down, P99 up, two-pass: EG:56, EG:90
-- 4-bit model OOM, KV stays FP16/FP8: PQ:75-82
-- calibration on generic text: PQ:69-71
-- AWQ INT4 loses 3-5 points on MATH, use FP8 or BF16: PQ:88
-- tools disagree on TPOT: MT:76-83
-- compatibility matrix: VL:61, EG:71
+## Glossary (glossary, 4)
+- KV block size constant: C/main.py:25
+- Chunk size constant: C/main.py:24
+- Naive decode recomputes prefix: A/main.py:73
+- Continuous batching admits and releases each step: C/main.py:123
 
-## Glossary (8)
-- TTFT: MT:127
-- TPOT: MT:128
-- ITL: MT:129
-- E2E: MT:130
-- P99: MT:133
-- HBM 80 GB on H100, ~3 TB/s: KV:220
-- Alpha: EG:98
-- PTQ: QZ:144
+## Questions (qa, 3)
+- Cached decode reuses K and V: A/main.py:93-94
+- Naive op count N(N+1)/2: A/main.py:74
+- Each prefill step takes at most chunk size: C/main.py:149
 
-## Q&A (5)
-- decode memory-bound ~1 op per weight: IO:58
-- GQA 8 KV heads 4 KB per token per layer: KV:45-48,54
-- spec decoding exact: IO:186
-- Flash Attention exact via running softmax: KV:89
-- 60 percent goodput is failure: MT:55
-
-## Tips (6)
-- P50, P90, P99: MT:63
-- measure alpha first: EG:3,48-51
-- prefix caching for agents, 5x: KV:203
-- calibrate in-domain, hundreds of samples: PQ:71
-- 2x peak concurrency, 30-50 iterations: MT:99-100
-- publish tool, version, model, hardware, concurrency, prompt distribution: MT:101
+## Tips (tips, 3)
+- Draft model 5-10x smaller: E/skill-inference-optimization.md:58
+- Acceptance above 70%: E/skill-inference-optimization.md:59
+- EAGLE, then draft-target, then n-gram: E/skill-inference-optimization.md:62
