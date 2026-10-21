@@ -273,7 +273,7 @@ const html = `<!DOCTYPE html>
           <p class="gm-muted" data-gm-measured></p>
           <p class="gm-honest">This is a simulation. The page does not run a model in your browser. The pool sizes, weight sizes, chunk sizes, step times, first-token times and throughputs are medians of three seeds from the SGLang 101 runs on one NVIDIA L4 and one NVIDIA GB10. The admission count and the weight-read share are arithmetic on those numbers and the published bandwidth. Where a setting was not measured, the page says so. The motion is paced for reading, not to scale.</p>
           <div class="gm-share">
-            <button type="button" class="gm-btn" data-gm-share>Copy link to this setup</button>
+            <button type="button" class="gm-btn" data-gm-copy>Copy link to this setup</button>
           </div>
           <a class="gm-btn gm-poster" href="anatomy/${SLUG}-poster.png" download>Download poster</a>
         </div>

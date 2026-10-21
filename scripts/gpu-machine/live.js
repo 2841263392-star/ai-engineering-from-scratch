@@ -794,7 +794,7 @@ $$("[data-gm-scenario]").forEach((button) =>
     showTab("run");
   }),
 );
-$("[data-gm-share]").addEventListener("click", async () => {
+$("[data-gm-copy]").addEventListener("click", async () => {
   const url = location.href.replace(/([?&])still\b&?/, "$1").replace(/[?&]$/, "");
   try {
     await navigator.clipboard.writeText(url);

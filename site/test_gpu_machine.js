@@ -145,6 +145,8 @@ test('the page carries every control, readout, step and social tag', () => {
   const html = fs.readFileSync(page, 'utf8');
   for (const hook of ['data-gm-run', 'data-gm-step', 'data-gm-break', 'data-gm-repair', 'data-gm-explode', 'data-gm-reset', 'id="gm-gpu"', 'id="gm-dtype"', 'id="gm-frac"', 'id="gm-graphs"', 'id="gm-users"', 'id="gm-radix"', 'id="gm-clock"', 'data-gm-mode="manual"', 'data-gm-restart', 'data-gm-stepbtn="6"', 'data-gm-hint', 'data-gm-badge', 'data-cut', 'data-sound', 'data-gauge-needle', 'aria-live="polite"', 'id="gm-wobble"', 'id="gm-labels"', 'data-pills', 'The big idea', 'window.seek', 'get("labels") === "0"']) assert.ok(html.includes(hook), hook);
   assert.match(html, /This is a simulation\./);
+  assert.equal((html.match(/ data-gm-share>/g) || []).length, 1);
+  assert.equal((html.match(/ data-gm-copy>/g) || []).length, 1);
   assert.match(html, /<meta property="og:image" content="https:\/\/aiengineeringfromscratch\.com\/og\/page\/inside-an-llm-serving-gpu\.png">/);
   for (const name of ['og', 'poster', 'machine', 'machine-dark']) assert.ok(fs.existsSync(path.join(__dirname, 'anatomy', `inside-an-llm-serving-gpu-${name}.png`)), name);
   assert.match(fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8'), /href="inside-an-llm-serving-gpu\.html"/);
