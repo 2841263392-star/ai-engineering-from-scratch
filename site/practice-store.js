@@ -200,7 +200,7 @@
           item.openedAt = now();
           if (typeof version === 'string') {
             var next = version.slice(0, 32);
-            if (item.version && item.version !== next && item.status === 'solved') {
+            if (next && item.version !== next && item.status === 'solved') {
               item.status = 'attempted';
               item.solvedAt = 0;
             }
