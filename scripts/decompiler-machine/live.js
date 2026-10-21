@@ -35,7 +35,7 @@ const escapeHtml = (text) => String(text).replace(/&/g, "&amp;").replace(/</g, "
 const breakable = (text) => escapeHtml(text).replace(/([(,])/g, "$1<wbr>").replace(/(-O\d)/g, '<span class="dm-nobr">$1</span>');
 
 function freshPose() {
-  const pose = { cx: D.HOME_X, plates: 0, needle: 0, drawer: 0, lock: 0, cursor: 0, tiles: 0, marks: 0, blocks: 0, edges: 0, dead: 0, ir: 0, bolt: 0, pins: 0, jawA: 0, jawB: 0, printed: 0, trays: [0, 0, 0, 0], hot: [] };
+  const pose = { lamps: {}, cx: D.HOME_X, plates: 0, needle: 0, drawer: 0, lock: 0, cursor: 0, tiles: 0, marks: 0, blocks: 0, edges: 0, dead: 0, ir: 0, bolt: 0, pins: 0, jawA: 0, jawB: 0, printed: 0, trays: [0, 0, 0, 0], hot: [] };
   STATIONS.forEach((name) => (pose["h_" + name] = 0));
   return pose;
 }
@@ -77,7 +77,7 @@ function beatsFor(sim) {
     pressDown(station);
     plates += 1;
     const n = plates;
-    b(0.18, {}, { hot: [station, "carriage"], start: (pose) => (pose.plates = n) });
+    b(0.18, {}, { hot: [station, "carriage"], start: (pose) => ((pose.plates = n), (pose.lamps[station] = pose.lamps[station] || "ok")) });
     pressUp(station);
   };
   const variant = variantOf(sim.config);
@@ -97,7 +97,7 @@ function beatsFor(sim) {
       case "sections":
         travel("sections");
         b(0.55, { drawer: 1 }, { hot: ["sections"] });
-        if (ev.locked) b(0.4, {}, { hot: ["sections"], start: (pose) => (pose.lock = 1) });
+        if (ev.locked) b(0.4, {}, { hot: ["sections"], start: (pose) => ((pose.lock = 1), (pose.lamps.sections = "bad")) });
         file();
         stamp("sections");
         b(0.4, { drawer: 0 }, { hot: ["sections"] });
@@ -112,6 +112,7 @@ function beatsFor(sim) {
           b(0.16, { cursor: variant.cursor[address] }, { hot: ["disasm"], end: (pose) => (pose.tiles = count) });
         }
         if (ev.missed.length || ev.conflict) b(0.5, {}, { hot: ["disasm"], start: (pose) => (pose.marks = 1) });
+        if (ev.extra.length || ev.conflict) b(0.2, {}, { hot: ["disasm"], start: (pose) => (pose.lamps.disasm = "bad") });
         file();
         stamp("disasm");
         break;
@@ -142,14 +143,14 @@ function beatsFor(sim) {
         file();
         plates += 1;
         const plated = plates;
-        b(0.18, {}, { hot: ["lift", "carriage"], start: (pose) => (pose.plates = plated) });
+        b(0.18, {}, { hot: ["lift", "carriage"], start: (pose) => ((pose.plates = plated), (pose.lamps.lift = "ok")) });
         pressUp("lift");
         break;
       }
       case "refuse":
         travel("lift");
         pressDown("lift", 0.45);
-        b(0.6, { bolt: 1 }, { hot: ["lift"] });
+        b(0.6, { bolt: 1 }, { hot: ["lift"], start: (pose) => (pose.lamps.lift = "bad") });
         file();
         pressUp("lift");
         break;
@@ -180,7 +181,7 @@ function beatsFor(sim) {
         stamp("ledger");
         break;
       case "exit":
-        b(0.5, {}, { hot: ["ledger"] });
+        b(0.5, {}, { hot: ["ledger"], start: (pose) => (pose.lamps.ledger = sim.outcome.status === "decompiled" ? "ok" : "bad") });
         break;
     }
     beats[mark].event = index;
@@ -269,6 +270,8 @@ function onEvent(index) {
 
 const dropOf = (pose) => D.HEAD.home - (D.STACK.z0 + Math.min(pose.plates, 8) * D.STACK.step + D.STACK.t);
 let lastOrder = "";
+let lastPills = "";
+const pillLayer = svg.querySelector("[data-pills]");
 let lastSheet = -1;
 let lastDrawer = -1;
 const rodCache = {};
@@ -351,9 +354,19 @@ function draw() {
   }
   pose.trays.forEach((count, i) => live(`tray${i}`).querySelectorAll("[data-card]").forEach((node, j) => (node.style.display = j < count ? "" : "none")));
   for (let i = 0; i < 9; i++) live(`card${i}`).style.display = i < pose.plates ? "" : "none";
+  for (const name of STATIONS) {
+    const lampNode = live(`lamp-${name}`);
+    const wanted = pose.lamps[name] || "";
+    if (lampNode.dataset.state !== wanted) lampNode.dataset.state = wanted;
+  }
 
   const hot = new Set(pose.hot);
   if (state.selected) hot.add(state.selected);
+  const pills = D.LABELS.map((label) => Pt.pillSvg(K.iso(add(label.at, T[label.asm]), P), label.dx, label.dy, D.CONCEPT[label.asm], hot.has(label.asm))).join("");
+  if (pills !== lastPills) {
+    pillLayer.innerHTML = pills;
+    lastPills = pills;
+  }
   const off = state.config.program === "trap" ? new Set(["types", "structure", "pseudocode"]) : new Set();
   for (const item of D.items) {
     const node = nodes[item.id];
@@ -458,7 +471,9 @@ function syncButtons() {
   $("[data-dm-explode]").textContent = state.explode.target ? "Assemble" : "Explode";
 }
 function writeUrl() {
-  const query = M.encode(state.config);
+  const params = new URLSearchParams(M.encode(state.config));
+  if (document.documentElement.classList.contains("iso-nolabels")) params.set("labels", "0");
+  const query = params.toString();
   const keep = /[?&]still\b/.test(location.search) ? (query ? "&still" : "still") : "";
   history.replaceState(null, "", location.pathname + (query || keep ? "?" + query + keep : "") + location.hash);
 }
@@ -592,6 +607,38 @@ stage.addEventListener("keydown", (event) => {
   else return;
   event.preventDefault();
 });
+
+const PALETTES = Ink.PALETTES;
+const figure = document.querySelector(".dm-figure");
+const blend = Ink.blend;
+let palette = PALETTES[new URLSearchParams(location.search).get("pal")] ? new URLSearchParams(location.search).get("pal") : "mint";
+function paint() {
+  const dark = document.documentElement.getAttribute("data-theme") === "dark";
+  const [l, m, d] = PALETTES[palette].map((hex) => (dark ? blend(hex, "#1f1c18", 0.38) : hex));
+  figure.style.setProperty("--body-l", l);
+  figure.style.setProperty("--body-m", m);
+  figure.style.setProperty("--body-d", d);
+  $$("[data-dm-pal]").forEach((button) => {
+    button.style.background = PALETTES[button.dataset.dmPal][0];
+    button.setAttribute("aria-pressed", String(button.dataset.dmPal === palette));
+  });
+}
+$$("[data-dm-pal]").forEach((button) => button.addEventListener("click", () => ((palette = button.dataset.dmPal), paint())));
+new MutationObserver(paint).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+paint();
+const wobble = svg.querySelector("[data-wobble]");
+function setWobble(value) {
+  wobble.setAttribute("scale", String(value));
+  value > 0 ? layer.setAttribute("filter", "url(#dm-hand)") : layer.removeAttribute("filter");
+}
+$("#dm-wobble").addEventListener("input", (event) => setWobble(Number(event.target.value)));
+function setLabels(on) {
+  document.documentElement.classList.toggle("iso-nolabels", !on);
+  $("#dm-labels").checked = on;
+  writeUrl();
+}
+$("#dm-labels").addEventListener("change", (event) => setLabels(event.target.checked));
+if (new URLSearchParams(location.search).get("labels") === "0") document.documentElement.classList.add("iso-nolabels"), ($("#dm-labels").checked = false);
 
 window.__machine = {
   state,

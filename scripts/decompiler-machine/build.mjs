@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as k from "../agent-machine/kit/iso-kit.mjs";
+import * as ink from "../agent-machine/kit/ink.mjs";
 import * as Gm from "./geometry.mjs";
 import * as M from "./model.mjs";
 import { CONCEPT, INFO, PART_ORDER, SCENARIOS } from "./content.mjs";
@@ -32,7 +33,8 @@ const items = Gm.items.map((item) => ({ id: item.id, asm: item.asm, key: round(i
 const body = Gm.items.map((item) => `<g data-i="${item.id}" data-asm="${item.asm}">${item.svg}</g>`).join("");
 const LABEL =
   "A decompiler built as a machine on a bench, drawn in isometric view. A carriage rides one straight rail past nine stations in order: a tape reel with a magic gauge for the file header, a section cabinet with a symbol index, a decode bed with a moving cursor for disassembly, a block board with a drop bin for the control-flow graph, a lift press with an IR stack, a board of type pins, a structuring jig with two jaws, a pseudocode printer, and an evidence ledger with four trays.";
-const svg = k.figureSvg({ width: Gm.W, height: Gm.H, label: LABEL, body: `<g data-layer>${body}</g>`, className: "dm-svg" }).replace("<svg ", "<svg data-dm-svg ");
+const FILTER = ink.wobbleFilter("dm-hand", 2.4);
+const svg = k.figureSvg({ width: Gm.W, height: Gm.H, label: LABEL, body: `${FILTER}<g data-layer filter="url(#dm-hand)">${body}</g><g data-pills></g>`, className: "dm-svg iso-ink" }).replace("<svg ", "<svg data-dm-svg ");
 
 const BREAK_NOTES = [
   "Broke the symbols: the name and the end of the function are unknown.",
@@ -44,6 +46,7 @@ const BREAK_NOTES = [
 
 const DATA = {
   NEEDLE: RIG.needle,
+  LABELS: Gm.LABELS,
   EXPLODE: Gm.EXPLODE,
   ASSEMBLIES: Gm.ASSEMBLIES,
   SOURCES,
@@ -53,7 +56,8 @@ const DATA = {
 
 const script = [
   module("../agent-machine/kit/iso-kit.mjs", "K"),
-  module("parts.mjs", "Pt", [['import * as k from "../agent-machine/kit/iso-kit.mjs";', "const k = K;"]]),
+  module("../agent-machine/kit/ink.mjs", "Ink", [['import { iso, segment, slabOf, solidSvg } from "./iso-kit.mjs";', "const { iso, segment, slabOf, solidSvg } = K;"]]),
+  module("parts.mjs", "Pt", [['import * as k from "../agent-machine/kit/iso-kit.mjs";', "const k = K;"], ['import * as ink from "../agent-machine/kit/ink.mjs";', "const ink = Ink;"]]),
   module("content.mjs", "C"),
   module("fixture.mjs", "F"),
   module("model.mjs", "M", [['import { FIXTURE } from "./fixture.mjs";', "const { FIXTURE } = F;"]]),
@@ -118,7 +122,7 @@ const html = `<!DOCTYPE html>
       var poster = /[?&]poster(?:=([a-z0-9]))?\\b/.exec(location.search); if (poster) root.setAttribute('data-poster', poster[1] || '1');
     })();
   </script>
-  <style>${k.ISO_CSS}${readFileSync(join(HERE, "page.css"), "utf8")}</style>
+  <style>${k.ISO_CSS}${ink.INK_CSS}${readFileSync(join(HERE, "page.css"), "utf8")}</style>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -195,8 +199,14 @@ const html = `<!DOCTYPE html>
       </aside>
 
       <div class="dm-center">
-        <div class="dm-figure iso">${plate}</div>
+        <div class="dm-figure iso iso-ink">${plate}</div>
         <p class="dm-flash" data-dm-flash aria-live="polite"></p>
+        <p class="dm-idea"><strong>The big idea</strong>A decompiler only ever reads bytes. Every station after the bytes adds a claim, and the ledger keeps what the bytes showed apart from what the machine guessed.</p>
+        <div class="dm-look" role="group" aria-label="Figure style">
+          <label>Hand-drawn wobble <input type="range" id="dm-wobble" min="0" max="6" step="0.1" value="2.4"></label>
+          <span class="dm-swatches" role="group" aria-label="Body colour">Colour ${["mint", "cobalt", "mustard", "tomato", "blush"].map((name) => `<button type="button" class="dm-sw" data-dm-pal="${name}" aria-label="${name}" aria-pressed="${name === "mint"}"></button>`).join("")}</span>
+          <label class="dm-switch"><input type="checkbox" id="dm-labels" checked><span>Labels</span></label>
+        </div>
         <div class="dm-readouts" aria-label="Live readouts">
           <div class="dm-readout dm-readout--wide"><span>Stage</span><strong data-dm-stage-name>Ready</strong></div>
           <div class="dm-readout"><span>Instructions</span><strong data-dm-decoded>0</strong></div>

@@ -1,7 +1,8 @@
 import * as k from "../agent-machine/kit/iso-kit.mjs";
+import * as ink from "../agent-machine/kit/ink.mjs";
 
 export const W = 1000;
-export const H = 560;
+export const H = 470;
 export const AZIMUTH = 60;
 
 export const PLATE = { x: -250, y: -82, w: 500, d: 132, r: 8 };
@@ -25,16 +26,16 @@ export const TRAYS = { y0: -50, y1: -30, z: 18.8, t: 0.7, step: 0.85, slots: 10,
 export const stackTop = (n) => STACK.z0 + n * STACK.step;
 
 export const P = k.fitProjection(
-  [...k.boxCorners(PLATE, -PLATE_H - FOOT_H, 0), [-250, -100, 72], [250, -100, 72], [-250, -20, 80], [250, -20, 80], [250, 56, 26]],
+  [...k.boxCorners(PLATE, -PLATE_H - FOOT_H, 0), [-250, -96, 58], [250, -96, 58], [-250, -20, 62], [250, -20, 62], [250, 56, 20]],
   W,
   H,
-  { pad: 10, azimuth: AZIMUTH },
+  { pad: 8, headroom: 34, azimuth: AZIMUTH },
 );
 export const V = [k.depthOf([1, 0, 0], P), k.depthOf([0, 1, 0], P), k.depthOf([0, 0, 1], P)];
 export const at = (p) => k.iso(p, P);
 export const depth = (p) => p[0] * V[0] + p[1] * V[1] + p[2] * V[2];
 
-export const S = (paths, style) => k.solidSvg(paths, style);
+export const S = (paths, style = {}) => ink.inkSolid(paths, style);
 export const Ln = (d, style) => k.lineSvg(d, style);
 export const Dots = (points, style) => k.dotsSvg(points, style);
 export const box = (x0, y0, z0, x1, y1, z1, style = {}, { r = 0.6, steps = 3, bevel = 0, inner = "" } = {}) =>
@@ -188,3 +189,8 @@ export function irSvg(count) {
   return out.join("");
 }
 
+
+export const castShadowSvg = (points, z0 = 0) => ink.castShadowSvg(points, P, z0);
+export const glassSvg = (x0, y0, z0, x1, y1, z1) => ink.glassSvg(x0, y0, z0, x1, y1, z1, P);
+export const silhouetteSvg = (points) => ink.silhouetteSvg(points, P);
+export const pillSvg = ink.pillSvg;

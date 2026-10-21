@@ -144,7 +144,7 @@ test('the published page is the output of the build script', () => {
 
 test('the page carries every control, readout and social tag', () => {
   const html = fs.readFileSync(page, 'utf8');
-  for (const hook of ['data-dm-run', 'data-dm-step', 'data-dm-break', 'data-dm-repair', 'data-dm-explode', 'data-dm-reset', 'id="dm-program"', 'id="dm-symbols"', 'id="dm-sweep"', 'id="dm-opt"', 'data-dm-stage-name', 'data-dm-decoded', 'data-dm-blocks', 'data-dm-names', 'data-dm-unknowns', 'data-dm-evidence', 'data-dm-ledger', 'data-dm-trace', 'aria-live="polite"']) {
+  for (const hook of ['data-dm-run', 'data-dm-step', 'data-dm-break', 'data-dm-repair', 'data-dm-explode', 'data-dm-reset', 'id="dm-program"', 'id="dm-symbols"', 'id="dm-sweep"', 'id="dm-opt"', 'data-dm-stage-name', 'data-dm-decoded', 'data-dm-blocks', 'data-dm-names', 'data-dm-unknowns', 'data-dm-evidence', 'data-dm-ledger', 'data-dm-trace', 'aria-live="polite"', 'id="dm-wobble"', 'id="dm-labels"', 'data-dm-pal="mint"', 'data-pills', 'id="dm-hand"', 'The big idea', 'get("labels") === "0"']) {
     assert.ok(html.includes(hook), hook);
   }
   assert.match(html, /This is a simulation\./);
