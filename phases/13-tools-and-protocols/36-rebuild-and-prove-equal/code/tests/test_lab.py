@@ -22,6 +22,13 @@ class LabTest(unittest.TestCase):
         answers[first] = "not the answer"
         self.assertEqual(dict((key, status) for key, _, status in lab.grade(answers))[first], "FAIL")
 
+    def test_a_boolean_never_passes_for_a_number(self):
+        answers = lab.expected()
+        numbers = [key for key, value in answers.items() if isinstance(value, int) and not isinstance(value, bool) and value in (0, 1)]
+        for key in numbers:
+            answers[key] = bool(answers[key])
+            self.assertEqual(dict((k, status) for k, _, status in lab.grade(answers))[key], "FAIL")
+
 
 if __name__ == "__main__":
     unittest.main()
