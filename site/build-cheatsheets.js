@@ -672,7 +672,7 @@ function posterMain(topic, year, neighbours) {
     const link = sourceLink(source);
     return `<a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a>`;
   }).join('');
-  const head = `<header class="cs-poster-head"><div class="cs-title-block"><span class="cs-code" aria-hidden="true">${escapeHtml(topic.code)}</span><div><p class="cs-kicker"><a href="${BASE}">Cheat sheets</a></p><h1>${escapeHtml(topic.title)}</h1><p class="cs-sub">${placeholders(inline(topic.subtitle))}</p></div></div><div class="cs-head-side">${legendHtml(topic)}<p class="cs-actions"><button type="button" class="cs-print" data-print>Print</button><a href="${REPO}/blob/main/${TOPIC_DIR}/${topic.id}.md">Source</a></p></div></header>`;
+  const head = `<header class="cs-poster-head"><div class="cs-title-block"><span class="cs-code" aria-hidden="true">${escapeHtml(topic.code)}</span><div><p class="cs-kicker"><a href="${BASE}">Cheat sheets</a></p><h1>${escapeHtml(topic.title)}</h1><p class="cs-sub">${placeholders(inline(topic.subtitle))}</p></div></div><div class="cs-head-side">${legendHtml(topic)}<p class="cs-actions"><button type="button" class="cs-print" data-print>Print</button>${topic.explainer ? `<a href="/${escapeHtml(topic.explainer.replace(/\.html$/, ''))}">Interactive machine</a>` : ''}<a href="${REPO}/blob/main/${TOPIC_DIR}/${topic.id}.md">Source</a></p></div></header>`;
   const pager = [neighbours.previous && `<a href="${neighbours.previous.href}" rel="prev">← ${escapeHtml(neighbours.previous.title)}</a>`, `<a href="${BASE}">All cheat sheets</a>`, neighbours.next && `<a href="${neighbours.next.href}" rel="next">${escapeHtml(neighbours.next.title)} →</a>`].filter(Boolean).join('');
   const foot = `<footer class="cs-foot"><p class="cs-covers"><span>Covers</span>${sources}</p><nav class="cs-pager" aria-label="Cheat sheet navigation">${pager}</nav><p class="cs-stamp"><span>aiengineeringfromscratch.com${BASE}/${topic.id}</span><span>${copyLine(year)}</span><span>source ${topic.hash}</span></p></footer>`;
   return `<main id="main" class="cs-page cs-poster">${head}${cols}${foot}</main>`;
@@ -775,11 +775,13 @@ function trackOf(topic) {
 function loadTopics(root = REPO_ROOT) {
   const map = topicMap.loadTopicMap(root);
   const kinds = new Map(map.topics.map(entry => [entry.id, entry.kind]));
+  const explainers = new Map(map.topics.filter(entry => entry.explainer).map(entry => [entry.id, entry.explainer]));
   return topicFiles(root).map(file => {
     const topic = parseTopic(fs.readFileSync(file, 'utf8'), file);
     topic.file = path.relative(root, file);
     topic.href = `${BASE}/${topic.id}`;
     topic.kind = kinds.get(topic.id) || 'concept';
+    topic.explainer = explainers.get(topic.id) || '';
     topic.track = trackOf(topic);
     return topic;
   });
@@ -1050,6 +1052,8 @@ function checkLinks(built, root = REPO_ROOT) {
       if (phase) continue;
       const manual = /^\/manual-([a-z0-9-]+)$/.exec(target);
       if (manual && manuals.has(manual[1])) continue;
+      const explainer = /^\/(inside-[a-z0-9-]+)$/.exec(target);
+      if (explainer && fs.existsSync(path.join(root, 'site', `${explainer[1]}.html`))) continue;
       broken.push({ page: page.href, href });
     }
   }

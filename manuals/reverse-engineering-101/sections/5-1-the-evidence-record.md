@@ -179,6 +179,8 @@ claim: The id hashes every field of the record except subject.name and subject.l
 caption: Read top to bottom. Solid rows enter the hash and dashed rows are display fields. Values are from capture/out/10-mcp-09-analyze-function-percent-change-O1.json, digests shown by their first hex digits.
 ```
 
+The [Inside a Decompiler](https://aiengineeringfromscratch.com/inside-a-decompiler?symbols=off) machine files each stage of one decompilation in an evidence ledger. The ledger uses the same three confidence words and adds a tray for unknowns. This link opens the run with the symbol table switched off, so you can watch which facts move from observed to unknown.
+
 ```takeaways
 - Read `confidence`, `authority`, and `limitations` before `normalized_result`, and copy all three into your notes.
 - Treat `observed` as "rea recorded the engine output", never as "the source was recovered".
@@ -186,4 +188,4 @@ caption: Read top to bottom. Solid rows enter the hash and dashed rows are displ
 - Keep paths out of `normalized_result` and `locations` in your own records, or the id changes per machine.
 ```
 
-Sources: capture/out/10-mcp-09-analyze-function-percent-change-O1.json, capture/out/10-mcp-20-compare-functions-percent-change.json, capture/out/05-analyze-arm64-O1.json, capture/out/15-js-app.json, capture/out/15-js-app-view-summary.json, capture/out/11-bundle-O1.json; phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns; rea 6.7.0 at 27dc42d: src/domain/evidence.ts, src/domain/relationshipCoverage.ts, src/domain/canonicalDigest.ts, src/domain/analysisProfile.ts, src/domain/binaryTargetTypes.ts, src/server/registerEvidenceTools.ts, src/application/binary/BinarySession.ts, src/application/investigation/UnknownEvidence.ts; rea docs/mcp-contracts.md, rea docs/ghidra-provider.md
+Sources: capture/out/10-mcp-09-analyze-function-percent-change-O1.json, capture/out/10-mcp-20-compare-functions-percent-change.json, capture/out/05-analyze-arm64-O1.json, capture/out/15-js-app.json, capture/out/15-js-app-view-summary.json, capture/out/11-bundle-O1.json; phases/13-tools-and-protocols/35-evidence-confidence-and-unknowns; rea 6.7.0 at 27dc42d: src/domain/evidence.ts, src/domain/relationshipCoverage.ts, src/domain/canonicalDigest.ts, src/domain/analysisProfile.ts, src/domain/binaryTargetTypes.ts, src/server/registerEvidenceTools.ts, src/application/binary/BinarySession.ts, src/application/investigation/UnknownEvidence.ts; rea docs/mcp-contracts.md, rea docs/ghidra-provider.md; the Inside a Decompiler machine: scripts/decompiler-machine/model.mjs
