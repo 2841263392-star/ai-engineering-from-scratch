@@ -110,7 +110,7 @@ The scheduler rule from the start of this section fits the L4 result. Prefill wi
 
 The mixed chunk lowered the median P99 ITL by 5 to 8 percent, and the seed ranges overlapped at every rate. The worst token gap still took more than 2.2 s. On a card that cannot keep up with its prompts, neither flag gives the stream a smooth flow. The fix is more prefill capacity, or fewer long prompts per second.
 
-The GB10 keeps up with this workload, and there the mixed chunk did help. We ran it with the same sweep on 2026-10-21, against the default from 2026-10-17. Both had a pool of about 236,000 tokens and a median clock of 2,405 MHz or more.
+The GB10 keeps up with this workload, and there the mixed chunk did help. We ran it with the same sweep on 2026-10-21, against a new default run on the same day. Both had a pool of about 236,000 tokens and a median clock of 2,405 MHz or more.
 
 ```listing
 title: the GB10 pool with the mixed chunk
@@ -123,11 +123,11 @@ note: The pool at startup of the server with --enable-mixed-chunk.
 
 | Rate, per second | P99 ITL, default / mixed chunk | Median TTFT, default / mixed chunk | Output tok/s, default / mixed chunk |
 |---|---|---|---|
-| 0.5 | 929 / 781 ms | 892 / 910 ms | 70.1 / 72.1 |
-| 1 | 240 / 177 ms | 268 / 362 ms | 106.8 / 112.6 |
-| 2 | 312 / 221 ms | 269 / 416 ms | 129.3 / 138.1 |
+| 0.5 | 922 / 781 ms | 841 / 910 ms | 70.9 / 72.1 |
+| 1 | 219 / 177 ms | 244 / 362 ms | 108.8 / 112.6 |
+| 2 | 261 / 221 ms | 238 / 416 ms | 133.2 / 138.1 |
 
-**We measured** a smoother stream and a slower first token. The P99 ITL fell by 16 to 29 percent, outside the seed spread at 0.5 and at 2 per second. The median TTFT rose by 35 to 54 percent at 1 and 2 per second, outside the seed spread. Throughput rose by 3 to 7 percent, inside the spread.
+**We measured** a smoother stream and a slower first token. The P99 ITL fell by 15 to 19 percent, outside the seed spread at 0.5 and at 2 per second. The median TTFT rose by 49 to 74 percent at 1 and 2 per second, outside the seed spread. Throughput rose by 2 to 4 percent, inside the spread. The default run from 2026-10-17 gave the same picture, so the result held on two days.
 
 So the flag is a trade, and the card decides whether you get it. When prefill keeps up, the decode tokens that ride in the prefill batch stop waiting, and each new prompt waits a little longer. When prefill cannot keep up, as on the L4, the queue sets the pace and the flag changes little.
 
@@ -169,4 +169,4 @@ The scheduler loop admits against every limit at once, and the smallest one wins
 - Expect a chunk above the default for your GPU to need more free memory at startup.
 ```
 
-Sources: python/sglang/srt/managers/scheduler.py (run_event_loop, event_loop_normal, get_next_batch_to_run, run_batch, process_batch_result), python/sglang/srt/managers/schedule_policy.py (CacheAwarePolicy, CacheAgnosticPolicy, WAITING_QUEUE_PREFIX_MATCH_MAX, _determine_active_policy, _validate_and_adjust_policy), python/sglang/srt/arg_groups/fields/schedule.py at v0.5.22; SGLang paper, arXiv 2312.07104; capture/out/server-default.log; issue https://github.com/sgl-project/sglang/issues/36889; capture/gpu/summary/gb10.json and capture/gpu/summary/l4.json (mixed); capture/gpu/sweep.py (mixed sweep); capture/gpu/incidents/l4-chunk-8192-prefill-graph-oom.txt; capture/gpu/out-gb10/server-mixed-chunk.log, capture/gpu/summary/gb10.json (mixed.mixed-chunk).
+Sources: python/sglang/srt/managers/scheduler.py (run_event_loop, event_loop_normal, get_next_batch_to_run, run_batch, process_batch_result), python/sglang/srt/managers/schedule_policy.py (CacheAwarePolicy, CacheAgnosticPolicy, WAITING_QUEUE_PREFIX_MATCH_MAX, _determine_active_policy, _validate_and_adjust_policy), python/sglang/srt/arg_groups/fields/schedule.py at v0.5.22; SGLang paper, arXiv 2312.07104; capture/out/server-default.log; issue https://github.com/sgl-project/sglang/issues/36889; capture/gpu/summary/gb10.json and capture/gpu/summary/l4.json (mixed); capture/gpu/sweep.py (mixed sweep); capture/gpu/incidents/l4-chunk-8192-prefill-graph-oom.txt; capture/gpu/out-gb10/server-mixed-chunk.log, capture/gpu/summary/gb10.json (mixed.mixed-chunk, mixed.graphs-on-b).
